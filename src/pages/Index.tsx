@@ -3,6 +3,8 @@ import Logo from "@/components/Logo";
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
+import AboutSection from "@/components/AboutSection";
+import PricingSection from "@/components/PricingSection";
 
 const Index = () => {
   return (
@@ -28,6 +30,8 @@ const Index = () => {
       </div>
       
       <ServicesSection />
+      <AboutSection />
+      <PricingSection />
     </>
   );
 };
