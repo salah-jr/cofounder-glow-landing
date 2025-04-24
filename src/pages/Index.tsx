@@ -7,15 +7,15 @@ const Index = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen flex flex-col items-center px-4 py-16 relative">
-        <div className="mb-16 text-center mt-24">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 relative">
+        <div className="text-center mb-16">
           <Logo size="large" />
           <h2 className="mt-6 text-xl md:text-2xl text-white/80 animate-fade-in">
             Your AI Co-Founder for Startup Success
           </h2>
         </div>
         
-        <div className="flex-1 flex items-center w-full">
+        <div className="w-full max-w-3xl">
           <PromptSection />
         </div>
         
