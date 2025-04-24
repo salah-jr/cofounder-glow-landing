@@ -1,4 +1,3 @@
-
 import { LightbulbIcon, SearchCheck, Users, FileCode, Rocket, Briefcase } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -37,7 +36,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="min-h-screen py-16 px-4">
+    <section className="min-h-fit py-24 px-4">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent">
           Our Services
