@@ -1,25 +1,28 @@
 
 import Logo from "@/components/Logo";
+import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-16 relative">
-      <div className="mb-16 text-center">
-        <Logo />
-        <h2 className="mt-6 text-xl md:text-2xl text-white/80 animate-fade-in">
-          Your AI Co-Founder for Startup Success
-        </h2>
+    <>
+      <Navbar />
+      <div className="min-h-screen flex flex-col items-center px-4 py-16 relative">
+        <div className="mb-16 text-center mt-16">
+          <h2 className="mt-6 text-xl md:text-2xl text-white/80 animate-fade-in">
+            Your AI Co-Founder for Startup Success
+          </h2>
+        </div>
+        
+        <PromptSection />
+        
+        {/* Background gradient circles */}
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
+        </div>
       </div>
-      
-      <PromptSection />
-      
-      {/* Background gradient circles */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
-      </div>
-    </div>
+    </>
   );
 };
 
