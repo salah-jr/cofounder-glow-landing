@@ -8,13 +8,16 @@ const Index = () => {
     <>
       <Navbar />
       <div className="min-h-screen flex flex-col items-center px-4 py-16 relative">
-        <div className="mb-16 text-center mt-16">
+        <div className="mb-16 text-center mt-24">
+          <Logo size="large" />
           <h2 className="mt-6 text-xl md:text-2xl text-white/80 animate-fade-in">
             Your AI Co-Founder for Startup Success
           </h2>
         </div>
         
-        <PromptSection />
+        <div className="flex-1 flex items-center w-full">
+          <PromptSection />
+        </div>
         
         {/* Background gradient circles */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
