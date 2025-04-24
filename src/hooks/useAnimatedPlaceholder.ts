@@ -15,6 +15,8 @@ export const useAnimatedPlaceholder = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    
     const typeSpeed = 50;
     const deleteSpeed = 30;
     const pauseDuration = 2000;
@@ -25,22 +27,26 @@ export const useAnimatedPlaceholder = () => {
       if (!isDeleting) {
         if (currentText.length < currentPrompt.length) {
           setCurrentText(currentPrompt.slice(0, currentText.length + 1));
-          setTimeout(animatePlaceholder, typeSpeed);
+          timeout = setTimeout(animatePlaceholder, typeSpeed);
         } else {
-          setTimeout(() => setIsDeleting(true), pauseDuration);
+          timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
         }
       } else {
         if (currentText.length > 0) {
           setCurrentText(currentText.slice(0, -1));
-          setTimeout(animatePlaceholder, deleteSpeed);
+          timeout = setTimeout(animatePlaceholder, deleteSpeed);
         } else {
           setIsDeleting(false);
           setCurrentIndex((prevIndex) => (prevIndex + 1) % prompts.length);
+          // Start typing immediately after selecting the next prompt
+          timeout = setTimeout(animatePlaceholder, 100);
         }
       }
     };
 
-    const timeout = setTimeout(animatePlaceholder, 100);
+    // Initialize the animation with a small delay on mount
+    timeout = setTimeout(animatePlaceholder, 100);
+    
     return () => clearTimeout(timeout);
   }, [currentText, isDeleting, currentIndex]);
 

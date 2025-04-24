@@ -19,7 +19,7 @@ const PromptSection = () => {
         <div className="flex items-center bg-black/20 rounded-lg px-4">
           <textarea
             className="flex-1 bg-transparent h-14 py-4 text-white placeholder-white/50 focus:outline-none resize-none"
-            placeholder={placeholder}
+            placeholder={placeholder || "Create something amazing..."}
           />
           <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
             <Button variant="ghost" size="icon" className="text-white/50 hover:text-white hover:bg-white/10">
