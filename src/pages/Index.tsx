@@ -10,19 +10,30 @@ const Index = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 relative">
-        <div className="text-center mb-8">
-          <Logo size="large" />
-          <h1 className="text-4xl md:text-6xl font-bold mt-8 mb-4">
-            Idea to app in seconds.
-          </h1>
-          <p className="text-xl md:text-2xl text-white/80">
-            Your AI Co-Founder for Startup Success
-          </p>
-        </div>
-        
-        <div className="w-full max-w-3xl mb-16">
-          <PromptSection />
+      <div className="relative min-h-screen">
+        {/* Hero Section with Integrated Services */}
+        <div className="relative z-10">
+          <div className="flex flex-col items-center justify-center px-4 pt-24 pb-32">
+            <div className="text-center mb-8">
+              <Logo size="large" />
+              <h1 className="text-4xl md:text-6xl font-bold mt-8 mb-4">
+                Idea to app in seconds.
+              </h1>
+              <p className="text-xl md:text-2xl text-white/80">
+                Your AI Co-Founder for Startup Success
+              </p>
+            </div>
+            
+            <div className="w-full max-w-3xl">
+              <PromptSection />
+            </div>
+          </div>
+
+          {/* Integrated Services Section with Gradient Overlay */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent" />
+            <ServicesSection />
+          </div>
         </div>
 
         {/* Background gradient circles */}
@@ -32,7 +43,6 @@ const Index = () => {
         </div>
       </div>
       
-      <ServicesSection />
       <AboutSection />
       <PricingSection />
     </>
