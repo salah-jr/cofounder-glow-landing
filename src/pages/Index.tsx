@@ -11,11 +11,14 @@ const Index = () => {
     <>
       <Navbar />
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 relative">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <Logo size="large" />
-          <h2 className="mt-6 text-xl md:text-2xl text-white/80 animate-fade-in">
+          <h1 className="text-4xl md:text-6xl font-bold mt-8 mb-4">
+            Idea to app in seconds.
+          </h1>
+          <p className="text-xl md:text-2xl text-white/80">
             Your AI Co-Founder for Startup Success
-          </h2>
+          </p>
         </div>
         
         <div className="w-full max-w-3xl mb-16">

@@ -1,19 +1,48 @@
 
-import { Send } from "lucide-react";
+import { Send, Import, Attach, Public } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const examples = [
+  { text: "Weather dashboard", icon: "↑" },
+  { text: "Recharts dashboard", icon: "↑" },
+  { text: "E-commerce product page", icon: "↑" },
+  { text: "Crypto portfolio tracker", icon: "→" },
+];
 
 const PromptSection = () => {
   return (
-    <div className="w-full max-w-3xl mx-auto glass p-6 rounded-xl animate-fade-in">
-      <textarea
-        className="w-full h-32 bg-black/20 rounded-lg p-4 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#9b87f5] resize-none"
-        placeholder="Describe your startup idea..."
-      />
-      <div className="flex justify-end mt-4">
-        <Button className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity">
-          <Send className="w-4 h-4 mr-2" />
-          Generate
-        </Button>
+    <div className="w-full flex flex-col items-center space-y-6">
+      <div className="w-full glass p-3 rounded-xl animate-fade-in">
+        <div className="flex items-center bg-black/20 rounded-lg px-4">
+          <textarea
+            className="flex-1 bg-transparent h-14 py-4 text-white placeholder-white/50 focus:outline-none resize-none"
+            placeholder="Ask Lovable to create a project..."
+          />
+          <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
+            <Button variant="ghost" size="icon" className="text-white/50 hover:text-white hover:bg-white/10">
+              <Attach className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-white/50 hover:text-white hover:bg-white/10">
+              <Import className="h-5 w-5" />
+            </Button>
+            <Button className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity flex items-center gap-2 ml-2">
+              <Public className="h-4 w-4" />
+              Public
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {examples.map((example, index) => (
+          <button
+            key={index}
+            className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/80 text-sm flex items-center gap-2"
+          >
+            {example.text}
+            <span className="text-xs opacity-60">{example.icon}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
