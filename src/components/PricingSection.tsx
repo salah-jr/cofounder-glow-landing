@@ -23,8 +23,7 @@ const plans = [
       "Advanced idea validation",
       "Comprehensive market analysis",
       "Priority support",
-      "Full analytics suite",
-      "Investor pitch deck review"
+      "Full analytics suite"
     ],
     icon: DollarSignIcon
   }
