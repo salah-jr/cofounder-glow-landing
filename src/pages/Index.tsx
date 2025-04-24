@@ -2,6 +2,7 @@
 import Logo from "@/components/Logo";
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
+import UserJourney from "@/components/UserJourney";
 
 const Index = () => {
   return (
@@ -15,9 +16,11 @@ const Index = () => {
           </h2>
         </div>
         
-        <div className="w-full max-w-3xl">
+        <div className="w-full max-w-3xl mb-24">
           <PromptSection />
         </div>
+        
+        <UserJourney />
         
         {/* Background gradient circles */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
