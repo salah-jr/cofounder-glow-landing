@@ -1,5 +1,4 @@
-import { CircleInfo } from "lucide-react";
-import { CircleDollarSign } from "lucide-react";
+import { CircleIcon, DollarSignIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -14,7 +13,7 @@ const plans = [
       "Email support",
       "Basic analytics"
     ],
-    icon: CircleInfo
+    icon: CircleIcon
   },
   {
     name: "Pro",
@@ -27,7 +26,7 @@ const plans = [
       "Full analytics suite",
       "Investor pitch deck review"
     ],
-    icon: CircleDollarSign
+    icon: DollarSignIcon
   }
 ];
 
