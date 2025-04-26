@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { useDiscovery } from "@/context/DiscoveryContext";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Results: React.FC = () => {
@@ -19,87 +20,131 @@ const Results: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAnimationComplete(true);
-    }, 2500);
-    
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-[#1A1F2C]">
+      {/* Background shapes */}
       <motion.div
-        className="mb-12 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent">
-          Your Startup Discovery
-        </h1>
-        <p className="text-xl text-white/70">
-          Here's what we've learned about your idea
-        </p>
-      </motion.div>
+        className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-[#9b87f5]/10 to-transparent rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-[#1EAEDB]/10 to-transparent rounded-full blur-3xl"
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.5, 0.3, 0.5],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ResultCard 
-          title="Value Proposition" 
-          content={valueProposition} 
-          delay={0.2} 
-        />
-        <ResultCard 
-          title="Target Audience" 
-          content={targetAudience} 
-          delay={0.4} 
-        />
-        <ResultCard 
-          title="Revenue Model" 
-          content={revenueStream} 
-          delay={0.6} 
-        />
-        <ResultCard 
-          title="Startup Name Idea" 
-          content={startupName} 
-          delay={0.8} 
-        />
-      </div>
-
-      <motion.div 
-        className="mt-12 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: isAnimationComplete ? 1 : 0, y: isAnimationComplete ? 0 : 20 }}
+      <motion.div
+        className="max-w-3xl w-full mx-auto"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <Button 
-          onClick={() => navigate("/")}
-          className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity"
-          size="lg"
+        <div className="text-center mb-12">
+          <motion.div
+            className="inline-block p-3 rounded-full bg-[#9b87f5]/10 mb-6"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring" }}
+          >
+            <Star className="w-6 h-6 text-[#9b87f5]" />
+          </motion.div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent">
+            Discovery Results
+          </h1>
+          <p className="text-white/60">
+            Here's what we've learned about your startup vision
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          <ResultCard
+            title="Startup Name Idea"
+            content={startupName}
+            delay={0.2}
+            mainCard
+          />
+          <ResultCard
+            title="Value Proposition"
+            content={valueProposition}
+            delay={0.3}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ResultCard
+              title="Target Audience"
+              content={targetAudience}
+              delay={0.4}
+            />
+            <ResultCard
+              title="Revenue Stream"
+              content={revenueStream}
+              delay={0.5}
+            />
+          </div>
+        </div>
+
+        <motion.div
+          className="mt-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
         >
-          Return Home <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+          <Button
+            onClick={() => navigate("/")}
+            className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity px-8 py-6 text-lg"
+          >
+            Explore Your Startup Vision <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+          <p className="text-white/40 mt-4 text-sm">
+            You can refine these insights as you continue building your startup
+          </p>
+        </motion.div>
       </motion.div>
     </div>
   );
 };
 
-const ResultCard: React.FC<{title: string; content: string; delay: number}> = ({
-  title,
-  content,
-  delay
-}) => {
+const ResultCard: React.FC<{
+  title: string;
+  content: string;
+  delay: number;
+  mainCard?: boolean;
+}> = ({ title, content, delay, mainCard }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
     >
-      <Card className="bg-white/5 border-white/10 backdrop-blur-sm overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#1A1F2C]/80 to-[#1A1F2C]/30 pb-3">
-          <CardTitle className="text-lg font-medium bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent">
-            {title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-4">
-          <p className="text-white/80">{content}</p>
+      <Card
+        className={cn(
+          "border-0 backdrop-blur-xl",
+          mainCard
+            ? "bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/10"
+            : "bg-white/5"
+        )}
+      >
+        <CardContent className="p-6">
+          <h3 className="text-[#9b87f5] mb-2 font-medium">{title}</h3>
+          <p className="text-white text-xl font-medium">{content}</p>
         </CardContent>
       </Card>
     </motion.div>
