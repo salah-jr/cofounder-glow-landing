@@ -20,7 +20,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ title, content, delay, mainCard
     >
       <Card
         className={cn(
-          "border-0 backdrop-blur-xl shadow-[0_8px_32px_rgba(155,135,245,0.15)]",
+          "border-0 backdrop-blur-xl shadow-[0_8px_32px_rgba(155,135,245,0.1)]",
           mainCard
             ? "bg-[rgba(155,135,245,0.1)]"
             : "bg-white/5"
