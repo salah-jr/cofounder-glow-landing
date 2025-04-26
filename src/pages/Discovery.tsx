@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDiscovery } from "@/context/DiscoveryContext";
@@ -13,17 +14,13 @@ const Discovery = () => {
   // Calculate progress percentage
   const progress = ((currentQuestionIndex) / questions.length) * 100;
 
-  // Handle completion animation sequence
+  // Trigger results animation after all questions are answered
   useEffect(() => {
     if (isComplete && !showResults) {
-      // Start breathing animation for 2 seconds
+      setMergeAnimation(true);
       setTimeout(() => {
-        setMergeAnimation(true);
-        // After breathing, trigger merge animation and show results
-        setTimeout(() => {
-          setShowResults(true);
-        }, 1000); // Merge animation duration
-      }, 2000); // Breathing animation duration
+        setShowResults(true);
+      }, 1000);
     }
   }, [isComplete, showResults]);
 
@@ -70,13 +67,7 @@ const Discovery = () => {
         }}
       />
 
-      <motion.h3
-        className="text-xl font-semibold mb-12 text-center bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent"
-      >
-        Business Building Blocks
-      </motion.h3>
-
-      {/* Answer cards section with breathing and merge animations */}
+      {/* Answer cards section with smoother animations */}
       {answers.length > 0 && (
         <motion.div 
           className="mb-12"
@@ -84,25 +75,24 @@ const Discovery = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+          <motion.h3
+            className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent"
+          >
+            Business Building Blocks
+          </motion.h3>
           <div className="flex flex-wrap gap-3 justify-center">
             <AnimatePresence>
               {answers.map((answer, index) => (
                 <motion.div 
                   key={answer.questionId}
                   layout
-                  animate={
-                    mergeAnimation 
-                      ? { scale: 0, opacity: 0, y: -50 }
-                      : isComplete
-                      ? {
-                          boxShadow: ["0px 0px 0px rgba(155,135,245,0.2)", "0px 0px 20px rgba(155,135,245,0.4)", "0px 0px 0px rgba(155,135,245,0.2)"],
-                        }
-                      : {}
-                  }
+                  animate={mergeAnimation ? { 
+                    scale: 0,
+                    opacity: 0,
+                  } : {}}
                   transition={{ 
-                    duration: mergeAnimation ? 0.5 : 2,
-                    delay: mergeAnimation ? index * 0.1 : 0,
-                    repeat: mergeAnimation ? 0 : isComplete ? Infinity : 0
+                    duration: 0.5,
+                    delay: index * 0.1 
                   }}
                 >
                   <AnswerCard 
