@@ -14,18 +14,12 @@ interface QuestionProps {
 const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress }) => {
   return (
     <motion.div
-      className="w-full max-w-3xl mx-auto relative z-10"
+      className="w-full max-w-3xl mx-auto relative z-10 p-8 glass rounded-2xl shadow-[0_8px_32px_rgba(155,135,245,0.15)]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Progress bar */}
-      <div className="mb-8">
-        <Progress value={progress} className="h-2 bg-white/5" indicatorClassName="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" />
-        <p className="text-white/60 text-sm mt-2">Question {Math.ceil(progress / 20)} of 5</p>
-      </div>
-
       <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
         {question.text}
       </h2>
@@ -41,12 +35,18 @@ const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress 
             <Button
               onClick={() => onSelectAnswer(option)}
               variant="outline"
-              className="w-full py-6 text-lg border-white/10 bg-[#1A1F2C]/80 hover:bg-gradient-to-r hover:from-[#9b87f5]/20 hover:to-[#1EAEDB]/20 hover:border-[#9b87f5]/30 backdrop-blur-sm transition-all duration-300 ease-out"
+              className="w-full py-6 text-lg border-white/10 bg-[#1A1F2C]/80 hover:bg-[rgba(155,135,245,0.2)] hover:border-[#9b87f5]/30 backdrop-blur-sm transition-all duration-300 ease-out"
             >
               {option}
             </Button>
           </motion.div>
         ))}
+      </div>
+
+      {/* Progress bar moved below answers */}
+      <div className="mt-8">
+        <Progress value={progress} className="h-1 bg-white/5" indicatorClassName="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" />
+        <p className="text-white/60 text-sm mt-2">Question {Math.ceil(progress / 20)} of 5</p>
       </div>
     </motion.div>
   );
