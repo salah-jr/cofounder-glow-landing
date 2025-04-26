@@ -21,7 +21,7 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer, index }) => {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24, delay: index * 0.15 }}
     >
-      <span className="text-white/90 text-sm font-medium">{answer}</span>
+      <span className="text-white/90 text-sm font-medium hover:text-white transition-colors">{answer}</span>
       
       <motion.div 
         className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] rounded-full p-1"

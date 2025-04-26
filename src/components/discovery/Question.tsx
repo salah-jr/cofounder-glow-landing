@@ -14,7 +14,7 @@ interface QuestionProps {
 const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress }) => {
   return (
     <motion.div
-      className="w-full max-w-3xl mx-auto relative z-10 p-8 glass rounded-2xl shadow-[0_8px_32px_rgba(155,135,245,0.15)]"
+      className="w-full max-w-3xl mx-auto relative z-10 p-8 glass rounded-2xl shadow-[0_8px_16px_rgba(155,135,245,0.1)]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -35,7 +35,7 @@ const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress 
             <Button
               onClick={() => onSelectAnswer(option)}
               variant="outline"
-              className="w-full py-6 text-lg border-white/10 bg-[#1A1F2C]/80 hover:bg-[rgba(155,135,245,0.2)] hover:border-[#9b87f5]/30 backdrop-blur-sm transition-all duration-300 ease-out"
+              className="w-full py-6 text-lg border-white/10 bg-[#1A1F2C]/80 hover:text-white hover:bg-[rgba(155,135,245,0.2)] hover:border-[#9b87f5]/30 backdrop-blur-sm transition-all duration-300 ease-out"
             >
               {option}
             </Button>

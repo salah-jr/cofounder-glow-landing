@@ -38,7 +38,7 @@ const Discovery = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col pt-16 px-4 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col pt-16 px-4 relative overflow-hidden bg-[#1A1F2C]">
       {/* Background shapes */}
       <motion.div
         className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-gradient-to-br from-[#9b87f5]/5 to-transparent rounded-full blur-3xl"
