@@ -22,7 +22,7 @@ const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress 
     >
       {/* Progress bar */}
       <div className="mb-8">
-        <Progress value={progress} className="h-2 bg-white/5" />
+        <Progress value={progress} className="h-2 bg-white/5" indicatorClassName="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" />
         <p className="text-white/60 text-sm mt-2">Question {Math.ceil(progress / 20)} of 5</p>
       </div>
 
@@ -30,7 +30,7 @@ const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress 
         {question.text}
       </h2>
       
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 max-w-2xl mx-auto">
         {question.options.map((option, index) => (
           <motion.div
             key={index}
@@ -41,32 +41,13 @@ const Question: React.FC<QuestionProps> = ({ question, onSelectAnswer, progress 
             <Button
               onClick={() => onSelectAnswer(option)}
               variant="outline"
-              className="w-full py-6 text-lg border-white/10 bg-gradient-to-r from-white/5 to-white/[0.02] hover:from-[#9b87f5]/20 hover:to-[#1EAEDB]/20 hover:border-[#9b87f5]/30 backdrop-blur-sm transition-all duration-300 ease-out"
+              className="w-full py-6 text-lg border-white/10 bg-[#1A1F2C]/80 hover:bg-gradient-to-r hover:from-[#9b87f5]/20 hover:to-[#1EAEDB]/20 hover:border-[#9b87f5]/30 backdrop-blur-sm transition-all duration-300 ease-out"
             >
               {option}
             </Button>
           </motion.div>
         ))}
       </div>
-
-      {/* Background decorative elements */}
-      <motion.div
-        className="absolute -z-10 w-[600px] h-[600px] bg-[#9b87f5]/5 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.2, 0.3],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        style={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
     </motion.div>
   );
 };
