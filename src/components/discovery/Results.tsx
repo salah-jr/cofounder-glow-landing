@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useDiscovery } from "@/context/DiscoveryContext";
 import { Button } from "@/components/ui/button";
@@ -12,14 +11,12 @@ const Results: React.FC = () => {
   const navigate = useNavigate();
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
 
-  // Generate results based on answers
   const valueProposition = generateValueProposition(answers, questions);
   const targetAudience = generateTargetAudience(answers, questions);
   const revenueStream = generateRevenueStream(answers, questions);
   const startupName = generateStartupName(answers, questions);
 
   useEffect(() => {
-    // Set animation complete after a delay
     const timer = setTimeout(() => {
       setIsAnimationComplete(true);
     }, 2500);
@@ -31,9 +28,9 @@ const Results: React.FC = () => {
     <div className="w-full max-w-4xl mx-auto px-4">
       <motion.div
         className="mb-12 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
       >
         <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent">
           Your Startup Discovery
@@ -47,22 +44,22 @@ const Results: React.FC = () => {
         <ResultCard 
           title="Value Proposition" 
           content={valueProposition} 
-          delay={2.2} 
+          delay={0.2} 
         />
         <ResultCard 
           title="Target Audience" 
           content={targetAudience} 
-          delay={2.4} 
+          delay={0.4} 
         />
         <ResultCard 
           title="Revenue Model" 
           content={revenueStream} 
-          delay={2.6} 
+          delay={0.6} 
         />
         <ResultCard 
           title="Startup Name Idea" 
           content={startupName} 
-          delay={2.8} 
+          delay={0.8} 
         />
       </div>
 
@@ -97,7 +94,9 @@ const ResultCard: React.FC<{title: string; content: string; delay: number}> = ({
     >
       <Card className="bg-white/5 border-white/10 backdrop-blur-sm overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-[#1A1F2C]/80 to-[#1A1F2C]/30 pb-3">
-          <CardTitle className="text-lg font-medium text-white/90">{title}</CardTitle>
+          <CardTitle className="text-lg font-medium bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent">
+            {title}
+          </CardTitle>
         </CardHeader>
         <CardContent className="pt-4">
           <p className="text-white/80">{content}</p>
@@ -107,7 +106,6 @@ const ResultCard: React.FC<{title: string; content: string; delay: number}> = ({
   );
 };
 
-// Helper functions to generate results
 function generateValueProposition(answers: any[], questions: any[]): string {
   const problemType = answers.find(a => a.questionId === 1)?.selectedAnswer || "problem";
   
@@ -157,7 +155,6 @@ function generateStartupName(answers: any[], questions: any[]): string {
   const problem = answers.find(a => a.questionId === 1)?.selectedAnswer || "";
   const audience = answers.find(a => a.questionId === 2)?.selectedAnswer || "";
   
-  // These are just sample name generators based on the selected answers
   const nameOptions = {
     "Daily inconvenience": ["EaseFlow", "SimpliDay", "RoutineGo", "DailyZen"],
     "Business inefficiency": ["OptiCore", "FlowSync", "ProdMatrix", "EfficiWare"],
@@ -166,11 +163,9 @@ function generateStartupName(answers: any[], questions: any[]): string {
     "Health challenge": ["VitalSync", "WellNova", "HealthPulse", "MindBody"]
   };
   
-  // Get a list of names based on the problem type
   const names = nameOptions[problem as keyof typeof nameOptions] || 
     ["NexGen", "InnoVision", "FusionTech", "PulseWare"];
   
-  // Pick a random name from the list
   return names[Math.floor(Math.random() * names.length)];
 }
 

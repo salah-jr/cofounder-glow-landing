@@ -11,17 +11,17 @@ interface AnswerCardProps {
 const AnswerCard: React.FC<AnswerCardProps> = ({ answer, index }) => {
   return (
     <motion.div
-      className="relative glass px-4 py-2 rounded-full flex items-center justify-between gap-3"
+      className="relative glass px-4 py-2 rounded-xl flex items-center justify-between gap-3"
       style={{
-        background: "linear-gradient(to right, rgba(27, 32, 50, 0.2), rgba(114, 82, 198, 0.1))",
-        borderImage: "linear-gradient(to right, #9b87f5, #1EAEDB) 1",
-        boxShadow: "0 2px 8px rgba(155, 135, 245, 0.2)"
+        background: "linear-gradient(145deg, rgba(27, 32, 50, 0.3), rgba(114, 82, 198, 0.05))",
+        boxShadow: "0 8px 32px rgba(155, 135, 245, 0.1)",
+        border: "1px solid rgba(155, 135, 245, 0.1)"
       }}
       initial={{ opacity: 0, scale: 0.8, y: -50 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24, delay: index * 0.15 }}
     >
-      <span className="text-white/80 text-sm">{answer}</span>
+      <span className="text-white/90 text-sm font-medium">{answer}</span>
       
       <motion.div 
         className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] rounded-full p-1"
