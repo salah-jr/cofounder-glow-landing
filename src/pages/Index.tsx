@@ -4,6 +4,7 @@ import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import PricingSection from "@/components/PricingSection";
+import Logo from "@/components/Logo";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
         <div className="relative z-10">
           <div className="flex flex-col items-center justify-center px-4 pt-24 pb-32">
             <div className="text-center mb-8">
+              <Logo size="large" />
               <h1 className="text-4xl md:text-6xl font-bold mt-8 mb-4">
                 Idea to startup in seconds.
               </h1>
