@@ -4,6 +4,7 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAnimatedPlaceholder } from "@/hooks/useAnimatedPlaceholder";
 import { useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 
 const examples = [
   { text: "Create a SaaS business plan", icon: "↑" },
@@ -32,6 +33,10 @@ const PromptSection = () => {
 
   return (
     <div className="w-full flex flex-col items-center space-y-6">
+      <div className="mb-4 transform hover:scale-105 transition-transform duration-300">
+        <Logo size="large" animated={true} />
+      </div>
+      
       <div className="w-full glass p-3 rounded-xl animate-fade-in">
         <div className="flex items-center bg-black/20 rounded-lg px-4">
           <textarea

@@ -62,9 +62,19 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "breathe": {
+          "0%, 100%": { opacity: "0.8", transform: "scale(1)" },
+          "50%": { opacity: "1", transform: "scale(1.05)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
+        "spin-slow": "spin-slow 8s linear infinite",
+        "breathe": "breathe 3s ease-in-out infinite",
       },
     },
   },
