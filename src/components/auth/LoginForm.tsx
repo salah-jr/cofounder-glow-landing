@@ -89,7 +89,7 @@ export default function LoginForm({ onRegisterClick, onForgotPasswordClick, onSu
 
         <div className="relative flex items-center justify-center">
           <div className="border-t border-white/10 absolute w-full"></div>
-          <span className="bg-background px-2 text-xs text-white/50 relative">OR CONTINUE WITH</span>
+          <span className="bg-background px-2 text-xs text-white/50 relative z-10">OR CONTINUE WITH</span>
         </div>
 
         <div className="grid grid-cols-2 gap-4">

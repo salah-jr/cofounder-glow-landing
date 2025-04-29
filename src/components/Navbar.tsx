@@ -138,8 +138,8 @@ const Navbar = () => {
           </Sheet>
         </div>
       </nav>
-      {/* Adding space after the navbar */}
-      <div className="h-[15px]"></div>
+      {/* Adding space after the navbar - now 30px total */}
+      <div className="h-[30px]"></div>
     </>
   );
 };
