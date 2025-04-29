@@ -5,6 +5,7 @@ import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import PricingSection from "@/components/PricingSection";
 import Logo from "@/components/Logo";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -50,6 +51,8 @@ const Index = () => {
       <div id="pricing">
         <PricingSection />
       </div>
+      
+      <Footer />
     </>
   );
 };
