@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -6,10 +5,8 @@ import AboutSection from "@/components/AboutSection";
 import PricingSection from "@/components/PricingSection";
 import Logo from "@/components/Logo";
 import Footer from "@/components/Footer";
-
 const Index = () => {
-  return (
-    <>
+  return <>
       <Navbar />
       <div className="relative min-h-screen">
         {/* Hero Section with Integrated Services */}
@@ -17,7 +14,7 @@ const Index = () => {
           <div className="flex flex-col items-center justify-center px-4 pt-24 pb-32">
             <div className="text-center mb-8">
               <Logo size="large" />
-              <h1 className="text-4xl md:text-6xl font-bold mt-8 mb-4">
+              <h1 className="text-4xl font-bold mt-8 mb-4 md:text-5xl">
                 Idea to startup in seconds.
               </h1>
               <p className="text-xl md:text-2xl text-white/80">
@@ -53,8 +50,6 @@ const Index = () => {
       </div>
       
       <Footer />
-    </>
-  );
+    </>;
 };
-
 export default Index;
