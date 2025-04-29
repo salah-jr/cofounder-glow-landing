@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Facebook, Twitter, Linkedin } from "lucide-react";
 import Logo from "./Logo";
 
@@ -16,6 +15,13 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -26,12 +32,24 @@ const Navbar = () => {
         <Logo size="small" />
         
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/about" className="text-white/80 hover:text-white transition-colors">
+          <button 
+            onClick={() => scrollToSection('services')} 
+            className="text-white/80 hover:text-white transition-colors"
+          >
+            Services
+          </button>
+          <button 
+            onClick={() => scrollToSection('about')} 
+            className="text-white/80 hover:text-white transition-colors"
+          >
             About Us
-          </Link>
-          <Link to="/pricing" className="text-white/80 hover:text-white transition-colors">
+          </button>
+          <button 
+            onClick={() => scrollToSection('pricing')} 
+            className="text-white/80 hover:text-white transition-colors"
+          >
             Pricing
-          </Link>
+          </button>
           <div className="flex items-center gap-4">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
               <Facebook className="w-5 h-5" />
@@ -43,18 +61,18 @@ const Navbar = () => {
               <Linkedin className="w-5 h-5" />
             </a>
           </div>
-          <Link
-            to="/login"
+          <a
+            href="/login"
             className="text-white/80 hover:text-white transition-colors"
           >
             Login
-          </Link>
-          <Link
-            to="/register"
+          </a>
+          <a
+            href="/register"
             className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
           >
             Register
-          </Link>
+          </a>
         </div>
       </div>
     </nav>

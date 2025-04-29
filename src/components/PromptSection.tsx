@@ -1,15 +1,15 @@
 
 import { useState } from "react";
-import { Send, Paperclip } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAnimatedPlaceholder } from "@/hooks/useAnimatedPlaceholder";
 import { useNavigate } from "react-router-dom";
 
 const examples = [
-  { text: "Weather dashboard", icon: "↑" },
-  { text: "Recharts dashboard", icon: "↑" },
-  { text: "E-commerce product page", icon: "↑" },
-  { text: "Crypto portfolio tracker", icon: "→" },
+  { text: "Create a SaaS business plan", icon: "↑" },
+  { text: "Validate my startup idea", icon: "↑" },
+  { text: "Research market opportunities", icon: "↑" },
+  { text: "Build an investor pitch deck", icon: "→" },
 ];
 
 const PromptSection = () => {
@@ -36,25 +36,18 @@ const PromptSection = () => {
         <div className="flex items-center bg-black/20 rounded-lg px-4">
           <textarea
             className="flex-1 bg-transparent h-14 py-4 text-white placeholder-white/50 focus:outline-none resize-none"
-            placeholder={placeholder || "Create something amazing..."}
+            placeholder={placeholder || "Describe your startup idea or business challenge..."}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
-            <Button variant="ghost" size="icon" className="text-white/50 hover:text-white hover:bg-white/10">
-              <Paperclip className="h-5 w-5" />
-            </Button>
             <Button 
-              variant="ghost" 
-              size="icon" 
+              className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity"
               onClick={handleSubmit}
-              className="text-white/50 hover:text-white hover:bg-white/10"
             >
-              <Send className="h-5 w-5" />
-            </Button>
-            <Button className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity flex items-center gap-2 ml-2">
-              Public
+              <Send className="h-5 w-5 mr-2" />
+              Start Building
             </Button>
           </div>
         </div>

@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 
 const prompts = [
-  "Create a weather dashboard with React and Tailwind...",
-  "Build a crypto portfolio tracker with real-time data...",
-  "Design an e-commerce product page with animations...",
-  "Make a social media feed with infinite scroll...",
-  "Generate a task management app with drag and drop..."
+  "I need help creating a business plan for my SaaS startup...",
+  "How can I validate my marketplace business idea...",
+  "Help me prepare a pitch deck for potential investors...",
+  "I need to research my target market and competitors...",
+  "Define my startup's value proposition and mission..."
 ];
 
 export const useAnimatedPlaceholder = () => {

@@ -1,37 +1,37 @@
 
-import { LightbulbIcon, SearchCheck, Users, FileCode, Rocket, Briefcase } from "lucide-react";
+import { LightbulbIcon, SearchCheck, Users, FileText, Presentation, BriefcaseIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const services = [
   {
-    title: "Idea Refinement Phase",
-    goal: "Clarify what the startup is about and who it's for.",
+    title: "Business Idea Refinement",
+    goal: "Define your startup vision, mission and unique value proposition.",
     icon: LightbulbIcon,
   },
   {
-    title: "Idea Validation Phase",
-    goal: "Test whether people care about the problem and solution.",
+    title: "Market Validation",
+    goal: "Verify your business idea with data-driven market research and competitor analysis.",
     icon: SearchCheck,
   },
   {
-    title: "Market & Positioning Phase",
-    goal: "Understand the market, segment users, and define the startup's positioning.",
+    title: "Target Audience Analysis",
+    goal: "Define your ideal customer profiles and market segmentation strategy.",
     icon: Users,
   },
   {
-    title: "MVP Planning Phase",
-    goal: "Define what to build first to test the idea technically.",
-    icon: FileCode,
+    title: "Business Plan Creation",
+    goal: "Develop comprehensive business plans with financial projections and growth strategies.",
+    icon: FileText,
   },
   {
-    title: "Launch & Feedback Phase",
-    goal: "Get the MVP in front of real people and learn from it.",
-    icon: Rocket,
+    title: "Pitch Deck Development",
+    goal: "Create compelling investor presentations that highlight your startup's potential.",
+    icon: Presentation,
   },
   {
-    title: "Investor & Pitch Phase",
-    goal: "Tell the story and pitch clearly.",
-    icon: Briefcase,
+    title: "Funding Strategy",
+    goal: "Explore funding options from bootstrapping to venture capital and develop the right approach.",
+    icon: BriefcaseIcon,
   },
 ];
 

@@ -1,10 +1,10 @@
 
-import Logo from "@/components/Logo";
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import PricingSection from "@/components/PricingSection";
+import Logo from "@/components/Logo";
 
 const Index = () => {
   return (
@@ -17,10 +17,10 @@ const Index = () => {
             <div className="text-center mb-8">
               <Logo size="large" />
               <h1 className="text-4xl md:text-6xl font-bold mt-8 mb-4">
-                Idea to app in seconds.
+                Idea to startup in seconds.
               </h1>
               <p className="text-xl md:text-2xl text-white/80">
-                Your AI Co-Founder for Startup Success
+                Your AI Co-Founder for Strategic Business Growth
               </p>
             </div>
             
@@ -30,7 +30,7 @@ const Index = () => {
           </div>
 
           {/* Integrated Services Section with Gradient Overlay */}
-          <div className="relative">
+          <div className="relative" id="services">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent" />
             <ServicesSection />
           </div>
@@ -43,8 +43,13 @@ const Index = () => {
         </div>
       </div>
       
-      <AboutSection />
-      <PricingSection />
+      <div id="about">
+        <AboutSection />
+      </div>
+      
+      <div id="pricing">
+        <PricingSection />
+      </div>
     </>
   );
 };
