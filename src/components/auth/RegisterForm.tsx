@@ -98,14 +98,14 @@ export default function RegisterForm({ onLoginClick, onSubmit }: RegisterFormPro
 
         <div className="relative flex items-center justify-center">
           <div className="border-t border-white/10 absolute w-full"></div>
-          <span className="bg-background px-2 text-xs text-white/50 relative z-10">OR CONTINUE WITH</span>
+          <span className="bg-[#1A1F2C] px-2 text-xs text-white/50 relative z-10">OR CONTINUE WITH</span>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <Button 
             type="button" 
             variant="outline" 
-            className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+            className="bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white"
           >
             <Google className="mr-2 h-4 w-4" />
             Google
@@ -113,7 +113,7 @@ export default function RegisterForm({ onLoginClick, onSubmit }: RegisterFormPro
           <Button 
             type="button" 
             variant="outline" 
-            className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+            className="bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white"
           >
             <Linkedin className="mr-2 h-4 w-4" />
             LinkedIn
