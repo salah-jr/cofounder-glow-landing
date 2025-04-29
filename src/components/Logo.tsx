@@ -13,16 +13,20 @@ const Logo = ({ size = "small", iconOnly = false }: LogoProps) => {
   return (
     <div className="flex items-center justify-center gap-2 animate-fade-in">
       {!iconOnly && (
-        <div className="flex items-baseline">
-          <span className={`${textSize} font-bold bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent font-sans tracking-tight`}>
+        <div className="flex items-center relative">
+          <span className={`${textSize} font-bold text-white`}>
             co
+            <span className="relative z-10">
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#1EAEDB] rounded-full blur-[2px]" />
+              <Sparkles className={`absolute -top-2 -right-2 ${iconSize} text-[#9b87f5]`} />
+            </span>
           </span>
-          <span className={`${textSize} font-normal text-white`}>
+          <span className={`${textSize} font-bold bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent`}>
             founder
           </span>
         </div>
       )}
-      <Sparkles className={`${iconSize} text-[#9b87f5]`} />
+      {iconOnly && <Sparkles className={`${iconSize} text-[#9b87f5]`} />}
     </div>
   );
 };
