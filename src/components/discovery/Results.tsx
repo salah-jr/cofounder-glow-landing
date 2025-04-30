@@ -49,7 +49,6 @@ const Results: React.FC = () => {
             title="Startup Name Idea"
             content={startupName}
             delay={0.2}
-            mainCard
           />
           <ResultCard
             title="Value Proposition"
@@ -80,7 +79,7 @@ const Results: React.FC = () => {
             onClick={() => navigate("/")}
             className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity px-8 py-6 text-lg"
           >
-            Explore Your Startup Vision <ArrowRight className="ml-2 h-5 w-5" />
+            Launch my idea <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <p className="text-white/40 mt-4 text-sm">
             You can refine these insights as you continue building your startup
