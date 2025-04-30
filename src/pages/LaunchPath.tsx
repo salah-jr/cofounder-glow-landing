@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -39,17 +40,17 @@ const LaunchPath: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 pt-24">
+      <div className="w-full px-4 py-8 pt-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="space-y-8"
+          className="space-y-6"
         >
           {/* Top horizontal bar - Roadmap Progress */}
-          <div className="glass p-6 rounded-xl border border-white/10 animate-fade-in">
+          <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in">
             <RoadmapProgress 
               currentPhase={currentPhase} 
               completedPhases={completedPhases} 
@@ -59,7 +60,7 @@ const LaunchPath: React.FC = () => {
           {/* 4-compartment layout using ResizablePanel */}
           <ResizablePanelGroup 
             direction="horizontal" 
-            className="min-h-[500px] rounded-xl animate-fade-in"
+            className="min-h-[75vh] rounded-xl animate-fade-in"
           >
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel defaultSize={20} className="glass rounded-l-xl">
@@ -97,6 +98,12 @@ const LaunchPath: React.FC = () => {
             </ResizablePanel>
           </ResizablePanelGroup>
         </motion.div>
+      </div>
+
+      {/* Background gradient circles */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
       </div>
     </div>
   );
