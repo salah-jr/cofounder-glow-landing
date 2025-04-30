@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import PhaseTask, { TaskStatus } from "./PhaseTask";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Task {
   id: string;
@@ -30,12 +31,12 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
         <p className="text-sm text-white/60">Complete these tasks to move to the next phase</p>
       </div>
       
-      <div className="flex-1 overflow-auto">
+      <ScrollArea className="flex-1">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ staggerChildren: 0.1 }}
-          className="space-y-2"
+          className="space-y-2 pr-4"
         >
           {tasks.map((task) => (
             <PhaseTask
@@ -47,7 +48,7 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
             />
           ))}
         </motion.div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

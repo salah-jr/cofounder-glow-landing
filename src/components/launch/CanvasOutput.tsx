@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Download, Edit, FileImage } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 interface CanvasItem {
@@ -76,9 +77,9 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
         Outputs from your co-founder chat will appear here. Edit or download them as needed.
       </p>
       
-      <div className="flex-1 overflow-y-auto">
+      <ScrollArea className="flex-1">
         <AnimatePresence>
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-4 pr-4">
             {canvasItems.map((item) => (
               <motion.div
                 key={item.id}
@@ -138,7 +139,7 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
             ))}
           </div>
         </AnimatePresence>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

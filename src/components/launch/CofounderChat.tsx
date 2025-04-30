@@ -5,6 +5,7 @@ import { MessageSquare, Send, Smile } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -96,72 +97,74 @@ export default function CofounderChat({ className }: CofounderChatProps) {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-4 space-y-4">
-        <AnimatePresence>
-          {messages.map((message) => (
-            <motion.div
-              key={message.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className={cn(
-                "flex max-w-[80%] mb-4",
-                message.sender === "user" ? "ml-auto" : ""
-              )}
-            >
-              {message.sender === "cofounder" && (
-                <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
-                  <AvatarFallback><Smile className="text-white" size={14} /></AvatarFallback>
-                </Avatar>
-              )}
-              
-              <div>
-                <div className={cn(
-                  "p-3 rounded-lg",
-                  message.sender === "user" 
-                    ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white" 
-                    : "glass text-white"
-                )}>
-                  <p>{message.text}</p>
-                </div>
-                
-                {message.quickReplies && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {message.quickReplies.map((reply) => (
-                      <Button 
-                        key={reply}
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleQuickReply(reply)}
-                        className="bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white"
-                      >
-                        {reply}
-                      </Button>
-                    ))}
-                  </div>
+      <ScrollArea className="flex-1 py-4">
+        <div className="space-y-4">
+          <AnimatePresence>
+            {messages.map((message) => (
+              <motion.div
+                key={message.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={cn(
+                  "flex max-w-[80%] mb-4",
+                  message.sender === "user" ? "ml-auto" : ""
                 )}
-              </div>
-            </motion.div>
-          ))}
-          
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-center ml-12 text-white/60 text-sm"
-            >
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "300ms" }}></div>
-              </div>
-              <span className="ml-2">Co-founder is typing...</span>
-            </motion.div>
-          )}
-          
-          <div ref={messagesEndRef} />
-        </AnimatePresence>
-      </div>
+              >
+                {message.sender === "cofounder" && (
+                  <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
+                    <AvatarFallback><Smile className="text-white" size={14} /></AvatarFallback>
+                  </Avatar>
+                )}
+                
+                <div>
+                  <div className={cn(
+                    "p-3 rounded-lg",
+                    message.sender === "user" 
+                      ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white" 
+                      : "glass text-white"
+                  )}>
+                    <p>{message.text}</p>
+                  </div>
+                  
+                  {message.quickReplies && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {message.quickReplies.map((reply) => (
+                        <Button 
+                          key={reply}
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleQuickReply(reply)}
+                          className="bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white"
+                        >
+                          {reply}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+            
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex items-center ml-12 text-white/60 text-sm"
+              >
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                  <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                  <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                </div>
+                <span className="ml-2">Co-founder is typing...</span>
+              </motion.div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </AnimatePresence>
+        </div>
+      </ScrollArea>
       
       <Separator className="bg-white/10" />
       

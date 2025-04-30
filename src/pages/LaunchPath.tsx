@@ -61,9 +61,9 @@ const LaunchPath: React.FC = () => {
     // This is just a placeholder for future functionality
     console.log(`Task ${taskId} status changed to ${newStatus}`);
   };
-  return <div className="min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
+  return <div className="h-screen overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <Navbar />
-      <div className="w-full px-4 py-8 pt-24">
+      <div className="w-full px-4 py-8 pt-24 h-[calc(100vh-80px)] overflow-hidden">
         <motion.div initial={{
         opacity: 0,
         y: 20
@@ -72,18 +72,18 @@ const LaunchPath: React.FC = () => {
         y: 0
       }} transition={{
         duration: 0.5
-      }} className="space-y-6">
+      }} className="space-y-6 h-full">
           {/* Top horizontal bar - Roadmap Progress */}
           <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in px-[15px] py-[7px]">
             <RoadmapProgress currentPhase={currentPhase} completedPhases={completedPhases} />
           </div>
           
           {/* 4-compartment layout using ResizablePanel */}
-          <ResizablePanelGroup direction="horizontal" className="min-h-[75vh] rounded-xl animate-fade-in">
-            {/* First Panel - Left Sidebar with Phase Tasks */}
-            <ResizablePanel defaultSize={20} className="glass rounded-l-xl">
+          <ResizablePanelGroup direction="horizontal" className="min-h-[calc(100vh-240px)] rounded-xl animate-fade-in">
+            {/* First Panel - Left Sidebar with Phase Tasks - Now with fixed size */}
+            <ResizablePanel defaultSize={20} minSize={20} maxSize={20} className="glass rounded-l-xl">
               <Card className="glass h-full border-0 rounded-none">
-                <CardContent className="p-4 h-full">
+                <CardContent className="p-4 h-full overflow-hidden">
                   <PhaseSidebar phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} onTaskStatusChange={handleTaskStatusChange} />
                 </CardContent>
               </Card>
@@ -93,8 +93,8 @@ const LaunchPath: React.FC = () => {
             
             {/* Second Panel - Chat with Co-founder */}
             <ResizablePanel defaultSize={40}>
-              <Card className="glass h-full border-0 rounded-none">
-                <CardContent className="p-4 h-full">
+              <Card className="glass h-full border-0 rounded-none overflow-hidden">
+                <CardContent className="p-4 h-full overflow-hidden">
                   <CofounderChat />
                 </CardContent>
               </Card>
@@ -104,8 +104,8 @@ const LaunchPath: React.FC = () => {
             
             {/* Third Panel - Canvas Output Area */}
             <ResizablePanel defaultSize={40}>
-              <Card className="glass h-full border-0 rounded-r-xl">
-                <CardContent className="p-4 h-full">
+              <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
+                <CardContent className="p-4 h-full overflow-hidden">
                   <CanvasOutput />
                 </CardContent>
               </Card>
