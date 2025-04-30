@@ -1,13 +1,23 @@
 
 import { useState, useEffect } from "react";
-import { Facebook, Twitter, Linkedin } from "lucide-react";
+import { Facebook, Twitter, Linkedin, User, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import AuthDialogs from "./auth/AuthDialogs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +33,16 @@ const Navbar = () => {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  // Generate user initials for avatar
+  const getUserInitials = () => {
+    if (!user || !user.name) return "U";
+    const nameParts = user.name.split(" ");
+    if (nameParts.length >= 2) {
+      return `${nameParts[0][0]}${nameParts[1][0]}`;
+    }
+    return nameParts[0][0];
   };
 
   return (
@@ -67,7 +87,29 @@ const Navbar = () => {
               </a>
             </div>
 
-            <AuthDialogs />
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="outline-none">
+                  <Avatar className="h-9 w-9 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white">
+                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 glass border-white/10 bg-[#1A1F2C]/90">
+                  <DropdownMenuItem className="cursor-pointer text-white">
+                    <Link to="/dashboard" className="flex items-center w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer text-white" onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <AuthDialogs />
+            )}
           </div>
 
           {/* Mobile Navigation */}
@@ -124,15 +166,31 @@ const Navbar = () => {
                     <Linkedin className="w-5 h-5" />
                   </a>
                 </div>
-                <a href="/login" className="text-white/80 hover:text-white transition-colors text-lg">
-                  Login
-                </a>
-                <a
-                  href="/register"
-                  className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
-                >
-                  Register
-                </a>
+                {isAuthenticated ? (
+                  <>
+                    <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors text-lg">
+                      My Profile
+                    </Link>
+                    <button 
+                      onClick={logout}
+                      className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
+                    >
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" className="text-white/80 hover:text-white transition-colors text-lg">
+                      Login
+                    </a>
+                    <a
+                      href="/register"
+                      className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
+                    >
+                      Register
+                    </a>
+                  </>
+                )}
               </div>
             </SheetContent>
           </Sheet>
