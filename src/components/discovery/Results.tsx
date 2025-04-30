@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useDiscovery } from "@/context/DiscoveryContext";
 import { Button } from "@/components/ui/button";

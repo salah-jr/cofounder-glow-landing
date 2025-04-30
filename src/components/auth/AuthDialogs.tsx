@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 type AuthDialogType = "login" | "register" | "forgotPassword";
 
@@ -12,6 +13,7 @@ export default function AuthDialogs() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [activeDialog, setActiveDialog] = useState<AuthDialogType>("login");
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSwitchDialog = (type: AuthDialogType) => {
     setActiveDialog(type);
@@ -21,16 +23,32 @@ export default function AuthDialogs() {
     setDialogOpen(false);
   };
 
-  const handleFormSubmit = (type: "login" | "register" | "resetPassword") => {
-    // This would be replaced with actual authentication logic
-    toast({
-      title: type === "resetPassword" ? "Password Reset Email Sent" : `${type === "login" ? "Login" : "Registration"} Successful`,
-      description: type === "resetPassword" 
-        ? "Check your email for instructions to reset your password."
-        : type === "login" 
-          ? "Welcome back!" 
-          : "Your account has been created.",
-    });
+  const handleFormSubmit = async (type: "login" | "register" | "resetPassword", email?: string, password?: string) => {
+    if (type === "login" && email && password) {
+      try {
+        await login(email, password);
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+        });
+      } catch (error) {
+        toast({
+          title: "Login Failed",
+          description: "Please check your credentials and try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+    } else {
+      toast({
+        title: type === "resetPassword" ? "Password Reset Email Sent" : `${type === "login" ? "Login" : "Registration"} Successful`,
+        description: type === "resetPassword" 
+          ? "Check your email for instructions to reset your password."
+          : type === "login" 
+            ? "Welcome back!" 
+            : "Your account has been created.",
+      });
+    }
     closeDialog();
   };
   
@@ -47,7 +65,7 @@ export default function AuthDialogs() {
             <LoginForm
               onRegisterClick={() => handleSwitchDialog("register")}
               onForgotPasswordClick={() => handleSwitchDialog("forgotPassword")}
-              onSubmit={() => handleFormSubmit("login")}
+              onSubmit={(email, password) => handleFormSubmit("login", email, password)}
             />
           )}
           {activeDialog === "register" && (

@@ -1,13 +1,14 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Mail, Lock, Linkedin, Mail as Google } from "lucide-react";
+
 interface LoginFormProps {
   onRegisterClick: () => void;
   onForgotPasswordClick: () => void;
-  onSubmit: () => void;
+  onSubmit: (email: string, password: string) => void;
 }
+
 export default function LoginForm({
   onRegisterClick,
   onForgotPasswordClick,
@@ -16,10 +17,12 @@ export default function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    onSubmit(email, password);
   };
+  
   return <div className="p-6 space-y-6 w-full">
       <div className="space-y-2 text-center">
         <h2 className="text-2xl font-bold text-white">Welcome back</h2>
