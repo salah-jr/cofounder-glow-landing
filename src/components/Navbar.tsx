@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Facebook, Twitter, Linkedin, User, LogOut } from "lucide-react";
 import Logo from "./Logo";
@@ -60,7 +61,7 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {isHomePage ? (
+            {isHomePage && (
               // Only show these navigation items on the home page
               <>
                 <button 
@@ -81,16 +82,6 @@ const Navbar = () => {
                 >
                   Pricing
                 </button>
-              </>
-            ) : (
-              // Show these navigation items on other pages
-              <>
-                <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors">
-                  Dashboard
-                </Link>
-                <Link to="/launch-path" className="text-white/80 hover:text-white transition-colors">
-                  Launch Path
-                </Link>
               </>
             )}
             
@@ -114,12 +105,6 @@ const Navbar = () => {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 glass border-white/10 bg-[#1A1F2C]/90">
-                  <DropdownMenuItem className="cursor-pointer text-white">
-                    <Link to="/dashboard" className="flex items-center w-full">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>My Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer text-white" onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
@@ -156,7 +141,7 @@ const Navbar = () => {
             </SheetTrigger>
             <SheetContent side="right" className="glass border-white/10">
               <div className="flex flex-col gap-6 mt-8">
-                {isHomePage ? (
+                {isHomePage && (
                   // Home page mobile navigation
                   <>
                     <button
@@ -178,16 +163,6 @@ const Navbar = () => {
                       Pricing
                     </button>
                   </>
-                ) : (
-                  // Other pages mobile navigation
-                  <>
-                    <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors text-lg">
-                      Dashboard
-                    </Link>
-                    <Link to="/launch-path" className="text-white/80 hover:text-white transition-colors text-lg">
-                      Launch Path
-                    </Link>
-                  </>
                 )}
                 <div className="flex items-center gap-4">
                   <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
@@ -201,17 +176,12 @@ const Navbar = () => {
                   </a>
                 </div>
                 {isAuthenticated ? (
-                  <>
-                    <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors text-lg">
-                      My Profile
-                    </Link>
-                    <button 
-                      onClick={logout}
-                      className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
-                    >
-                      Log out
-                    </button>
-                  </>
+                  <button 
+                    onClick={logout}
+                    className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
+                  >
+                    Log out
+                  </button>
                 ) : (
                   <>
                     <a href="/login" className="text-white/80 hover:text-white transition-colors text-lg">
