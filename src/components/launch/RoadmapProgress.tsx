@@ -80,7 +80,7 @@ export default function RoadmapProgress({
             </div>
             
             {/* Phase bubbles */}
-            <div className="w-full flex justify-between items-center pb-16 pt-1 px-0 py-[2px]">
+            <div className="w-full flex justify-between items-center pb-16 pt-1 px-0 py-[10px]">
               {phases.map((phase, index) => {
             const isCompleted = completedPhases.includes(phase.id);
             const isActive = phase.id === currentPhase;
