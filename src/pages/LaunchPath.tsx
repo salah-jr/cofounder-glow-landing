@@ -65,8 +65,8 @@ const LaunchPath: React.FC = () => {
   return <div className="h-screen overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <Navbar />
       
-      {/* Added a separate container for the progress bar with more spacing */}
-      <div className="w-full px-4 pt-24 pb-4">
+      {/* Added more vertical space between navbar and progress bar section */}
+      <div className="w-full px-4 pt-32 pb-4">
         <motion.div initial={{
           opacity: 0,
           y: 20
@@ -83,8 +83,8 @@ const LaunchPath: React.FC = () => {
         </motion.div>
       </div>
       
-      {/* Main content area - now separated from the progress bar */}
-      <div className="w-full px-4 pb-8 h-[calc(100vh-190px)] overflow-hidden">
+      {/* Main content area - adjusted height calculation to account for increased spacing */}
+      <div className="w-full px-4 pb-8 h-[calc(100vh-200px)] overflow-hidden">
         <motion.div initial={{
           opacity: 0,
           y: 20
