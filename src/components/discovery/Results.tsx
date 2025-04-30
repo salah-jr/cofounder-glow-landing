@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useDiscovery } from "@/context/DiscoveryContext";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ const Results: React.FC = () => {
   const navigate = useNavigate();
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, login } = useAuth();
 
   const valueProposition = generateValueProposition(answers, questions);
   const targetAudience = generateTargetAudience(answers, questions);
@@ -45,9 +46,14 @@ const Results: React.FC = () => {
     }
   };
 
-  const handleLoginSuccess = () => {
-    setLoginDialogOpen(false);
-    navigate("/launch-path");
+  const handleLoginSuccess = async (email: string, password: string) => {
+    try {
+      await login(email, password);
+      setLoginDialogOpen(false);
+      navigate("/launch-path");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
