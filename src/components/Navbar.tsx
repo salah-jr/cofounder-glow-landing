@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Facebook, Twitter, Linkedin, User, LogOut } from "lucide-react";
 import Logo from "./Logo";
@@ -6,7 +5,7 @@ import AuthDialogs from "./auth/AuthDialogs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +17,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +30,8 @@ const Navbar = () => {
   }, []);
 
   const scrollToSection = (id: string) => {
+    if (!isHomePage) return;
+    
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -57,24 +60,40 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <button 
-              onClick={() => scrollToSection('services')} 
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              Services
-            </button>
-            <button 
-              onClick={() => scrollToSection('about')} 
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              About Us
-            </button>
-            <button 
-              onClick={() => scrollToSection('pricing')} 
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              Pricing
-            </button>
+            {isHomePage ? (
+              // Only show these navigation items on the home page
+              <>
+                <button 
+                  onClick={() => scrollToSection('services')} 
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  Services
+                </button>
+                <button 
+                  onClick={() => scrollToSection('about')} 
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  About Us
+                </button>
+                <button 
+                  onClick={() => scrollToSection('pricing')} 
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  Pricing
+                </button>
+              </>
+            ) : (
+              // Show these navigation items on other pages
+              <>
+                <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors">
+                  Dashboard
+                </Link>
+                <Link to="/launch-path" className="text-white/80 hover:text-white transition-colors">
+                  Launch Path
+                </Link>
+              </>
+            )}
+            
             <div className="flex items-center gap-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
                 <Facebook className="w-5 h-5" />
@@ -137,24 +156,39 @@ const Navbar = () => {
             </SheetTrigger>
             <SheetContent side="right" className="glass border-white/10">
               <div className="flex flex-col gap-6 mt-8">
-                <button
-                  onClick={() => scrollToSection("services")}
-                  className="text-white/80 hover:text-white transition-colors text-lg"
-                >
-                  Services
-                </button>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="text-white/80 hover:text-white transition-colors text-lg"
-                >
-                  About Us
-                </button>
-                <button
-                  onClick={() => scrollToSection("pricing")}
-                  className="text-white/80 hover:text-white transition-colors text-lg"
-                >
-                  Pricing
-                </button>
+                {isHomePage ? (
+                  // Home page mobile navigation
+                  <>
+                    <button
+                      onClick={() => scrollToSection("services")}
+                      className="text-white/80 hover:text-white transition-colors text-lg"
+                    >
+                      Services
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("about")}
+                      className="text-white/80 hover:text-white transition-colors text-lg"
+                    >
+                      About Us
+                    </button>
+                    <button
+                      onClick={() => scrollToSection("pricing")}
+                      className="text-white/80 hover:text-white transition-colors text-lg"
+                    >
+                      Pricing
+                    </button>
+                  </>
+                ) : (
+                  // Other pages mobile navigation
+                  <>
+                    <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors text-lg">
+                      Dashboard
+                    </Link>
+                    <Link to="/launch-path" className="text-white/80 hover:text-white transition-colors text-lg">
+                      Launch Path
+                    </Link>
+                  </>
+                )}
                 <div className="flex items-center gap-4">
                   <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
                     <Facebook className="w-5 h-5" />
