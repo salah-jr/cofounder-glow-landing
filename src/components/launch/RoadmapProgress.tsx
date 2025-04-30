@@ -53,9 +53,9 @@ export default function RoadmapProgress({
       {/* Progress track - only visible when expanded */}
       {isExpanded && (
         <motion.div 
-          className="relative h-24" 
+          className="relative h-28" 
           initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 96, opacity: 1 }}
+          animate={{ height: 112, opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
@@ -94,7 +94,7 @@ export default function RoadmapProgress({
                     )}
                   </motion.div>
                   <span className={cn(
-                    "text-xs mt-4 whitespace-nowrap", // Increased margin here
+                    "text-xs mt-6 whitespace-nowrap", // Increased margin here for more space
                     isActive ? "text-white" : "text-white/70"
                   )}>
                     {phase.title}
