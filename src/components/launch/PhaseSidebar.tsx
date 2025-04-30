@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import PhaseTask, { TaskStatus } from "./PhaseTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,11 +16,20 @@ interface PhaseSidebarProps {
 }
 
 export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: PhaseSidebarProps) {
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  
   const handleTaskClick = (taskId: string) => {
-    setSelectedTaskId(taskId);
     // You could add additional functionality here in the future
+    if (onTaskStatusChange) {
+      // Example: Toggle between pending and in-progress
+      const task = tasks.find(t => t.id === taskId);
+      if (task) {
+        let newStatus: TaskStatus = "pending";
+        if (task.status === "pending") newStatus = "in-progress";
+        else if (task.status === "in-progress") newStatus = "complete";
+        else if (task.status === "complete") newStatus = "pending";
+        
+        onTaskStatusChange(taskId, newStatus);
+      }
+    }
   };
   
   return (

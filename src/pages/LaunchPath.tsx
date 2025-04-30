@@ -58,12 +58,12 @@ const LaunchPath: React.FC = () => {
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
-    // This is just a placeholder for future functionality
     console.log(`Task ${taskId} status changed to ${newStatus}`);
+    // Implement actual status change logic here
   };
   return <div className="h-screen overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <Navbar />
-      <div className="w-full px-4 py-8 pt-24 h-[calc(100vh-80px)] overflow-hidden">
+      <div className="w-full px-4 py-8 pt-28 h-[calc(100vh-80px)] overflow-hidden">
         <motion.div initial={{
         opacity: 0,
         y: 20
