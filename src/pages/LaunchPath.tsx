@@ -1,10 +1,10 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import RoadmapProgress from "@/components/launch/RoadmapProgress";
 import PhaseSidebar from "@/components/launch/PhaseSidebar";
 import CofounderChat from "@/components/launch/CofounderChat";
+import CanvasOutput from "@/components/launch/CanvasOutput";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
@@ -56,13 +56,13 @@ const LaunchPath: React.FC = () => {
             />
           </div>
           
-          {/* 3-compartment layout using ResizablePanel */}
+          {/* 4-compartment layout using ResizablePanel */}
           <ResizablePanelGroup 
             direction="horizontal" 
             className="min-h-[500px] rounded-xl animate-fade-in"
           >
             {/* First Panel - Left Sidebar with Phase Tasks */}
-            <ResizablePanel defaultSize={25} className="glass rounded-l-xl">
+            <ResizablePanel defaultSize={20} className="glass rounded-l-xl">
               <Card className="glass h-full border-0 rounded-none">
                 <CardContent className="p-4 h-full">
                   <PhaseSidebar 
@@ -77,7 +77,7 @@ const LaunchPath: React.FC = () => {
             <ResizableHandle withHandle />
             
             {/* Second Panel - Chat with Co-founder */}
-            <ResizablePanel defaultSize={45}>
+            <ResizablePanel defaultSize={40}>
               <Card className="glass h-full border-0 rounded-none">
                 <CardContent className="p-4 h-full">
                   <CofounderChat />
@@ -87,17 +87,11 @@ const LaunchPath: React.FC = () => {
             
             <ResizableHandle withHandle />
             
-            {/* Third Panel - Workspace */}
-            <ResizablePanel defaultSize={30}>
+            {/* Third Panel - Canvas Output Area */}
+            <ResizablePanel defaultSize={40}>
               <Card className="glass h-full border-0 rounded-r-xl">
                 <CardContent className="p-4 h-full">
-                  <h3 className="text-xl font-semibold mb-4">Workspace</h3>
-                  <div className="bg-white/5 p-6 rounded-lg h-[calc(100%-3rem)] border border-white/10">
-                    <p className="text-white/70">
-                      This is your main workspace where you'll document your progress and 
-                      complete tasks for each phase of your startup journey.
-                    </p>
-                  </div>
+                  <CanvasOutput />
                 </CardContent>
               </Card>
             </ResizablePanel>
