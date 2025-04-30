@@ -1,3 +1,4 @@
+
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -5,6 +6,7 @@ import AboutSection from "@/components/AboutSection";
 import PricingSection from "@/components/PricingSection";
 import Logo from "@/components/Logo";
 import Footer from "@/components/Footer";
+
 const Index = () => {
   return <>
       <Navbar />
@@ -52,4 +54,5 @@ const Index = () => {
       <Footer />
     </>;
 };
+
 export default Index;

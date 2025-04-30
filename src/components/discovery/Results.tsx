@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useDiscovery } from "@/context/DiscoveryContext";
 import { Button } from "@/components/ui/button";
@@ -40,7 +39,7 @@ const Results: React.FC = () => {
 
   const handleLaunchClick = () => {
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/launch-path");
     } else {
       setLoginDialogOpen(true);
     }
@@ -48,7 +47,7 @@ const Results: React.FC = () => {
 
   const handleLoginSuccess = () => {
     setLoginDialogOpen(false);
-    navigate("/dashboard");
+    navigate("/launch-path");
   };
 
   return (

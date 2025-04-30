@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Discovery from "./pages/Discovery";
 import Dashboard from "./pages/Dashboard";
+import LaunchPath from "./pages/LaunchPath";
 import { DiscoveryProvider } from "./context/DiscoveryContext";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/discovery" element={<Discovery />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/launch-path" element={<LaunchPath />} />
               <Route path="/about" element={<NotFound />} />
               <Route path="/pricing" element={<NotFound />} />
               <Route path="/login" element={<NotFound />} />
