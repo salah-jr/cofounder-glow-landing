@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -63,23 +64,39 @@ const LaunchPath: React.FC = () => {
   };
   return <div className="h-screen overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <Navbar />
-      <div className="w-full px-4 py-8 pt-28 h-[calc(100vh-80px)] overflow-hidden">
+      
+      {/* Added a separate container for the progress bar with more spacing */}
+      <div className="w-full px-4 pt-24 pb-4">
         <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5
-      }} className="space-y-6 h-full">
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5
+        }} className="space-y-6">
           {/* Top horizontal bar - Roadmap Progress */}
           <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in px-[15px] py-[7px]">
             <RoadmapProgress currentPhase={currentPhase} completedPhases={completedPhases} />
           </div>
-          
+        </motion.div>
+      </div>
+      
+      {/* Main content area - now separated from the progress bar */}
+      <div className="w-full px-4 pb-8 h-[calc(100vh-190px)] overflow-hidden">
+        <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.2
+        }} className="h-full">
           {/* 4-compartment layout using ResizablePanel */}
-          <ResizablePanelGroup direction="horizontal" className="min-h-[calc(100vh-240px)] rounded-xl animate-fade-in">
+          <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks - Now with fixed size */}
             <ResizablePanel defaultSize={20} minSize={20} maxSize={20} className="glass rounded-l-xl">
               <Card className="glass h-full border-0 rounded-none">
@@ -89,7 +106,8 @@ const LaunchPath: React.FC = () => {
               </Card>
             </ResizablePanel>
             
-            <ResizableHandle withHandle />
+            {/* Hidden resize handle between 1st and 2nd panel */}
+            <ResizableHandle hidden={true} />
             
             {/* Second Panel - Chat with Co-founder */}
             <ResizablePanel defaultSize={40}>
@@ -100,6 +118,7 @@ const LaunchPath: React.FC = () => {
               </Card>
             </ResizablePanel>
             
+            {/* Visible resize handle between 2nd and 3rd panel */}
             <ResizableHandle withHandle />
             
             {/* Third Panel - Canvas Output Area */}
