@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Send, Smile } from "lucide-react";
+import { MessageSquare, Send, Smile, UserRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -89,7 +89,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
       <div className="flex items-center pb-4 border-b border-white/10">
         <Avatar className="h-10 w-10 mr-3 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
           <AvatarFallback><Smile className="text-white" size={18} /></AvatarFallback>
-          <AvatarImage src="/avatar-cofounder.png" alt="Co-founder" />
+          <AvatarImage src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=250&h=250&fit=crop" alt="Co-founder" />
         </Avatar>
         <div>
           <h3 className="text-lg font-semibold text-white">Co-founder</h3>
@@ -107,17 +107,20 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 className={cn(
-                  "flex max-w-[80%] mb-4",
-                  message.sender === "user" ? "ml-auto" : ""
+                  "flex mb-6",
+                  message.sender === "user" ? "justify-end" : "justify-start"
                 )}
               >
                 {message.sender === "cofounder" && (
-                  <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
-                    <AvatarFallback><Smile className="text-white" size={14} /></AvatarFallback>
-                  </Avatar>
+                  <div className="flex-shrink-0 mr-3">
+                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
+                      <AvatarFallback><Smile className="text-white" size={14} /></AvatarFallback>
+                      <AvatarImage src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=250&h=250&fit=crop" alt="Co-founder" />
+                    </Avatar>
+                  </div>
                 )}
                 
-                <div>
+                <div className={cn("max-w-[75%]")}>
                   <div className={cn(
                     "p-3 rounded-lg",
                     message.sender === "user" 
@@ -143,6 +146,15 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                     </div>
                   )}
                 </div>
+                
+                {message.sender === "user" && (
+                  <div className="flex-shrink-0 ml-3">
+                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]">
+                      <AvatarFallback><UserRound className="text-white" size={14} /></AvatarFallback>
+                      <AvatarImage src="https://images.unsplash.com/photo-1501286353178-1ec881214838?w=250&h=250&fit=crop" alt="User" />
+                    </Avatar>
+                  </div>
+                )}
               </motion.div>
             ))}
             
