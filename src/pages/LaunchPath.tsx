@@ -1,15 +1,40 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import RoadmapProgress from "@/components/launch/RoadmapProgress";
+import PhaseSidebar from "@/components/launch/PhaseSidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { TaskStatus } from "@/components/launch/PhaseTask";
+
+// Sample tasks data
+const phaseTasks = {
+  "idea": [
+    { id: "task1", title: "Define your value proposition", status: "in-progress" as TaskStatus },
+    { id: "task2", title: "Identify target audience", status: "pending" as TaskStatus },
+    { id: "task3", title: "Research competitors", status: "pending" as TaskStatus },
+    { id: "task4", title: "Outline key features", status: "pending" as TaskStatus },
+    { id: "task5", title: "Create product vision", status: "pending" as TaskStatus },
+  ],
+  "validation": [
+    { id: "task6", title: "Create validation hypothesis", status: "pending" as TaskStatus },
+    { id: "task7", title: "Design customer interviews", status: "pending" as TaskStatus },
+    { id: "task8", title: "Analyze market demand", status: "pending" as TaskStatus },
+    { id: "task9", title: "Gather initial feedback", status: "pending" as TaskStatus },
+  ],
+  // Other phases would have their own tasks
+};
 
 const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
+  
+  // Handle task status change
+  const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
+    // This is just a placeholder for future functionality
+    console.log(`Task ${taskId} status changed to ${newStatus}`);
+  };
 
   return (
     <div className="min-h-screen bg-[#1A1F2C] text-white">
@@ -29,33 +54,28 @@ const LaunchPath: React.FC = () => {
             />
           </div>
           
-          {/* 4-compartment layout using ResizablePanel */}
+          {/* 3-compartment layout using ResizablePanel */}
           <ResizablePanelGroup 
             direction="horizontal" 
             className="min-h-[500px] rounded-xl animate-fade-in"
           >
-            {/* First Panel */}
-            <ResizablePanel defaultSize={25} className="glass rounded-l-xl">
+            {/* First Panel - Left Sidebar with Phase Tasks */}
+            <ResizablePanel defaultSize={30} className="glass rounded-l-xl">
               <Card className="glass h-full border-0 rounded-none">
                 <CardContent className="p-4 h-full">
-                  <h3 className="text-xl font-semibold mb-4">Resources</h3>
-                  <div className="text-white/70">
-                    <p className="mb-2">Access tools and guides to help you in your current phase.</p>
-                    <ul className="list-disc pl-5 space-y-2 mt-4">
-                      <li>Startup validation checklist</li>
-                      <li>Market research templates</li>
-                      <li>Business model canvas</li>
-                      <li>User persona builder</li>
-                    </ul>
-                  </div>
+                  <PhaseSidebar 
+                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []}
+                    onTaskStatusChange={handleTaskStatusChange}
+                  />
                 </CardContent>
               </Card>
             </ResizablePanel>
             
             <ResizableHandle withHandle />
             
-            {/* Second Panel */}
-            <ResizablePanel defaultSize={50}>
+            {/* Second Panel - Main Workspace */}
+            <ResizablePanel defaultSize={70}>
               <Card className="glass h-full border-0 rounded-none">
                 <CardContent className="p-4 h-full">
                   <h3 className="text-xl font-semibold mb-4">Workspace</h3>
@@ -64,38 +84,6 @@ const LaunchPath: React.FC = () => {
                       This is your main workspace where you'll document your progress and 
                       complete tasks for each phase of your startup journey.
                     </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </ResizablePanel>
-            
-            <ResizableHandle withHandle />
-            
-            {/* Third Panel */}
-            <ResizablePanel defaultSize={25} className="glass rounded-r-xl">
-              <Card className="glass h-full border-0 rounded-none">
-                <CardContent className="p-4 h-full">
-                  <h3 className="text-xl font-semibold mb-4">Tasks</h3>
-                  <div className="text-white/70">
-                    <p className="mb-4">Complete these tasks to progress to the next phase:</p>
-                    <div className="space-y-2">
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 rounded-full border border-white/30 mr-2"></div>
-                        <span>Define your value proposition</span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 rounded-full border border-white/30 mr-2"></div>
-                        <span>Identify target audience</span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 rounded-full border border-white/30 mr-2"></div>
-                        <span>Research competitors</span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-5 h-5 rounded-full border border-white/30 mr-2"></div>
-                        <span>Outline key features</span>
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
