@@ -74,7 +74,7 @@ const LaunchPath: React.FC = () => {
         duration: 0.5
       }} className="space-y-6">
           {/* Top horizontal bar - Roadmap Progress */}
-          <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in px-[15px] py-0">
+          <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in px-[15px] py-[7px]">
             <RoadmapProgress currentPhase={currentPhase} completedPhases={completedPhases} />
           </div>
           
