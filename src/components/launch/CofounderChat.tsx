@@ -86,9 +86,8 @@ export default function CofounderChat({ className }: CofounderChatProps) {
 
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      <div className="flex items-center pb-4 border-b border-white/10 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#9b87f5]/5 to-[#1EAEDB]/5 backdrop-blur-sm -z-10"></div>
-        <Avatar className="h-10 w-10 mr-3 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB] shadow-lg shadow-[#9b87f5]/20">
+      <div className="flex items-center pb-4 border-b border-white/10">
+        <Avatar className="h-10 w-10 mr-3 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
           <AvatarFallback><Smile className="text-white" size={18} /></AvatarFallback>
           <AvatarImage src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=250&h=250&fit=crop" alt="Co-founder" />
         </Avatar>
@@ -113,74 +112,48 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 )}
               >
                 {message.sender === "cofounder" && (
-                  <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="flex-shrink-0 mr-3"
-                  >
-                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB] ring-2 ring-[#9b87f5]/20">
+                  <div className="flex-shrink-0 mr-3">
+                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
                       <AvatarFallback><Smile className="text-white" size={14} /></AvatarFallback>
                       <AvatarImage src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=250&h=250&fit=crop" alt="Co-founder" />
                     </Avatar>
-                  </motion.div>
+                  </div>
                 )}
                 
-                <motion.div 
-                  initial={{ scale: 0.95, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className={cn("max-w-[75%]")}
-                >
+                <div className={cn("max-w-[75%]")}>
                   <div className={cn(
-                    "p-3 rounded-lg shadow-lg",
+                    "p-3 rounded-lg",
                     message.sender === "user" 
                       ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white" 
-                      : "glass backdrop-blur-md border border-white/10 text-white"
+                      : "glass text-white"
                   )}>
                     <p>{message.text}</p>
                   </div>
                   
                   {message.quickReplies && (
-                    <motion.div 
-                      initial={{ y: -10, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.3, staggerChildren: 0.1 }}
-                      className="flex flex-wrap gap-2 mt-2"
-                    >
-                      {message.quickReplies.map((reply, index) => (
-                        <motion.div
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {message.quickReplies.map((reply) => (
+                        <Button 
                           key={reply}
-                          initial={{ opacity: 0, x: -5 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.1 * index }}
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleQuickReply(reply)}
+                          className="bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white"
                         >
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleQuickReply(reply)}
-                            className="bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white shadow-sm hover:shadow-md transition-all duration-300"
-                          >
-                            {reply}
-                          </Button>
-                        </motion.div>
+                          {reply}
+                        </Button>
                       ))}
-                    </motion.div>
+                    </div>
                   )}
-                </motion.div>
+                </div>
                 
                 {message.sender === "user" && (
-                  <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="flex-shrink-0 ml-3"
-                  >
-                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5] ring-2 ring-[#1EAEDB]/20">
+                  <div className="flex-shrink-0 ml-3">
+                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]">
                       <AvatarFallback><UserRound className="text-white" size={14} /></AvatarFallback>
                       <AvatarImage src="https://images.unsplash.com/photo-1501286353178-1ec881214838?w=250&h=250&fit=crop" alt="User" />
                     </Avatar>
-                  </motion.div>
+                  </div>
                 )}
               </motion.div>
             ))}
@@ -215,12 +188,12 @@ export default function CofounderChat({ className }: CofounderChatProps) {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="Type your message..."
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] transition-all shadow-inner"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5]"
           />
           <Button 
             onClick={handleSendMessage}
             disabled={!input.trim()}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md hover:opacity-90 transition-all duration-300 shadow-lg shadow-[#9b87f5]/20"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md hover:opacity-90 transition-opacity"
           >
             <Send size={18} />
           </Button>
