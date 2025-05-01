@@ -69,34 +69,11 @@ export default function RoadmapProgress({
           step={1}
           value={[progress]}
           disabled
-          className="h-1.5 cursor-default"
+          className="h-1.5 cursor-default radix-custom-slider"
         />
-        
-        {/* Custom styling for the progress bar */}
-        <style jsx global>{`
-          .radix-slider-track {
-            background: rgba(255, 255, 255, 0.1) !important;
-            height: 6px !important;
-            border-radius: 99px;
-          }
-          
-          .radix-slider-range {
-            background: linear-gradient(to right, #9b87f5, #1EAEDB) !important;
-            border-radius: 99px;
-            height: 6px !important;
-          }
-          
-          .radix-slider-thumb {
-            background: white !important;
-            width: 14px !important;
-            height: 14px !important;
-            box-shadow: 0 0 10px rgba(155, 135, 245, 0.5);
-            border: 3px solid #9b87f5 !important;
-            transform: translateY(-50%) !important;
-            cursor: default !important;
-          }
-        `}</style>
       </div>
+      
+      {/* Adding the styles to index.css instead */}
       
       {/* Expanded phase dots - only visible when expanded */}
       <AnimatePresence>
