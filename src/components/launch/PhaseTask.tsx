@@ -1,5 +1,5 @@
 
-import { Check, Clock, Circle, Target, Bulb, HelpCircle } from "lucide-react";
+import { Check, Clock, Circle, Target, Lightbulb, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
@@ -38,14 +38,14 @@ export default function PhaseTask({ id, title, status, icon, tooltip, onClick }:
     if (icon === "target") {
       return <Target size={16} className="text-white/70" />;
     } else if (icon === "bulb") {
-      return <Bulb size={16} className="text-white/70" />;
+      return <Lightbulb size={16} className="text-white/70" />;
     }
     
     // Default icons based on task title keywords
     if (title.toLowerCase().includes("target") || title.toLowerCase().includes("audience")) {
       return <Target size={16} className="text-white/70" />;
     } else if (title.toLowerCase().includes("proposition") || title.toLowerCase().includes("idea")) {
-      return <Bulb size={16} className="text-white/70" />;
+      return <Lightbulb size={16} className="text-white/70" />;
     }
     
     // Fallback
