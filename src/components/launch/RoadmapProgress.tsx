@@ -33,6 +33,7 @@ interface RoadmapProgressProps {
   currentPhase?: string;
   completedPhases?: string[];
 }
+
 export default function RoadmapProgress({
   currentPhase = "idea",
   completedPhases = []
@@ -41,65 +42,79 @@ export default function RoadmapProgress({
 
   // Animate the progress based on completed phases
   const progress = Math.max((phases.findIndex(p => p.id === currentPhase) + 1) / phases.length * 100, completedPhases.length / phases.length * 100);
-  return <div className="w-full relative">
-      <div className="flex justify-center items-center mb-3 relative">
-        <h2 className="text-2xl font-bold text-white">The Launch Path</h2>
-        <button onClick={() => setIsExpanded(!isExpanded)} className="absolute right-0 text-white/70 hover:text-white p-1 rounded-full transition-colors">
-          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-        </button>
-        <div className="absolute left-0 flex items-center gap-2">
-          <span className="text-sm text-white/70">
-            Phase {phases.findIndex(p => p.id === currentPhase) + 1} of {phases.length}
+  
+  return (
+    <div className="w-full relative">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <span>Launch Path</span>
+          <span className="text-xs text-white/70 px-2 py-0.5 rounded-full bg-white/10">
+            Phase {phases.findIndex(p => p.id === currentPhase) + 1}/{phases.length}
           </span>
-        </div>
+        </h2>
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)} 
+          className="text-white/70 hover:text-white p-1 rounded-full transition-colors"
+        >
+          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
       </div>
       
       {/* Progress track - only visible when expanded */}
       <AnimatePresence>
-        {isExpanded && <motion.div className="relative" initial={{
-        height: 0,
-        opacity: 0
-      }} animate={{
-        height: 'auto',
-        opacity: 1
-      }} exit={{
-        height: 0,
-        opacity: 0
-      }} transition={{
-        duration: 0.3
-      }}>
+        {isExpanded && (
+          <motion.div 
+            className="relative" 
+            initial={{ height: 0, opacity: 0 }} 
+            animate={{ height: 'auto', opacity: 1 }} 
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             {/* Progress line */}
-            <div className="absolute top-5 left-0 w-full h-1 bg-white/10 rounded-full">
-              <motion.div className="h-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] rounded-full" initial={{
-            width: 0
-          }} animate={{
-            width: `${progress}%`
-          }} transition={{
-            duration: 0.5,
-            ease: "easeInOut"
-          }} />
+            <div className="absolute top-3 left-0 w-full h-0.5 bg-white/5 rounded-full">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] rounded-full" 
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }} 
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              />
             </div>
             
-            {/* Phase bubbles - reduced padding below from pb-16 to pb-8 */}
-            <div className="w-full flex justify-between items-center pb-8 pt-1 px-0 py-[10px]">
+            {/* Phase dots */}
+            <div className="w-full flex justify-between items-center pt-1 pb-8">
               {phases.map((phase, index) => {
-            const isCompleted = completedPhases.includes(phase.id);
-            const isActive = phase.id === currentPhase;
-            return <div key={phase.id} className="flex flex-col items-center">
-                    <motion.div className={cn("w-8 h-8 rounded-full flex items-center justify-center z-10 shadow-lg", isActive ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] shadow-[#9b87f5]/30" : "", isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" : !isActive ? "bg-white/10" : "")} whileHover={{
-                scale: 1.1
-              }} whileTap={{
-                scale: 0.95
-              }}>
-                      {isCompleted ? <Check className="w-4 h-4 text-white" /> : <span className="text-xs text-white">{index + 1}</span>}
+                const isCompleted = completedPhases.includes(phase.id);
+                const isActive = phase.id === currentPhase;
+                
+                return (
+                  <div key={phase.id} className="flex flex-col items-center">
+                    <motion.div 
+                      className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center z-10",
+                        isActive ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] shadow-lg shadow-[#9b87f5]/20" : "",
+                        isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" : !isActive ? "bg-white/10" : ""
+                      )}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {isCompleted ? 
+                        <Check className="w-3 h-3 text-white" /> : 
+                        <span className="text-[10px] text-white">{index + 1}</span>
+                      }
                     </motion.div>
-                    <span className={cn("text-xs mt-10 whitespace-nowrap", isActive ? "text-white font-medium" : "text-white/70")}>
+                    <span className={cn(
+                      "text-[10px] mt-2 whitespace-nowrap",
+                      isActive ? "text-white font-medium" : "text-white/60"
+                    )}>
                       {phase.title}
                     </span>
-                  </div>;
-          })}
+                  </div>
+                );
+              })}
             </div>
-          </motion.div>}
+          </motion.div>
+        )}
       </AnimatePresence>
-    </div>;
+    </div>
+  );
 }

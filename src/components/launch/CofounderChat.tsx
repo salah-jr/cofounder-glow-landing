@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Send, Smile, UserRound } from "lucide-react";
+import { Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -87,9 +87,9 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="flex items-center pb-4 border-b border-white/10">
-        <Avatar className="h-10 w-10 mr-3 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
-          <AvatarFallback><Smile className="text-white" size={18} /></AvatarFallback>
-          <AvatarImage src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=250&h=250&fit=crop" alt="Co-founder" />
+        <Avatar className="h-10 w-10 mr-3 bg-gradient-to-br from-indigo-500 to-purple-600">
+          <AvatarFallback>C</AvatarFallback>
+          <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
         </Avatar>
         <div>
           <h3 className="text-lg font-semibold text-white">Co-founder</h3>
@@ -112,19 +112,17 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 )}
               >
                 {message.sender === "cofounder" && (
-                  <div className="flex-shrink-0 mr-3">
-                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#9b87f5] to-[#1EAEDB]">
-                      <AvatarFallback><Smile className="text-white" size={14} /></AvatarFallback>
-                      <AvatarImage src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=250&h=250&fit=crop" alt="Co-founder" />
-                    </Avatar>
-                  </div>
+                  <Avatar className="h-8 w-8 mt-1 mr-2 flex-shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600">
+                    <AvatarFallback>C</AvatarFallback>
+                    <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
+                  </Avatar>
                 )}
                 
-                <div className={cn("max-w-[75%]")}>
+                <div className="max-w-[75%]">
                   <div className={cn(
                     "p-3 rounded-lg",
                     message.sender === "user" 
-                      ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white" 
+                      ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" 
                       : "glass text-white"
                   )}>
                     <p>{message.text}</p>
@@ -148,12 +146,10 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 </div>
                 
                 {message.sender === "user" && (
-                  <div className="flex-shrink-0 ml-3">
-                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]">
-                      <AvatarFallback><UserRound className="text-white" size={14} /></AvatarFallback>
-                      <AvatarImage src="https://images.unsplash.com/photo-1501286353178-1ec881214838?w=250&h=250&fit=crop" alt="User" />
-                    </Avatar>
-                  </div>
+                  <Avatar className="h-8 w-8 mt-1 ml-2 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-500">
+                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src="/images/user-avatar.svg" alt="User" />
+                  </Avatar>
                 )}
               </motion.div>
             ))}
@@ -162,7 +158,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center ml-12 text-white/60 text-sm"
+                className="flex items-center text-white/60 text-sm ml-10"
               >
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "0ms" }}></div>
