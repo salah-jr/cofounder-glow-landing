@@ -10,45 +10,56 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
 
-// Sample tasks data
+// Enhanced tasks data with icons and tooltips
 const phaseTasks = {
   "idea": [{
     id: "task1",
-    title: "Define your value proposition",
-    status: "in-progress" as TaskStatus
+    title: "Define value proposition",
+    status: "in-progress" as TaskStatus,
+    icon: "bulb",
+    tooltip: "Clearly articulate the unique value your product offers to customers"
   }, {
     id: "task2",
     title: "Identify target audience",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    icon: "target",
+    tooltip: "Define your ideal customer segments and their key characteristics"
   }, {
     id: "task3",
     title: "Research competitors",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "Analyze what existing solutions are in the market and their strengths/weaknesses"
   }, {
     id: "task4",
     title: "Outline key features",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "List the essential capabilities your product needs to deliver value"
   }, {
     id: "task5",
     title: "Create product vision",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "Define where your product is headed in the long term"
   }],
   "validation": [{
     id: "task6",
     title: "Create validation hypothesis",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "Form testable assumptions about your business model"
   }, {
     id: "task7",
     title: "Design customer interviews",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "Prepare questions that validate your value proposition"
   }, {
     id: "task8",
     title: "Analyze market demand",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "Research and quantify the potential market size"
   }, {
     id: "task9",
     title: "Gather initial feedback",
-    status: "pending" as TaskStatus
+    status: "pending" as TaskStatus,
+    tooltip: "Collect and organize early user insights"
   }]
   // Other phases would have their own tasks
 };
@@ -66,7 +77,7 @@ const LaunchPath: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
-      <div className="w-full">
+      <div className="w-full px-6">
         <Navbar />
       </div>
       
@@ -96,7 +107,7 @@ const LaunchPath: React.FC = () => {
           {/* 4-compartment layout using ResizablePanel */}
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks - Now with fixed size */}
-            <ResizablePanel defaultSize={20} minSize={20} maxSize={20} className="glass rounded-l-xl">
+            <ResizablePanel defaultSize={20} minSize={20} maxSize={25} className="glass rounded-l-xl">
               <Card className="glass h-full border-0 rounded-none">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <PhaseSidebar 
@@ -145,6 +156,6 @@ const LaunchPath: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default LaunchPath;
