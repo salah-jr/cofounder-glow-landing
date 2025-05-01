@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -65,10 +66,12 @@ const LaunchPath: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
-      <Navbar />
+      <div className="w-full">
+        <Navbar />
+      </div>
       
       {/* Progress bar section with fixed height that won't cause layout shifts when collapsed */}
-      <div className="w-full px-4 pt-6 pb-4 flex-shrink-0">
+      <div className="w-full px-6 pt-6 pb-4 flex-shrink-0">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,7 +86,7 @@ const LaunchPath: React.FC = () => {
       </div>
       
       {/* Main content area - now using flex-grow to fill remaining space */}
-      <div className="w-full px-4 pb-6 flex-grow overflow-hidden">
+      <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

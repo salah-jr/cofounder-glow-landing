@@ -154,7 +154,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
               </motion.div>
             ))}
             
-            {/* Typing indicator - only visible when isTyping is true and should be removed when response is shown */}
+            {/* Typing indicator - only visible when isTyping is true */}
             {isTyping && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -166,6 +166,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                   <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "150ms" }}></div>
                   <div className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "300ms" }}></div>
                 </div>
+                <span className="ml-2">Co-founder is typing...</span>
               </motion.div>
             )}
             
