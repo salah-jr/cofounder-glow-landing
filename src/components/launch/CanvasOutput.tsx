@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Edit, FileImage } from "lucide-react";
@@ -72,7 +71,6 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
 
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      <h3 className="text-xl font-semibold mb-4">Canvas Outputs</h3>
       <p className="text-sm text-white/60 mb-4">
         Outputs from your co-founder chat will appear here. Edit or download them as needed.
       </p>
