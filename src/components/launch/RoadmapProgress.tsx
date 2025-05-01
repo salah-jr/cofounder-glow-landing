@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
 
 // Define phases for the launch roadmap
 const phases = [{
@@ -40,7 +41,7 @@ export default function RoadmapProgress({
 }: RoadmapProgressProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Animate the progress based on completed phases
+  // Calculate progress percentage
   const progress = Math.max((phases.findIndex(p => p.id === currentPhase) + 1) / phases.length * 100, completedPhases.length / phases.length * 100);
   
   return (
@@ -60,7 +61,16 @@ export default function RoadmapProgress({
         </button>
       </div>
       
-      {/* Progress track - only visible when expanded */}
+      {/* Modern slim progress bar - always visible */}
+      <div className="mb-2">
+        <Progress 
+          value={progress} 
+          className="h-1.5 bg-white/10"
+          indicatorClassName="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]"
+        />
+      </div>
+      
+      {/* Expanded phase dots - only visible when expanded */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div 
@@ -70,21 +80,12 @@ export default function RoadmapProgress({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Progress line */}
-            <div className="absolute top-3 left-0 w-full h-0.5 bg-white/5 rounded-full">
-              <motion.div 
-                className="h-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] rounded-full" 
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }} 
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              />
-            </div>
-            
-            {/* Phase dots */}
-            <div className="w-full flex justify-between items-center pt-1 pb-8">
+            <div className="w-full flex justify-between items-center pt-2 pb-6">
               {phases.map((phase, index) => {
                 const isCompleted = completedPhases.includes(phase.id);
                 const isActive = phase.id === currentPhase;
+                const progressPerPhase = 100 / phases.length;
+                const phaseProgress = progress >= ((index + 1) * progressPerPhase) ? 100 : 0;
                 
                 return (
                   <div key={phase.id} className="flex flex-col items-center">
@@ -92,10 +93,14 @@ export default function RoadmapProgress({
                       className={cn(
                         "w-6 h-6 rounded-full flex items-center justify-center z-10",
                         isActive ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] shadow-lg shadow-[#9b87f5]/20" : "",
-                        isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" : !isActive ? "bg-white/10" : ""
+                        isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" : !isActive ? "bg-white/10" : "",
                       )}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
+                      initial={{ scale: 0.8 }}
+                      animate={{ 
+                        scale: isActive ? 1 : 0.8,
+                        background: phaseProgress === 100 ? "linear-gradient(to right, #9b87f5, #1EAEDB)" : (isActive ? "linear-gradient(to right, #9b87f5, #1EAEDB)" : "rgba(255, 255, 255, 0.1)")
+                      }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
                       {isCompleted ? 
                         <Check className="w-3 h-3 text-white" /> : 
