@@ -56,7 +56,7 @@ const Navbar = () => {
           isScrolled ? "glass py-2" : "py-4"
         }`}
       >
-        <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="px-4 flex items-center justify-between">
           <Logo size="small" />
           
           {/* Desktop Navigation */}

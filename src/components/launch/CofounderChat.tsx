@@ -154,6 +154,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
               </motion.div>
             ))}
             
+            {/* Typing indicator - only visible when isTyping is true */}
             {isTyping && (
               <motion.div
                 initial={{ opacity: 0 }}
