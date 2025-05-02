@@ -206,13 +206,21 @@ export default function CofounderChat({ className }: CofounderChatProps) {
             onKeyDown={handleKeyDown}
             placeholder="Ask your co-founder anything..."
             className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60 scrollbar-hide"
-            style={{ overflowY: "auto", msOverflowStyle: "none", scrollbarWidth: "none" }}
+            style={{ 
+              overflowY: "auto", 
+              msOverflowStyle: "none", 
+              scrollbarWidth: "none",
+              WebkitScrollbar: { display: "none" } 
+            }}
           />
-          <style jsx>{`
-            textarea::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
+          {/* Using global CSS styling approach instead of jsx prop which caused the type error */}
+          <style>
+            {`
+              textarea::-webkit-scrollbar {
+                display: none;
+              }
+            `}
+          </style>
           <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
             <Button
               onClick={handleFileAttachment}
