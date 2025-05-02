@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -134,7 +135,7 @@ const LaunchPath: React.FC = () => {
             {/* Visible resize handle between 2nd and 3rd panel */}
             <ResizableHandle withHandle />
             
-            {/* Third Panel - Canvas Output Area - Updated with icon */}
+            {/* Third Panel - Canvas Output Area - Simplified without header */}
             <ResizablePanel defaultSize={40}>
               <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">

@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Download, ScrollText } from "lucide-react";
+import { Download, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -13,17 +13,8 @@ interface CanvasOutputProps {
 export default function CanvasOutput({ className }: CanvasOutputProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      {/* Document header - sticky with icon */}
-      <div className="flex items-center justify-between mb-6 sticky top-0 z-10 bg-opacity-95 bg-black/30 backdrop-blur-md py-2">
-        <div className="flex items-center gap-2">
-          <ScrollText className="w-5 h-5 text-white/70" />
-          <div>
-            <h2 className="text-xl font-semibold text-white/90">Canvas Output</h2>
-            <p className="text-sm text-white/60">
-              Business insights and startup assets
-            </p>
-          </div>
-        </div>
+      {/* Document header - sticky with just the download button */}
+      <div className="flex items-center justify-end mb-6 sticky top-0 z-10 bg-opacity-95 bg-black/30 backdrop-blur-md py-2">
         <Button 
           variant="ghost" 
           size="sm" 
