@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { ChevronRight, ChevronLeft, ScrollText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import RoadmapProgress from "@/components/launch/RoadmapProgress";
 import PhaseSidebar from "@/components/launch/PhaseSidebar";
@@ -9,7 +9,7 @@ import CanvasOutput from "@/components/launch/CanvasOutput";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
-import { ScrollText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -69,11 +69,17 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
     // Implement actual status change logic here
+  };
+
+  // Toggle right panel collapse state
+  const toggleRightPanel = () => {
+    setRightPanelCollapsed(!rightPanelCollapsed);
   };
 
   return (
@@ -124,7 +130,7 @@ const LaunchPath: React.FC = () => {
             <ResizableHandle hidden={true} />
             
             {/* Second Panel - Chat with Co-founder */}
-            <ResizablePanel defaultSize={40}>
+            <ResizablePanel defaultSize={rightPanelCollapsed ? 80 : 40}>
               <Card className="glass h-full border-0 rounded-none overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <CofounderChat />
@@ -132,11 +138,32 @@ const LaunchPath: React.FC = () => {
               </Card>
             </ResizablePanel>
             
-            {/* Visible resize handle between 2nd and 3rd panel */}
-            <ResizableHandle withHandle />
+            {/* Custom resize handle between 2nd and 3rd panel */}
+            <div className="relative flex items-center justify-center">
+              <ResizableHandle 
+                withHandle={false} 
+                className={`bg-transparent transition-opacity duration-300 ${rightPanelCollapsed ? 'opacity-50' : 'opacity-100'}`}
+              />
+              <Button 
+                onClick={toggleRightPanel}
+                variant="ghost" 
+                size="icon" 
+                className="absolute z-10 w-6 h-16 rounded-md bg-gradient-to-r from-[#9b87f5]/30 to-[#1EAEDB]/30 hover:from-[#9b87f5]/40 hover:to-[#1EAEDB]/40 transition-all duration-300 border border-white/10 backdrop-blur-sm"
+              >
+                {rightPanelCollapsed ? (
+                  <ChevronLeft className="w-4 h-4 text-white/80" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-white/80" />
+                )}
+              </Button>
+            </div>
             
-            {/* Third Panel - Canvas Output Area - Simplified without header */}
-            <ResizablePanel defaultSize={40}>
+            {/* Third Panel - Canvas Output Area */}
+            <ResizablePanel 
+              defaultSize={40} 
+              minSize={5} 
+              className={`transition-all duration-300 ${rightPanelCollapsed ? 'w-0 max-w-0 p-0 m-0 opacity-0' : 'opacity-100'}`}
+            >
               <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <div className="flex items-center pb-4 border-b border-white/10">
