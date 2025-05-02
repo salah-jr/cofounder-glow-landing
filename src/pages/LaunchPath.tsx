@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -127,13 +128,17 @@ const LaunchPath: React.FC = () => {
                     </CardContent>
                   </Card>
                 </CollapsibleContent>
+                
+                {/* Updated simple Notion-like collapse button */}
                 <CollapsibleTrigger asChild>
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className={`h-full px-0.5 flex items-center justify-center rounded-none bg-white/5 hover:bg-white/10 border-y border-white/10 transition-colors ${!isLeftPanelOpen && 'rounded-l-xl border-l border-white/10'}`}
+                    className={`h-full px-0 py-0 flex items-center justify-center rounded-none transition-colors bg-transparent hover:bg-white/5 ${!isLeftPanelOpen ? 'rounded-l-xl' : ''}`}
                   >
-                    {isLeftPanelOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                    <div className="w-5 h-10 flex items-center justify-center">
+                      <ChevronLeft className={`w-4 h-4 text-white/60 transition-transform ${isLeftPanelOpen ? '' : 'rotate-180'}`} />
+                    </div>
                   </Button>
                 </CollapsibleTrigger>
               </Collapsible>
