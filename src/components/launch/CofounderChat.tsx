@@ -1,11 +1,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Paperclip } from "lucide-react";
+import { Send, Paperclip, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface Message {
   id: string;
@@ -107,8 +108,19 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="flex items-center pb-4 border-b border-white/10">
+        <Avatar className="h-8 w-8 mr-2">
+          <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
+          <AvatarFallback className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]">CF</AvatarFallback>
+        </Avatar>
         <h3 className="text-lg font-semibold text-white">Co-founder</h3>
-        {/* Removed the online/offline circle */}
+        <div className={cn(
+          "ml-2 h-3 w-3 rounded-full",
+          currentMood === "thinking" 
+            ? "bg-[#FEF7CD]" 
+            : currentMood === "excited" 
+              ? "bg-[#F2FCE2]" 
+              : "bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]"
+        )} />
       </div>
       
       <ScrollArea className="flex-1 py-4">
@@ -120,7 +132,10 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 initial={{ opacity: 0, y: 10, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
-                className="mb-6 px-2"
+                className={cn(
+                  "mb-6 px-2",
+                  message.sender === "user" ? "text-right" : "text-left"
+                )}
               >
                 <div className="py-2">
                   <span className={cn(
@@ -131,7 +146,10 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                   </span>
                 </div>
                 
-                <div>
+                <div className={cn(
+                  "max-w-3xl",
+                  message.sender === "user" ? "ml-auto" : ""
+                )}>
                   <div className={cn(
                     "py-2 px-1",
                     message.isInsight ? "text-amber-200" : "text-white"
@@ -167,7 +185,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                       transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.4 }}
                     />
                   </div>
-                  <span className="ml-2 text-sm text-white/60">Co-founder is thinking...</span>
                 </div>
               </motion.div>
             )}
