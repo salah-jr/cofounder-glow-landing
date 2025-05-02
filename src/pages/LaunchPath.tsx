@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -116,7 +115,7 @@ const LaunchPath: React.FC = () => {
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
-              defaultSize={0}
+              defaultSize={isLeftPanelCollapsed ? 0 : 20}
               minSize={0}
               maxSize={20}
               className="h-full transition-all duration-300 ease-in-out relative"
@@ -127,7 +126,7 @@ const LaunchPath: React.FC = () => {
                 onClick={toggleLeftPanel}
               >
                 <div className="flex items-center justify-center w-6 h-16 bg-white/10 backdrop-blur-md rounded-full cursor-pointer hover:bg-white/15 transition-all duration-300 border border-white/10 shadow-lg group">
-                  <div className="flex items-center justify-center w-full">
+                  <div className="flex items-center justify-center w-full h-full">
                     {isLeftPanelCollapsed ? 
                       <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" /> : 
                       <ChevronLeft className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" />
