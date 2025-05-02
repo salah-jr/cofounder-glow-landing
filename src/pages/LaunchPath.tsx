@@ -68,8 +68,8 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
-  // Initialize with the panel collapsed by default
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(true);
+  // Initialize with the panel visible by default
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -135,17 +135,15 @@ const LaunchPath: React.FC = () => {
                 </div>
               </div>
 
-              {!isLeftPanelCollapsed && (
-                <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
-                  <CardContent className="p-4 h-full">
-                    <PhaseSidebar 
-                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                      onTaskStatusChange={handleTaskStatusChange}
-                    />
-                  </CardContent>
-                </Card>
-              )}
+              <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
+                <CardContent className="p-4 h-full">
+                  <PhaseSidebar 
+                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                    onTaskStatusChange={handleTaskStatusChange}
+                  />
+                </CardContent>
+              </Card>
             </ResizablePanel>
               
             {/* Second Panel - Chat with Co-founder - expanded to take 50% when sidebar collapsed */}
