@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -115,18 +114,19 @@ const LaunchPath: React.FC = () => {
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
-              defaultSize={isLeftPanelCollapsed ? 5 : 20}
-              minSize={5}
+              defaultSize={isLeftPanelCollapsed ? 0 : 20}
+              minSize={0}
               maxSize={20}
-              className="h-full transition-all duration-300 ease-in-out relative"
+              className="h-full transition-all duration-300 ease-in-out"
+              style={{ overflow: 'visible' }}
             >
-              {/* Modern Collapse Button - positioned on the right edge of the panel */}
+              {/* Modern Collapse Button - positioned precisely to overlap the edge */}
               <div 
                 className="absolute top-1/2 right-0 z-20 transform -translate-y-1/2 translate-x-1/2"
                 onClick={toggleLeftPanel}
               >
                 <div className="flex items-center justify-center w-6 h-16 bg-white/10 backdrop-blur-md rounded-full cursor-pointer hover:bg-white/15 transition-all duration-300 border border-white/10 shadow-lg group">
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center w-full">
                     {isLeftPanelCollapsed ? 
                       <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" /> : 
                       <ChevronLeft className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" />
@@ -135,17 +135,17 @@ const LaunchPath: React.FC = () => {
                 </div>
               </div>
 
-              <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
-                <CardContent className="p-4 h-full">
-                  {!isLeftPanelCollapsed && (
+              {!isLeftPanelCollapsed && (
+                <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
+                  <CardContent className="p-4 h-full">
                     <PhaseSidebar 
                       phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
                       tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
                       onTaskStatusChange={handleTaskStatusChange}
                     />
-                  )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </ResizablePanel>
               
             {/* Second Panel - Chat with Co-founder */}
