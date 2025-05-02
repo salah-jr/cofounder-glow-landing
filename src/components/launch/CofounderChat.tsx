@@ -83,7 +83,9 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    // Allow shift+enter for new line without sending
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSendMessage();
     }
   };
@@ -154,18 +156,17 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                   </Avatar>
                 )}
                 
-                <div className="max-w-[75%]">
+                <div className="max-w-fit">
                   <motion.div 
                     className={cn(
                       "p-3 rounded-lg",
                       message.sender === "user" 
                         ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-br-none" 
                         : message.isInsight 
-                          ? "glass border border-amber-500/20 text-white rounded-bl-none shadow-[0_0_15px_rgba(251,191,36,0.15)]" 
+                          ? "glass border border-amber-500/20 text-white rounded-bl-none" 
                           : "glass text-white rounded-bl-none"
                     )}
-                    animate={message.isInsight ? { boxShadow: ["0 0 15px rgba(251,191,36,0.1)", "0 0 20px rgba(251,191,36,0.2)", "0 0 15px rgba(251,191,36,0.1)"] } : {}}
-                    transition={{ repeat: Infinity, duration: 2 }}
+                    animate={message.isInsight ? { boxShadow: ["none", "none", "none"] } : {}}
                   >
                     <p>{message.text}</p>
                   </motion.div>
@@ -219,14 +220,13 @@ export default function CofounderChat({ className }: CofounderChatProps) {
       
       <div className="pt-0">
         <div className="relative">
-          <input
+          <textarea
             ref={inputRef}
-            type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask your co-founder anything..."
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] transition-all duration-200 focus:border-[#9b87f5]/60"
+            className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60"
           />
           <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
             <Button
@@ -248,7 +248,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
               disabled={!input.trim()}
               className={cn(
                 "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md transition-all duration-300",
-                !input.trim() ? "opacity-50" : "hover:opacity-90 hover:shadow-[0_0_15px_rgba(155,135,245,0.3)]"
+                !input.trim() ? "opacity-50" : "hover:opacity-90"
               )}
             >
               <Send size={18} />
@@ -259,4 +259,3 @@ export default function CofounderChat({ className }: CofounderChatProps) {
     </div>
   );
 }
-
