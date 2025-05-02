@@ -185,6 +185,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                       transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.4 }}
                     />
                   </div>
+                  <span className="ml-2 text-sm text-white/60">Co-founder is thinking...</span>
                 </div>
               </motion.div>
             )}
