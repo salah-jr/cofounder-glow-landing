@@ -3,14 +3,12 @@ import { motion } from "framer-motion";
 import PhaseTask, { TaskStatus } from "./PhaseTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { HelpCircle } from "lucide-react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
-import { Progress } from "@/components/ui/progress";
+  Popover,
+  PopoverContent,
+  PopoverProvider,
+  PopoverTrigger
+} from "@/components/ui/popover";
 
 interface Task {
   id: string;
@@ -45,10 +43,9 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
   
   // Calculate completed tasks
   const completedTasks = tasks.filter(task => task.status === "complete").length;
-  const progressPercentage = (completedTasks / tasks.length) * 100;
   
   return (
-    <TooltipProvider>
+    <PopoverProvider>
       <div className="h-full flex flex-col">
         <motion.div 
           className="mb-4 space-y-3"
@@ -66,23 +63,6 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
           </div>
           
           <p className="text-sm text-white/60">Complete these tasks to move forward</p>
-          
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/5 rounded-full blur-md"></div>
-            <Progress value={progressPercentage} className="h-2 bg-white/5 backdrop-blur-md border border-white/10" indicatorClassName="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] shadow-[0_0_15px_rgba(155,135,245,0.5)] transition-all duration-1000 ease-in-out" />
-            
-            {/* Animated glow effect that follows progress */}
-            <motion.div className="absolute top-0 h-2 rounded-full blur-md bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] opacity-50" style={{
-              width: `${Math.min(progressPercentage + 5, 100)}%`,
-              filter: 'blur(8px)'
-            }} animate={{
-              opacity: [0.3, 0.5, 0.3]
-            }} transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }} />
-          </div>
         </motion.div>
         
         <ScrollArea className="flex-1">
@@ -90,7 +70,7 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ staggerChildren: 0.1 }}
-            className="space-y-3 pr-4"
+            className="space-y-0 pr-4"
           >
             {tasks.map((task, index) => (
               <motion.div
@@ -103,7 +83,6 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
                   id={task.id}
                   title={task.title}
                   status={task.status}
-                  icon={task.icon}
                   tooltip={task.tooltip}
                   onClick={() => handleTaskClick(task.id)}
                 />
@@ -112,6 +91,6 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
           </motion.div>
         </ScrollArea>
       </div>
-    </TooltipProvider>
+    </PopoverProvider>
   );
 }

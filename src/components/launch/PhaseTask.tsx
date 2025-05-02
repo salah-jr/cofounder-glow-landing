@@ -1,12 +1,12 @@
 
-import { Check, Clock, Circle, Target, Lightbulb, HelpCircle } from "lucide-react";
+import { Circle, Check, Clock, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover";
 import { ReactNode } from "react";
 
 export type TaskStatus = "pending" | "in-progress" | "complete";
@@ -15,12 +15,11 @@ interface PhaseTaskProps {
   id: string;
   title: string;
   status: TaskStatus;
-  icon?: string;
   tooltip?: string;
   onClick?: () => void;
 }
 
-export default function PhaseTask({ id, title, status, icon, tooltip, onClick }: PhaseTaskProps) {
+export default function PhaseTask({ id, title, status, tooltip, onClick }: PhaseTaskProps) {
   // Status icon based on task status
   const StatusIcon = () => {
     switch (status) {
@@ -33,36 +32,15 @@ export default function PhaseTask({ id, title, status, icon, tooltip, onClick }:
     }
   };
   
-  // Task icon based on title or provided icon prop
-  const TaskIcon = (): ReactNode => {
-    if (icon === "target") {
-      return <Target size={16} className="text-white/70" />;
-    } else if (icon === "bulb") {
-      return <Lightbulb size={16} className="text-white/70" />;
-    }
-    
-    // Default icons based on task title keywords
-    if (title.toLowerCase().includes("target") || title.toLowerCase().includes("audience")) {
-      return <Target size={16} className="text-white/70" />;
-    } else if (title.toLowerCase().includes("proposition") || title.toLowerCase().includes("idea")) {
-      return <Lightbulb size={16} className="text-white/70" />;
-    }
-    
-    // Fallback
-    return <Circle size={16} className="text-white/70" />;
-  };
-  
   return (
     <motion.div
       whileHover={{ 
-        scale: 1.02, 
-        boxShadow: "0 0 15px rgba(155, 135, 245, 0.2)",
-        background: "linear-gradient(135deg, rgba(155, 135, 245, 0.1), rgba(30, 174, 219, 0.1))"
+        scale: 1.01,
+        background: "linear-gradient(135deg, rgba(155, 135, 245, 0.05), rgba(30, 174, 219, 0.05))"
       }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "glass p-4 rounded-lg mb-2 cursor-pointer transition-all border border-white/5",
-        "bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-lg",
+        "px-2 py-3 cursor-pointer transition-all border-b border-white/10",
         status === "complete" ? "border-l-green-400 border-l-2" : "",
         status === "in-progress" ? "border-l-blue-400 border-l-2" : ""
       )}
@@ -76,43 +54,26 @@ export default function PhaseTask({ id, title, status, icon, tooltip, onClick }:
             status === "in-progress" ? "bg-blue-400/20" : 
             "bg-white/10"
           )}>
-            <TaskIcon />
+            <StatusIcon />
           </div>
           <span className="text-sm text-white">{title}</span>
         </div>
         
         <div className="flex items-center gap-2">
           {tooltip && (
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <span className="text-white/40 hover:text-white/70 transition-colors">
-                  <HelpCircle size={14} />
+            <Popover>
+              <PopoverTrigger asChild>
+                <span className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">
+                  <Lightbulb size={14} />
                 </span>
-              </TooltipTrigger>
-              <TooltipContent className="glass p-3 backdrop-blur-md bg-black/40 border-white/10 text-white">
+              </PopoverTrigger>
+              <PopoverContent className="glass p-3 backdrop-blur-md bg-black/40 border-white/10 text-white">
                 <p className="text-xs">{tooltip}</p>
-              </TooltipContent>
-            </Tooltip>
+              </PopoverContent>
+            </Popover>
           )}
-          <StatusIcon />
         </div>
       </div>
-      
-      {/* Progress indicator that animates on status change */}
-      <motion.div 
-        className={cn(
-          "h-0.5 w-full mt-2 rounded-full overflow-hidden",
-          status === "pending" ? "bg-white/5" : 
-          status === "in-progress" ? "bg-white/10" : 
-          "bg-gradient-to-r from-green-400/50 to-green-400"
-        )}
-        initial={{ width: "0%" }}
-        animate={{ 
-          width: status === "complete" ? "100%" : 
-                status === "in-progress" ? "50%" : "0%" 
-        }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      />
     </motion.div>
   );
 }
