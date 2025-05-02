@@ -33,7 +33,8 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
   const [isOnline, setIsOnline] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  // Update the ref type to HTMLTextAreaElement
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Auto-scroll to bottom when messages change
@@ -82,7 +83,8 @@ export default function CofounderChat({ className }: CofounderChatProps) {
     }, 1500);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  // Update the event type to HTMLTextAreaElement
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Allow shift+enter for new line without sending
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
