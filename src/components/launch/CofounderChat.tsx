@@ -30,7 +30,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
-  const [isOnline, setIsOnline] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,25 +107,8 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="flex items-center pb-4 border-b border-white/10">
-        <div className="flex items-center">
-          <h3 className="text-lg font-semibold text-white">Co-founder</h3>
-          <div className={cn(
-            "ml-2 h-3 w-3 rounded-full",
-            isOnline 
-              ? "bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5] animate-pulse-subtle" 
-              : "bg-[#ea384c]/70"
-          )} />
-        </div>
-        {currentMood === "thinking" && (
-          <span className="ml-2 flex h-3 w-3">
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-          </span>
-        )}
-        {currentMood === "excited" && (
-          <span className="ml-2 flex h-3 w-3">
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-400"></span>
-          </span>
-        )}
+        <h3 className="text-lg font-semibold text-white">Co-founder</h3>
+        {/* Removed the online/offline circle */}
       </div>
       
       <ScrollArea className="flex-1 py-4">
@@ -138,15 +120,9 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 initial={{ opacity: 0, y: 10, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
-                className={cn(
-                  "mb-6 px-2",
-                  message.sender === "user" ? "bg-transparent" : "bg-white/5"
-                )}
+                className="mb-6 px-2"
               >
-                <div className={cn(
-                  "py-2",
-                  message.sender === "user" ? "text-right" : "text-left"
-                )}>
+                <div className="py-2">
                   <span className={cn(
                     "text-sm font-medium",
                     message.sender === "user" ? "text-blue-400" : "text-purple-400"
@@ -155,10 +131,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                   </span>
                 </div>
                 
-                <div className={cn(
-                  "max-w-3xl",
-                  message.sender === "user" ? "ml-auto" : ""
-                )}>
+                <div>
                   <div className={cn(
                     "py-2 px-1",
                     message.isInsight ? "text-amber-200" : "text-white"
