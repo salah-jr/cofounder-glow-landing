@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -117,12 +118,11 @@ const LaunchPath: React.FC = () => {
               defaultSize={isLeftPanelCollapsed ? 0 : 20}
               minSize={0}
               maxSize={20}
-              className="h-full transition-all duration-300 ease-in-out"
-              style={{ overflow: 'visible' }}
+              className="h-full transition-all duration-300 ease-in-out relative"
             >
-              {/* Modern Collapse Button - positioned precisely to overlap the edge */}
+              {/* Modern Collapse Button - positioned at the right edge of the left panel */}
               <div 
-                className="absolute top-1/2 right-0 z-20 transform -translate-y-1/2 translate-x-1/2"
+                className="absolute top-1/2 -right-3 z-20 transform -translate-y-1/2"
                 onClick={toggleLeftPanel}
               >
                 <div className="flex items-center justify-center w-6 h-16 bg-white/10 backdrop-blur-md rounded-full cursor-pointer hover:bg-white/15 transition-all duration-300 border border-white/10 shadow-lg group">
