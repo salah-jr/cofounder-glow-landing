@@ -3,11 +3,12 @@ import { Circle, Check, Clock, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover";
-import { ReactNode } from "react";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
 
 export type TaskStatus = "pending" | "in-progress" | "complete";
 
@@ -61,16 +62,19 @@ export default function PhaseTask({ id, title, status, tooltip, onClick }: Phase
         
         <div className="flex items-center gap-2">
           {tooltip && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <span className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">
                   <Lightbulb size={14} />
-                </span>
-              </PopoverTrigger>
-              <PopoverContent className="glass p-3 backdrop-blur-md bg-black/40 border-white/10 text-white">
-                <p className="text-xs">{tooltip}</p>
-              </PopoverContent>
-            </Popover>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="glass backdrop-blur-md bg-black/80 border-white/10 text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-white">{title}</DialogTitle>
+                </DialogHeader>
+                <p className="text-sm text-white/80 mt-2">{tooltip}</p>
+              </DialogContent>
+            </Dialog>
           )}
         </div>
       </div>

@@ -2,7 +2,6 @@
 import { motion } from "framer-motion";
 import PhaseTask, { TaskStatus } from "./PhaseTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -40,9 +39,6 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
     }
   };
   
-  // Calculate completed tasks
-  const completedTasks = tasks.filter(task => task.status === "complete").length;
-  
   return (
     <div className="h-full flex flex-col">
       <motion.div 
@@ -55,9 +51,7 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
           <h3 className="text-lg font-semibold text-gradient flex items-center gap-2">
             <span className="text-primary cosmic-gradient bg-clip-text text-transparent">🧠</span> {phase} Phase Tasks
           </h3>
-          <Badge className="bg-gradient-to-r from-[#9b87f5]/80 to-[#1EAEDB]/80 text-white border-none">
-            {completedTasks}/{tasks.length}
-          </Badge>
+          {/* Badge removed as requested */}
         </div>
         
         <p className="text-sm text-white/60">Complete these tasks to move forward</p>
