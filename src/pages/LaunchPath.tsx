@@ -69,7 +69,8 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  // Initialize with the panel collapsed by default
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(true);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -115,7 +116,7 @@ const LaunchPath: React.FC = () => {
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
-              defaultSize={isLeftPanelCollapsed ? 0 : 20}
+              defaultSize={0}
               minSize={0}
               maxSize={20}
               className="h-full transition-all duration-300 ease-in-out relative"
@@ -148,8 +149,11 @@ const LaunchPath: React.FC = () => {
               )}
             </ResizablePanel>
               
-            {/* Second Panel - Chat with Co-founder */}
-            <ResizablePanel defaultSize={40} className="h-full">
+            {/* Second Panel - Chat with Co-founder - expanded to take 50% when sidebar collapsed */}
+            <ResizablePanel 
+              defaultSize={isLeftPanelCollapsed ? 50 : 40} 
+              className="h-full"
+            >
               <Card className="glass h-full border-0 rounded-none overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <CofounderChat />
@@ -165,8 +169,8 @@ const LaunchPath: React.FC = () => {
               </div>
             </ResizableHandle>
             
-            {/* Third Panel - Canvas Output Area */}
-            <ResizablePanel defaultSize={40}>
+            {/* Third Panel - Canvas Output Area - expanded to take 50% when sidebar collapsed */}
+            <ResizablePanel defaultSize={isLeftPanelCollapsed ? 50 : 40}>
               <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <div className="flex items-center pb-4 border-b border-white/10">
