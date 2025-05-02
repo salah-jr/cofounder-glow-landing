@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -118,6 +119,11 @@ const LaunchPath: React.FC = () => {
               defaultSize={isLeftPanelCollapsed ? 0 : 20}
               minSize={0}
               maxSize={20}
+              collapsible={true}
+              collapsedSize={0}
+              defaultCollapsed={isLeftPanelCollapsed}
+              onCollapse={() => setIsLeftPanelCollapsed(true)}
+              onExpand={() => setIsLeftPanelCollapsed(false)}
               className="h-full transition-all duration-300 ease-in-out relative"
             >
               {/* Modern Collapse Button - positioned at the right edge of the left panel */}
