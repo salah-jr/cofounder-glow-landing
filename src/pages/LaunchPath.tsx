@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -10,8 +9,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
 import { ChevronLeft, ChevronRight, ScrollText } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -71,7 +68,6 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
-  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -108,71 +104,50 @@ const LaunchPath: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="h-full"
         >
-          {/* 4-compartment layout using ResizablePanel */}
+          {/* 3-compartment layout using ResizablePanel */}
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
-            {/* First Panel - Left Sidebar with Phase Tasks - Now with collapsible functionality */}
-            <div className="flex h-full">
-              <Collapsible 
-                open={isLeftPanelOpen} 
-                onOpenChange={setIsLeftPanelOpen}
-                className="h-full flex"
-              >
-                <CollapsibleContent className="h-full flex-shrink-0 w-[20%] min-w-[200px]">
-                  <Card className="glass h-full border-0 rounded-l-xl">
-                    <CardContent className="p-4 h-full overflow-hidden">
-                      <PhaseSidebar 
-                        phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                        tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                        onTaskStatusChange={handleTaskStatusChange}
-                      />
-                    </CardContent>
-                  </Card>
-                </CollapsibleContent>
-                
-                {/* Updated simple Notion-like collapse button */}
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className={`h-full px-0 py-0 flex items-center justify-center rounded-none transition-colors bg-transparent hover:bg-white/5 ${!isLeftPanelOpen ? 'rounded-l-xl' : ''}`}
-                  >
-                    <div className="w-5 h-10 flex items-center justify-center">
-                      <ChevronLeft className={`w-4 h-4 text-white/60 transition-transform ${isLeftPanelOpen ? '' : 'rotate-180'}`} />
-                    </div>
-                  </Button>
-                </CollapsibleTrigger>
-              </Collapsible>
+            {/* First Panel - Left Sidebar with Phase Tasks */}
+            <ResizablePanel defaultSize={20} minSize={15} className="h-full">
+              <Card className="glass h-full border-0 rounded-l-xl">
+                <CardContent className="p-4 h-full overflow-hidden">
+                  <PhaseSidebar 
+                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                    onTaskStatusChange={handleTaskStatusChange}
+                  />
+                </CardContent>
+              </Card>
+            </ResizablePanel>
               
-              {/* Second Panel - Chat with Co-founder */}
-              <ResizablePanel defaultSize={isLeftPanelOpen ? 40 : 50} className="h-full">
-                <Card className={`glass h-full border-0 ${!isLeftPanelOpen ? 'rounded-l-xl' : 'rounded-none'} overflow-hidden`}>
-                  <CardContent className="p-4 h-full overflow-hidden">
-                    <CofounderChat />
-                  </CardContent>
-                </Card>
-              </ResizablePanel>
-              
-              {/* Enhanced resize handle between 2nd and 3rd panel */}
-              <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10 hover:scale-y-105">
-                <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm shadow-[0_0_10px_rgba(255,255,255,0.15)] transition-all duration-300 hover:bg-white/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] group-hover:scale-110">
-                  <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
-                  <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
-                </div>
-              </ResizableHandle>
-              
-              {/* Third Panel - Canvas Output Area */}
-              <ResizablePanel defaultSize={isLeftPanelOpen ? 40 : 50}>
-                <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
-                  <CardContent className="p-4 h-full overflow-hidden">
-                    <div className="flex items-center pb-4 border-b border-white/10">
-                      <ScrollText className="w-5 h-5 mr-2 text-white/70" />
-                      <h3 className="text-lg font-semibold text-white">Canvas Output</h3>
-                    </div>
-                    <CanvasOutput />
-                  </CardContent>
-                </Card>
-              </ResizablePanel>
-            </div>
+            {/* Second Panel - Chat with Co-founder */}
+            <ResizablePanel defaultSize={40} className="h-full">
+              <Card className="glass h-full border-0 rounded-none overflow-hidden">
+                <CardContent className="p-4 h-full overflow-hidden">
+                  <CofounderChat />
+                </CardContent>
+              </Card>
+            </ResizablePanel>
+            
+            {/* Enhanced resize handle between 2nd and 3rd panel */}
+            <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10 hover:scale-y-105">
+              <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm shadow-[0_0_10px_rgba(255,255,255,0.15)] transition-all duration-300 hover:bg-white/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] group-hover:scale-110">
+                <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
+                <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
+              </div>
+            </ResizableHandle>
+            
+            {/* Third Panel - Canvas Output Area */}
+            <ResizablePanel defaultSize={40}>
+              <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
+                <CardContent className="p-4 h-full overflow-hidden">
+                  <div className="flex items-center pb-4 border-b border-white/10">
+                    <ScrollText className="w-5 h-5 mr-2 text-white/70" />
+                    <h3 className="text-lg font-semibold text-white">Canvas Output</h3>
+                  </div>
+                  <CanvasOutput />
+                </CardContent>
+              </Card>
+            </ResizablePanel>
           </ResizablePanelGroup>
         </motion.div>
       </div>
