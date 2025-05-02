@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -9,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
 import { ChevronLeft, ChevronRight, ScrollText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -68,11 +70,17 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
     // Implement actual status change logic here
+  };
+
+  // Toggle left panel collapse state
+  const toggleLeftPanel = () => {
+    setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
   };
 
   return (
@@ -107,9 +115,27 @@ const LaunchPath: React.FC = () => {
           {/* 3-compartment layout using ResizablePanel */}
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
-            <ResizablePanel defaultSize={20} minSize={15} className="h-full">
-              <Card className="glass h-full border-0 rounded-l-xl">
-                <CardContent className="p-4 h-full overflow-hidden">
+            <ResizablePanel 
+              defaultSize={20} 
+              minSize={isLeftPanelCollapsed ? 5 : 15} 
+              className="h-full transition-all duration-300 ease-in-out"
+              style={{ width: isLeftPanelCollapsed ? '56px' : undefined }}
+            >
+              <Card className="glass h-full border-0 rounded-l-xl relative">
+                {/* Collapse/Expand Button */}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="absolute top-3 right-2 z-10 bg-white/5 hover:bg-white/10 rounded-full w-7 h-7 transition-all duration-300 ease-in-out"
+                  onClick={toggleLeftPanel}
+                >
+                  {isLeftPanelCollapsed ? 
+                    <ChevronRight className="w-4 h-4 text-white/70" /> : 
+                    <ChevronLeft className="w-4 h-4 text-white/70" />
+                  }
+                </Button>
+                
+                <CardContent className={`p-4 h-full overflow-hidden ${isLeftPanelCollapsed ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}>
                   <PhaseSidebar 
                     phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
                     tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
