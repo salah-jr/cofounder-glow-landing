@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -16,9 +16,9 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
       {/* Document header - sticky with icon */}
       <div className="flex items-center justify-between mb-6 sticky top-0 z-10 bg-opacity-95 bg-black/30 backdrop-blur-md py-2">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-white/70" />
+          <ScrollText className="w-5 h-5 text-white/70" />
           <div>
-            <h2 className="text-xl font-semibold text-white/90">Canvas Document</h2>
+            <h2 className="text-xl font-semibold text-white/90">Canvas Output</h2>
             <p className="text-sm text-white/60">
               Business insights and startup assets
             </p>
@@ -38,10 +38,7 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
       <ScrollArea className="h-full pr-4">
         <div className="space-y-6 pb-8 text-white/80">
           <div>
-            <h3 className="text-lg font-medium mb-3">Project Overview</h3>
-            <p className="mb-4">This canvas will help you organize your startup's key information and insights.</p>
-            
-            <h4 className="text-base font-medium mb-2 text-white/70">Main focus areas:</h4>
+            <h4 className="text-base font-medium mb-2 text-white/70">Key points:</h4>
             <ul className="list-disc pl-6 space-y-2 mb-6">
               <li>Problem definition and validation</li>
               <li>Target audience analysis</li>

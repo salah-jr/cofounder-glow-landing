@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -9,6 +8,7 @@ import CanvasOutput from "@/components/launch/CanvasOutput";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
+import { ScrollText } from "lucide-react";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -134,11 +134,12 @@ const LaunchPath: React.FC = () => {
             {/* Visible resize handle between 2nd and 3rd panel */}
             <ResizableHandle withHandle />
             
-            {/* Third Panel - Canvas Output Area - Updated to have white text */}
+            {/* Third Panel - Canvas Output Area - Updated with icon */}
             <ResizablePanel defaultSize={40}>
               <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <div className="flex items-center pb-4 border-b border-white/10">
+                    <ScrollText className="w-5 h-5 mr-2 text-white/70" />
                     <h3 className="text-lg font-semibold text-white">Canvas Output</h3>
                   </div>
                   <CanvasOutput />
