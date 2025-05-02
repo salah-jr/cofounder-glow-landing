@@ -10,7 +10,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
 import { ChevronLeft, ChevronRight, ScrollText } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -116,31 +115,35 @@ const LaunchPath: React.FC = () => {
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
-              defaultSize={20} 
-              minSize={isLeftPanelCollapsed ? 5 : 15} 
-              className="h-full transition-all duration-300 ease-in-out"
-              style={{ width: isLeftPanelCollapsed ? '56px' : undefined }}
+              defaultSize={isLeftPanelCollapsed ? 5 : 20}
+              minSize={5}
+              maxSize={20}
+              className="h-full transition-all duration-300 ease-in-out relative"
             >
-              <Card className="glass h-full border-0 rounded-l-xl relative">
-                {/* Collapse/Expand Button */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="absolute top-3 right-2 z-10 bg-white/5 hover:bg-white/10 rounded-full w-7 h-7 transition-all duration-300 ease-in-out"
-                  onClick={toggleLeftPanel}
-                >
-                  {isLeftPanelCollapsed ? 
-                    <ChevronRight className="w-4 h-4 text-white/70" /> : 
-                    <ChevronLeft className="w-4 h-4 text-white/70" />
-                  }
-                </Button>
-                
-                <CardContent className={`p-4 h-full overflow-hidden ${isLeftPanelCollapsed ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}>
-                  <PhaseSidebar 
-                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                    onTaskStatusChange={handleTaskStatusChange}
-                  />
+              {/* Modern Collapse Button - positioned on the right edge of the panel */}
+              <div 
+                className="absolute top-1/2 right-0 z-20 transform -translate-y-1/2 translate-x-1/2"
+                onClick={toggleLeftPanel}
+              >
+                <div className="flex items-center justify-center w-6 h-16 bg-white/10 backdrop-blur-md rounded-full cursor-pointer hover:bg-white/15 transition-all duration-300 border border-white/10 shadow-lg group">
+                  <div className="flex items-center justify-center">
+                    {isLeftPanelCollapsed ? 
+                      <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" /> : 
+                      <ChevronLeft className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" />
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
+                <CardContent className="p-4 h-full">
+                  {!isLeftPanelCollapsed && (
+                    <PhaseSidebar 
+                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                      onTaskStatusChange={handleTaskStatusChange}
+                    />
+                  )}
                 </CardContent>
               </Card>
             </ResizablePanel>
