@@ -1,8 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Paperclip, CircleDot } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Send, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -33,7 +32,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
   const [isOnline, setIsOnline] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // Update the ref type to HTMLTextAreaElement
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -83,7 +81,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
     }, 1500);
   };
 
-  // Update the event type to HTMLTextAreaElement
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Allow shift+enter for new line without sending
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -111,10 +108,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="flex items-center pb-4 border-b border-white/10">
-        <Avatar className="h-10 w-10 mr-3 bg-gradient-to-br from-[#9b87f5] to-[#7E69AB]">
-          <AvatarFallback>C</AvatarFallback>
-          <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
-        </Avatar>
         <div className="flex items-center">
           <h3 className="text-lg font-semibold text-white">Co-founder</h3>
           <div className={cn(
@@ -126,7 +119,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
         </div>
         {currentMood === "thinking" && (
           <span className="ml-2 flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
           </span>
         )}
@@ -147,39 +139,33 @@ export default function CofounderChat({ className }: CofounderChatProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
                 className={cn(
-                  "flex mb-6",
-                  message.sender === "user" ? "justify-end" : "justify-start"
+                  "mb-6 px-2",
+                  message.sender === "user" ? "bg-transparent" : "bg-white/5"
                 )}
               >
-                {message.sender === "cofounder" && (
-                  <Avatar className="h-8 w-8 mt-1 mr-2 flex-shrink-0 bg-gradient-to-br from-[#9b87f5] to-[#7E69AB]">
-                    <AvatarFallback>C</AvatarFallback>
-                    <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
-                  </Avatar>
-                )}
-                
-                <div className="max-w-fit">
-                  <motion.div 
-                    className={cn(
-                      "p-3 rounded-lg",
-                      message.sender === "user" 
-                        ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-br-none" 
-                        : message.isInsight 
-                          ? "glass border border-amber-500/20 text-white rounded-bl-none" 
-                          : "glass text-white rounded-bl-none"
-                    )}
-                    animate={message.isInsight ? { boxShadow: ["none", "none", "none"] } : {}}
-                  >
-                    <p>{message.text}</p>
-                  </motion.div>
+                <div className={cn(
+                  "py-2",
+                  message.sender === "user" ? "text-right" : "text-left"
+                )}>
+                  <span className={cn(
+                    "text-sm font-medium",
+                    message.sender === "user" ? "text-blue-400" : "text-purple-400"
+                  )}>
+                    {message.sender === "user" ? "You" : "Co-founder"}
+                  </span>
                 </div>
                 
-                {message.sender === "user" && (
-                  <Avatar className="h-8 w-8 mt-1 ml-2 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-500">
-                    <AvatarFallback>U</AvatarFallback>
-                    <AvatarImage src="/images/user-avatar.svg" alt="User" />
-                  </Avatar>
-                )}
+                <div className={cn(
+                  "max-w-3xl",
+                  message.sender === "user" ? "ml-auto" : ""
+                )}>
+                  <div className={cn(
+                    "py-2 px-1",
+                    message.isInsight ? "text-amber-200" : "text-white"
+                  )}>
+                    <p>{message.text}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
             
@@ -188,9 +174,9 @@ export default function CofounderChat({ className }: CofounderChatProps) {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center ml-10"
+                className="px-2 py-4"
               >
-                <div className="glass p-2 px-4 rounded-full flex items-center gap-1">
+                <div className="flex items-center gap-1">
                   <div className="flex space-x-1 items-center">
                     <motion.div 
                       className="w-2 h-2 rounded-full bg-white/60" 
