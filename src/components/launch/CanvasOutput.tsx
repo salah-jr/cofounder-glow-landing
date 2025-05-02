@@ -2,8 +2,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Edit, Trash2, Save, Image, Lightbulb, FileChartLine, 
-  FileText, Plus, MoreHorizontal, User, Link 
+  Edit, Trash2, Download, WandSparkles, 
+  FileText, Plus, MoreHorizontal, User, Link,
+  Lightbulb, FileChartLine, ArrowDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -91,6 +92,7 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
     title: "",
     content: ""
   });
+  const [hoverItemId, setHoverItemId] = useState<string | null>(null);
   
   // Demo function to add new item
   const demoAddNewItem = () => {
@@ -150,118 +152,118 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
   const getIconForType = (type: CanvasItem["type"]) => {
     switch (type) {
       case "persona":
-        return <User className="w-5 h-5 text-violet-500" />;
+        return <User className="w-4 h-4 text-slate-400" />;
       case "graph":
-        return <FileChartLine className="w-5 h-5 text-sky-500" />;
+        return <FileChartLine className="w-4 h-4 text-slate-400" />;
       case "insight":
-        return <Lightbulb className="w-5 h-5 text-amber-500" />;
+        return <Lightbulb className="w-4 h-4 text-slate-400" />;
       case "note":
-        return <FileText className="w-5 h-5 text-neutral-700" />;
+        return <FileText className="w-4 h-4 text-slate-400" />;
       case "strategy":
-        return <FileChartLine className="w-5 h-5 text-emerald-500" />;
+        return <FileChartLine className="w-4 h-4 text-slate-400" />;
       default:
-        return <FileText className="w-5 h-5" />;
-    }
-  };
-
-  const getBadgeColorForType = (type: CanvasItem["type"]) => {
-    switch (type) {
-      case "persona":
-        return "bg-violet-100 text-violet-700 border-violet-200";
-      case "graph":
-        return "bg-sky-100 text-sky-700 border-sky-200";
-      case "insight":
-        return "bg-amber-100 text-amber-700 border-amber-200";
-      case "note":
-        return "bg-neutral-100 text-neutral-700 border-neutral-200";
-      case "strategy":
-        return "bg-emerald-100 text-emerald-700 border-emerald-200";
-      default:
-        return "bg-neutral-100 text-neutral-700 border-neutral-200";
+        return <FileText className="w-4 h-4 text-slate-400" />;
     }
   };
 
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-white/80">
-          Canvas outputs are stored and can be edited
-        </p>
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 px-2 text-white/70 hover:text-white"
-            onClick={demoAddNewItem}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Item
-          </Button>
+      {/* Document header - sticky */}
+      <div className="flex items-center justify-between mb-6 sticky top-0 z-10 bg-opacity-95 bg-black/30 backdrop-blur-md py-2">
+        <div>
+          <h2 className="text-xl font-semibold text-white/90">Canvas Document</h2>
+          <p className="text-sm text-white/60">
+            Business insights and startup assets
+          </p>
         </div>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="h-8 px-2 text-white/70 hover:text-white hover:bg-white/10"
+          onClick={demoAddNewItem}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Item
+        </Button>
       </div>
       
-      {/* Document-style canvas with light background */}
-      <div className="flex-1 rounded-xl overflow-hidden shadow-lg relative">
-        {/* Subtle gradient border effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-xl -z-10" />
-        
-        <ScrollArea className="h-full bg-white/[0.98] rounded-xl shadow-inner">
-          <div className="p-6 md:p-8 min-h-full">
-            <AnimatePresence>
-              {/* Canvas title */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-semibold text-neutral-800">Canvas Document</h2>
-                <p className="text-neutral-500 text-sm">Your co-founder insights and business assets</p>
-              </div>
-              
-              {/* Canvas items */}
-              {canvasItems.map((item) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ 
-                    opacity: 1, 
-                    y: 0,
-                    scale: newItemAdded && item.id === canvasItems[0].id ? [1, 1.02, 1] : 1 
-                  }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  transition={{ 
-                    duration: 0.4,
-                    ease: "easeOut"
-                  }}
-                  className={cn(
-                    "mb-6 pb-6 border-b border-neutral-200 group",
-                    item.isEditing ? "bg-neutral-50 p-4 rounded-lg -mx-4" : ""
+      {/* Document body - scrollable area */}
+      <ScrollArea className="h-full pr-4">
+        <div className="space-y-8 pb-8">
+          <AnimatePresence>
+            {canvasItems.map((item) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0,
+                  scale: newItemAdded && item.id === canvasItems[0].id ? [1, 1.02, 1] : 1 
+                }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="border-b border-white/10 pb-8"
+                onMouseEnter={() => setHoverItemId(item.id)}
+                onMouseLeave={() => setHoverItemId(null)}
+              >
+                <div className="relative">
+                  {/* Type indicator and metadata - subtle at top */}
+                  <div className="flex items-center gap-2 text-xs text-white/40 mb-2">
+                    {getIconForType(item.type)}
+                    <span className="uppercase tracking-wide">
+                      {item.type}
+                    </span>
+                    {item.category && (
+                      <>
+                        <span>•</span>
+                        <span>{item.category}</span>
+                      </>
+                    )}
+                    <span>•</span>
+                    <span>{item.created.toLocaleDateString()}</span>
+                  </div>
+                  
+                  {/* Title - larger, bolder */}
+                  {item.isEditing ? (
+                    <Input 
+                      value={editValues.title}
+                      onChange={(e) => setEditValues(prev => ({ ...prev, title: e.target.value }))}
+                      className="text-lg font-semibold mb-3 bg-white/5 border-white/20 text-white focus-visible:ring-white/20"
+                      placeholder="Enter title..."
+                    />
+                  ) : (
+                    <h3 className="text-lg font-semibold mb-3 text-white/90">{item.title}</h3>
                   )}
-                >
-                  <div className="flex flex-col">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm border border-neutral-100">
-                          {getIconForType(item.type)}
-                        </div>
-                        
-                        {item.isEditing ? (
-                          <Input 
-                            value={editValues.title}
-                            onChange={(e) => setEditValues(prev => ({ ...prev, title: e.target.value }))}
-                            className="font-medium text-neutral-800 border-neutral-300 focus-visible:ring-neutral-400"
-                            placeholder="Enter title..."
-                          />
-                        ) : (
-                          <h3 className="font-medium text-neutral-800">{item.title}</h3>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  
+                  {/* Content - regular paragraph */}
+                  {item.isEditing ? (
+                    <Textarea
+                      value={editValues.content}
+                      onChange={(e) => setEditValues(prev => ({ ...prev, content: e.target.value }))}
+                      className="min-h-24 text-base leading-relaxed bg-white/5 border-white/20 text-white focus-visible:ring-white/20"
+                      placeholder="Enter content..."
+                    />
+                  ) : (
+                    <p className="text-base leading-relaxed text-white/80">{item.content}</p>
+                  )}
+                  
+                  {/* Action buttons - only visible on hover or when editing */}
+                  <AnimatePresence>
+                    {(hoverItemId === item.id || item.isEditing) && (
+                      <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-0 right-0 flex items-center gap-1"
+                      >
                         {item.isEditing ? (
                           <Button 
-                            variant="default" 
+                            variant="ghost" 
                             size="sm"
-                            className="h-8 bg-neutral-800 hover:bg-neutral-700 text-white"
                             onClick={() => handleSaveEdit(item.id)}
+                            className="text-xs h-7 px-2 bg-white/10 hover:bg-white/20 text-white"
                           >
-                            <Save className="h-3.5 w-3.5 mr-1" />
                             Save
                           </Button>
                         ) : (
@@ -270,115 +272,98 @@ export default function CanvasOutput({ className }: CanvasOutputProps) {
                               <TooltipTrigger asChild>
                                 <Button 
                                   variant="ghost" 
-                                  size="sm" 
-                                  className="h-8 w-8 p-0 rounded-full bg-neutral-100 hover:bg-neutral-200"
+                                  size="sm"
+                                  className="h-7 w-7 p-0 text-white/60 hover:text-white hover:bg-white/10"
                                   onClick={() => handleEditToggle(item.id)}
                                 >
-                                  <Edit className="h-3.5 w-3.5 text-neutral-700" />
+                                  <Edit className="h-3.5 w-3.5" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>Edit</TooltipContent>
                             </Tooltip>
                             
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
                                 <Button 
                                   variant="ghost" 
-                                  size="sm" 
-                                  className="h-8 w-8 p-0 rounded-full bg-neutral-100 hover:bg-neutral-200"
+                                  size="sm"
+                                  className="h-7 w-7 p-0 text-white/60 hover:text-white hover:bg-white/10"
                                 >
-                                  <MoreHorizontal className="h-3.5 w-3.5 text-neutral-700" />
+                                  <WandSparkles className="h-3.5 w-3.5" />
                                 </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleDelete(item.id)}>
-                                  <Trash2 className="h-4 w-4 mr-2 text-red-500" />
-                                  <span>Delete</span>
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                              </TooltipTrigger>
+                              <TooltipContent>AI Rewrite</TooltipContent>
+                            </Tooltip>
+                            
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="h-7 w-7 p-0 text-white/60 hover:text-white hover:bg-white/10"
+                                  onClick={() => handleDelete(item.id)}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Delete</TooltipContent>
+                            </Tooltip>
+                            
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="h-7 w-7 p-0 text-white/60 hover:text-white hover:bg-white/10"
+                                >
+                                  <ArrowDown className="h-3.5 w-3.5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Download</TooltipContent>
+                            </Tooltip>
                           </>
                         )}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 mb-3">
-                      <Badge className={cn(
-                        "px-1.5 py-0.5 text-xs border",
-                        getBadgeColorForType(item.type)
-                      )}>
-                        {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                      </Badge>
-                      
-                      {item.category && (
-                        <Badge variant="outline" className="px-1.5 py-0.5 text-xs border-neutral-200 text-neutral-600">
-                          {item.category}
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    {item.isEditing ? (
-                      <Textarea
-                        value={editValues.content}
-                        onChange={(e) => setEditValues(prev => ({ ...prev, content: e.target.value }))}
-                        className="min-h-24 text-neutral-700 border-neutral-300 focus-visible:ring-neutral-400"
-                        placeholder="Enter content..."
-                      />
-                    ) : (
-                      <p className="text-neutral-700 whitespace-pre-wrap">{item.content}</p>
+                      </motion.div>
                     )}
-                    
-                    <div className="mt-3 text-xs text-neutral-400 flex justify-end items-center">
-                      <span>Last updated: {item.created.toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ))}
+
             {/* Empty state */}
             {canvasItems.length === 0 && (
               <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
-                  <FileText className="w-8 h-8 text-neutral-400" />
+                <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/10">
+                  <FileText className="w-7 h-7 text-white/40" />
                 </div>
-                <h3 className="text-lg font-medium text-neutral-800 mb-2">No items yet</h3>
-                <p className="text-neutral-500 mb-4">Start a conversation with your co-founder to generate insights</p>
+                <h3 className="text-lg font-medium text-white mb-2">No items yet</h3>
+                <p className="text-white/60 mb-4">Start a conversation with your co-founder to generate insights</p>
                 <Button 
                   onClick={demoAddNewItem} 
                   variant="outline"
-                  className="bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50"
+                  className="bg-white/5 border-white/20 text-white hover:bg-white/10"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Sample Item
                 </Button>
               </div>
             )}
-          </div>
-        </ScrollArea>
-      </div>
+          </AnimatePresence>
+        </div>
+      </ScrollArea>
       
-      {/* Sparkle effect for new items */}
+      {/* Notification for new items - animated floating notification */}
       <AnimatePresence>
         {newItemAdded && (
           <motion.div 
-            className="absolute top-0 left-0 right-0 bottom-0 pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="absolute top-10 left-1/2 transform -translate-x-1/2">
-              <motion.div 
-                className="flex items-center justify-center"
-                initial={{ y: -10, opacity: 0 }}
-                animate={{ y: -30, opacity: 1 }}
-                exit={{ y: -50, opacity: 0 }}
-                transition={{ duration: 1.5 }}
-              >
-                <span className="px-3 py-1 bg-neutral-800 rounded-full text-white text-xs font-medium shadow-lg">
-                  New item added! ✨
-                </span>
-              </motion.div>
+            <div className="px-4 py-2 bg-black/80 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
+              <span className="text-sm text-white">New item added ✨</span>
             </div>
           </motion.div>
         )}

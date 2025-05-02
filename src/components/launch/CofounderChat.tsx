@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Paperclip, User } from "lucide-react";
@@ -209,8 +208,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
             style={{ 
               overflowY: "auto", 
               msOverflowStyle: "none", 
-              scrollbarWidth: "none",
-              WebkitScrollbar: { display: "none" } 
+              scrollbarWidth: "none"
             }}
           />
           {/* Using global CSS styling approach instead of jsx prop which caused the type error */}
