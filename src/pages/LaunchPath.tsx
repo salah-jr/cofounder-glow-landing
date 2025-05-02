@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -119,11 +118,6 @@ const LaunchPath: React.FC = () => {
               defaultSize={isLeftPanelCollapsed ? 0 : 20}
               minSize={0}
               maxSize={20}
-              collapsible={true}
-              collapsedSize={0}
-              defaultCollapsed={isLeftPanelCollapsed}
-              onCollapse={() => setIsLeftPanelCollapsed(true)}
-              onExpand={() => setIsLeftPanelCollapsed(false)}
               className="h-full transition-all duration-300 ease-in-out relative"
             >
               {/* Modern Collapse Button - positioned at the right edge of the left panel */}
@@ -141,15 +135,18 @@ const LaunchPath: React.FC = () => {
                 </div>
               </div>
 
-              <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
-                <CardContent className="p-4 h-full">
-                  <PhaseSidebar 
-                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                    onTaskStatusChange={handleTaskStatusChange}
-                  />
-                </CardContent>
-              </Card>
+              {/* Only render content when not collapsed */}
+              {!isLeftPanelCollapsed && (
+                <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
+                  <CardContent className="p-4 h-full">
+                    <PhaseSidebar 
+                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                      onTaskStatusChange={handleTaskStatusChange}
+                    />
+                  </CardContent>
+                </Card>
+              )}
             </ResizablePanel>
               
             {/* Second Panel - Chat with Co-founder - expanded to take 50% when sidebar collapsed */}
