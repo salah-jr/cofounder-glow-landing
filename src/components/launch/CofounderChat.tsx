@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, MessageSquare, Paperclip } from "lucide-react";
+import { Send, Paperclip, CircleDot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -31,6 +31,7 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
+  const [isOnline, setIsOnline] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -112,6 +113,12 @@ export default function CofounderChat({ className }: CofounderChatProps) {
         </Avatar>
         <div className="flex items-center">
           <h3 className="text-lg font-semibold text-white">Co-founder</h3>
+          <div className={cn(
+            "ml-2 h-3 w-3 rounded-full",
+            isOnline 
+              ? "bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5] animate-pulse-subtle" 
+              : "bg-[#ea384c]/70"
+          )} />
         </div>
         {currentMood === "thinking" && (
           <span className="ml-2 flex h-3 w-3">
@@ -252,3 +259,4 @@ export default function CofounderChat({ className }: CofounderChatProps) {
     </div>
   );
 }
+
