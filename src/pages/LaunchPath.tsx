@@ -124,12 +124,11 @@ const LaunchPath: React.FC = () => {
               collapsible={true}
               isCollapsed={isLeftPanelCollapsed}
               collapsedSize={0}
-              className="h-full"
+              className="h-full transition-all duration-300 ease-in-out"
             >
-              {/* Added relative wrapper for positioning */}
               <div className="relative h-full">
                 <Card className={cn(
-                  "glass h-full rounded-xl overflow-hidden transition-opacity duration-200",
+                  "glass h-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out",
                   isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
                 )}>
                   <CardContent className="p-4 h-full">
@@ -143,14 +142,15 @@ const LaunchPath: React.FC = () => {
               </div>
             </ResizablePanel>
             
-            {/* Toggle button positioned absolutely but outside the panel content */}
-            {/* This ensures it stays visible regardless of panel collapse state */}
+            {/* Modernized toggle button */}
             <div 
               className={cn(
-                "absolute left-[calc(var(--panel-left,0px)_+_var(--panel-width,0px)_-_3px)] top-1/2 z-20 -translate-y-1/2 flex items-center justify-center",
-                "h-6 w-6 rounded-full bg-white/10 backdrop-blur-md border border-white/10",
-                "cursor-pointer transition-all duration-300 hover:bg-white/20",
-                "shadow-md hover:shadow-lg"
+                "absolute left-[calc(var(--panel-left,0px)_+_var(--panel-width,0px)_-_3px)] top-1/2 z-20 -translate-y-1/2",
+                "w-8 h-8 flex items-center justify-center",
+                "bg-gradient-to-r from-[#9b87f5]/90 to-[#1EAEDB]/90 backdrop-blur-md",
+                "rounded-full border border-white/20",
+                "cursor-pointer transition-all duration-300 hover:scale-110",
+                "shadow-[0_0_15px_rgba(155,135,245,0.3)] hover:shadow-[0_0_20px_rgba(155,135,245,0.5)]"
               )}
               onClick={toggleLeftPanel}
               style={{
@@ -161,7 +161,7 @@ const LaunchPath: React.FC = () => {
             >
               <ChevronLeft 
                 className={cn(
-                  "h-4 w-4 text-white/70 transition-transform duration-300",
+                  "h-5 w-5 text-white transition-transform duration-300",
                   isLeftPanelCollapsed && "rotate-180"
                 )} 
               />
@@ -171,7 +171,7 @@ const LaunchPath: React.FC = () => {
             <ResizablePanel 
               defaultSize={40}
               minSize={30}
-              className="flex-grow"
+              className="flex-grow transition-all duration-300 ease-in-out"
             >
               <Card className="glass h-full rounded-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
@@ -180,9 +180,9 @@ const LaunchPath: React.FC = () => {
               </Card>
             </ResizablePanel>
             
-            {/* Enhanced resize handle between 2nd and 3rd panel - bidirectional */}
+            {/* Enhanced resize handle between 2nd and 3rd panel - only affects chat and canvas */}
             <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
-              <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 group-hover:scale-105">
+              <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-[#9b87f5]/40 to-[#1EAEDB]/40 backdrop-blur-sm transition-all duration-300 hover:from-[#9b87f5]/60 hover:to-[#1EAEDB]/60 group-hover:scale-105">
                 <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
                 <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
               </div>
@@ -192,7 +192,7 @@ const LaunchPath: React.FC = () => {
             <ResizablePanel 
               defaultSize={40}
               minSize={30}
-              className="flex-grow"
+              className="flex-grow transition-all duration-300 ease-in-out"
             >
               <Card className="glass h-full rounded-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
