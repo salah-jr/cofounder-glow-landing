@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -103,19 +102,20 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* New Progress Bar */}
-      <ProgressBar 
-        steps={progressSteps.length} 
-        currentStep={getCurrentStepIndex()}
-        labels={progressSteps}
-        showLabels={true}
-        collapsed={isProgressCollapsed}
-        onToggleCollapse={() => setIsProgressCollapsed(!isProgressCollapsed)}
-        className="mt-2"
-      />
+      {/* Progress Bar with added spacing */}
+      <div className="w-full mt-4 mb-5 px-6">
+        <ProgressBar 
+          steps={progressSteps.length} 
+          currentStep={getCurrentStepIndex()}
+          labels={progressSteps}
+          showLabels={true}
+          collapsed={isProgressCollapsed}
+          onToggleCollapse={() => setIsProgressCollapsed(!isProgressCollapsed)}
+        />
+      </div>
       
       {/* Main content area */}
-      <div className="w-full px-6 py-6 flex-grow overflow-hidden">
+      <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

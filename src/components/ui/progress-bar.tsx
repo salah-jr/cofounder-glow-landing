@@ -53,7 +53,7 @@ export const ProgressBar = ({
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className={cn("relative px-6 py-2.5", className)}
+          className={cn("relative py-3", className)}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
@@ -111,7 +111,7 @@ export const ProgressBar = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute top-6 left-0 w-full flex justify-between px-1 mt-1"
+                className="absolute top-6 left-0 w-full flex justify-between mt-1"
               >
                 {labels.map((label, index) => (
                   <div 
