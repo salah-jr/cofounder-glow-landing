@@ -124,39 +124,48 @@ const LaunchPath: React.FC = () => {
               collapsible={true}
               isCollapsed={isLeftPanelCollapsed}
               collapsedSize={0}
-              className="h-full relative"
+              className="h-full"
             >
-              {/* Toggle button for left panel - positioned at the edge */}
-              <div 
-                className={cn(
-                  "absolute -right-3 top-1/2 z-20 -translate-y-1/2 flex items-center justify-center",
-                  "h-6 w-6 rounded-full bg-white/10 backdrop-blur-md border border-white/10",
-                  "cursor-pointer transition-all duration-300 hover:bg-white/20",
-                  "shadow-md hover:shadow-lg"
-                )}
-                onClick={toggleLeftPanel}
-              >
-                <ChevronLeft 
-                  className={cn(
-                    "h-4 w-4 text-white/70 transition-transform duration-300",
-                    isLeftPanelCollapsed && "rotate-180"
-                  )} 
-                />
+              {/* Added relative wrapper for positioning */}
+              <div className="relative h-full">
+                <Card className={cn(
+                  "glass h-full rounded-xl overflow-hidden transition-opacity duration-200",
+                  isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
+                )}>
+                  <CardContent className="p-4 h-full">
+                    <PhaseSidebar 
+                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                      onTaskStatusChange={handleTaskStatusChange}
+                    />
+                  </CardContent>
+                </Card>
               </div>
-              
-              <Card className={cn(
-                "glass h-full rounded-xl overflow-hidden transition-opacity duration-200",
-                isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
-              )}>
-                <CardContent className="p-4 h-full">
-                  <PhaseSidebar 
-                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                    onTaskStatusChange={handleTaskStatusChange}
-                  />
-                </CardContent>
-              </Card>
             </ResizablePanel>
+            
+            {/* Toggle button positioned absolutely but outside the panel content */}
+            {/* This ensures it stays visible regardless of panel collapse state */}
+            <div 
+              className={cn(
+                "absolute left-[calc(var(--panel-left,0px)_+_var(--panel-width,0px)_-_3px)] top-1/2 z-20 -translate-y-1/2 flex items-center justify-center",
+                "h-6 w-6 rounded-full bg-white/10 backdrop-blur-md border border-white/10",
+                "cursor-pointer transition-all duration-300 hover:bg-white/20",
+                "shadow-md hover:shadow-lg"
+              )}
+              onClick={toggleLeftPanel}
+              style={{
+                // This ensures the button moves with the panel
+                '--panel-left': isLeftPanelCollapsed ? '6px' : '0px',
+                '--panel-width': isLeftPanelCollapsed ? '0px' : '20%',
+              } as React.CSSProperties}
+            >
+              <ChevronLeft 
+                className={cn(
+                  "h-4 w-4 text-white/70 transition-transform duration-300",
+                  isLeftPanelCollapsed && "rotate-180"
+                )} 
+              />
+            </div>
               
             {/* Second Panel - Chat with Co-founder */}
             <ResizablePanel 
