@@ -102,8 +102,8 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress Bar with enhanced spacing - increased vertical margins */}
-      <div className="w-full mt-8 mb-10 px-10">
+      {/* Progress Bar with reduced spacing */}
+      <div className="w-full mt-4 mb-4 px-10">
         <ProgressBar 
           steps={progressSteps.length} 
           currentStep={getCurrentStepIndex()}

@@ -43,17 +43,17 @@ export const ProgressBar = ({
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className={cn("relative py-10", className)}
+      className={cn("relative py-6", className)} // reduced from py-10 to py-6
     >
       {/* Current step indicator */}
-      <div className="mb-6 text-center">
+      <div className="mb-4 text-center"> {/* reduced from mb-6 to mb-4 */}
         <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium">
           Step {currentStep} of {steps}: {labels?.[currentStep - 1]}
         </span>
       </div>
       
       {/* Progress container */}
-      <div className="relative w-full my-8">
+      <div className="relative w-full my-6"> {/* reduced from my-8 to my-6 */}
         {/* Background track */}
         <div 
           className="w-full bg-white/10 rounded-full overflow-hidden shadow-inner"
@@ -68,15 +68,15 @@ export const ProgressBar = ({
           />
         </div>
         
-        {/* Step indicators - centered precisely over the bar */}
-        <div className="absolute top-0 left-0 w-full flex justify-between transform -translate-y-1/2">
+        {/* Step indicators - properly centered over the bar */}
+        <div className="absolute top-0 left-0 w-full flex justify-between">
           {Array.from({ length: steps }).map((_, index) => {
             const isCompleted = index < currentStep - 1;
             const isCurrent = index === currentStep - 1;
             const isUpcoming = index > currentStep - 1;
             
             return (
-              <div key={index} className="flex flex-col items-center relative">
+              <div key={index} className="flex flex-col items-center relative" style={{ transform: 'translateY(-50%)' }}> {/* Added transform to center indicators */}
                 <motion.div 
                   className={cn(
                     "rounded-full flex items-center justify-center border transform transition-all duration-300",
@@ -108,7 +108,7 @@ export const ProgressBar = ({
                 
                 {/* Step labels positioned directly under the indicators */}
                 {showLabels && labels && (
-                  <div className="absolute top-full mt-3 text-center min-w-max">
+                  <div className="absolute top-6 text-center min-w-max"> {/* Adjusted position to be below the circle */}
                     <span 
                       className={cn(
                         "text-xs transform -translate-x-1/2 whitespace-nowrap",
