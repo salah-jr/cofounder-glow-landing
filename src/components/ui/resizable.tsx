@@ -80,8 +80,7 @@ const ResizableHandle = ({
       willChange: "transform",
       backfaceVisibility: "hidden",
       transform: "translateZ(0)",
-      // Improved responsiveness
-      imageRendering: "optimizeSpeed",
+      // Improved responsiveness - fixed TypeScript error by removing imageRendering
       pointerEvents: "auto"
     }}
     // Reduce update throttling for more immediate feedback

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -10,6 +11,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { TaskStatus } from "@/components/launch/PhaseTask";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ProgressBar } from "@/components/ui/progress-bar";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -65,6 +67,9 @@ const phaseTasks = {
   // Other phases would have their own tasks
 };
 
+// Define progress steps
+const progressSteps = ["Idea", "Validation", "Planning", "Prototype", "Development", "Launch", "Growth"];
+
 const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
@@ -72,6 +77,9 @@ const LaunchPath: React.FC = () => {
   
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  
+  // State for progress bar collapse
+  const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
   
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -84,13 +92,29 @@ const LaunchPath: React.FC = () => {
     setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
   };
 
+  // Get current step number for progress bar
+  const getCurrentStepIndex = () => {
+    return progressSteps.findIndex(step => step.toLowerCase() === currentPhase) + 1;
+  };
+
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <div className="w-full px-6">
         <Navbar />
       </div>
       
-      {/* Main content area - removed progress bar section */}
+      {/* New Progress Bar */}
+      <ProgressBar 
+        steps={progressSteps.length} 
+        currentStep={getCurrentStepIndex()}
+        labels={progressSteps}
+        showLabels={true}
+        collapsed={isProgressCollapsed}
+        onToggleCollapse={() => setIsProgressCollapsed(!isProgressCollapsed)}
+        className="mt-2"
+      />
+      
+      {/* Main content area */}
       <div className="w-full px-6 py-6 flex-grow overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
