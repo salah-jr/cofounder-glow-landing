@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -9,7 +8,7 @@ import CanvasOutput from "@/components/launch/CanvasOutput";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
-import { ChevronLeft, ChevronRight, ScrollText } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Enhanced tasks data with icons and tooltips
@@ -114,18 +113,13 @@ const LaunchPath: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="h-full"
         >
-          {/* 3-compartment layout using ResizablePanel */}
-          <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
+          {/* Main layout container */}
+          <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
-            <ResizablePanel 
-              defaultSize={20}
-              minSize={isLeftPanelCollapsed ? 0 : 10}
-              maxSize={30}
-              collapsible={true}
-              isCollapsed={isLeftPanelCollapsed}
-              collapsedSize={0}
-              className="h-full transition-all duration-300 ease-in-out"
-            >
+            <div className={cn(
+              "h-full transition-all duration-300 ease-in-out shrink-0",
+              isLeftPanelCollapsed ? "w-0" : "w-1/5"
+            )}>
               <div className="relative h-full">
                 <Card className={cn(
                   "glass h-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out",
@@ -140,71 +134,77 @@ const LaunchPath: React.FC = () => {
                   </CardContent>
                 </Card>
               </div>
-            </ResizablePanel>
+            </div>
             
-            {/* Modernized toggle button */}
+            {/* Modernized toggle button for left panel */}
             <div 
               className={cn(
-                "absolute left-[calc(var(--panel-left,0px)_+_var(--panel-width,0px)_-_3px)] top-1/2 z-20 -translate-y-1/2",
+                "absolute left-0 top-1/2 z-20 -translate-y-1/2",
                 "w-8 h-8 flex items-center justify-center",
-                "bg-gradient-to-r from-[#9b87f5]/90 to-[#1EAEDB]/90 backdrop-blur-md",
+                "bg-white/5 backdrop-blur-md",
                 "rounded-full border border-white/20",
-                "cursor-pointer transition-all duration-300 hover:scale-110",
-                "shadow-[0_0_15px_rgba(155,135,245,0.3)] hover:shadow-[0_0_20px_rgba(155,135,245,0.5)]"
+                "cursor-pointer transition-all duration-300 hover:bg-white/10",
+                "shadow-sm"
               )}
               onClick={toggleLeftPanel}
               style={{
-                // This ensures the button moves with the panel
-                '--panel-left': isLeftPanelCollapsed ? '6px' : '0px',
-                '--panel-width': isLeftPanelCollapsed ? '0px' : '20%',
-              } as React.CSSProperties}
+                transform: `translateX(${isLeftPanelCollapsed ? '16px' : 'calc(20vw - 16px)'}) translateY(-50%)`,
+                transition: 'transform 0.3s ease-in-out',
+              }}
             >
               <ChevronLeft 
                 className={cn(
-                  "h-5 w-5 text-white transition-transform duration-300",
+                  "h-5 w-5 text-white/70 transition-transform duration-300",
                   isLeftPanelCollapsed && "rotate-180"
                 )} 
               />
             </div>
-              
-            {/* Second Panel - Chat with Co-founder */}
-            <ResizablePanel 
-              defaultSize={40}
-              minSize={30}
-              className="flex-grow transition-all duration-300 ease-in-out"
-            >
-              <Card className="glass h-full rounded-xl overflow-hidden">
-                <CardContent className="p-4 h-full overflow-hidden">
-                  <CofounderChat />
-                </CardContent>
-              </Card>
-            </ResizablePanel>
             
-            {/* Enhanced resize handle between 2nd and 3rd panel - only affects chat and canvas */}
-            <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
-              <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-[#9b87f5]/40 to-[#1EAEDB]/40 backdrop-blur-sm transition-all duration-300 hover:from-[#9b87f5]/60 hover:to-[#1EAEDB]/60 group-hover:scale-105">
-                <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
-                <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
-              </div>
-            </ResizableHandle>
-            
-            {/* Third Panel - Canvas Output Area */}
-            <ResizablePanel 
-              defaultSize={40}
-              minSize={30}
-              className="flex-grow transition-all duration-300 ease-in-out"
-            >
-              <Card className="glass h-full rounded-xl overflow-hidden">
-                <CardContent className="p-4 h-full overflow-hidden">
-                  <div className="flex items-center pb-4 border-b border-white/10">
-                    <ScrollText className="w-5 h-5 mr-2 text-white/70" />
-                    <h3 className="text-lg font-semibold text-white">Canvas Output</h3>
+            {/* Right side panels container */}
+            <div className={cn(
+              "flex-grow ml-4 transition-all duration-300",
+              isLeftPanelCollapsed ? "ml-8" : ""
+            )}>
+              {/* Right side panels with resizable functionality */}
+              <ResizablePanelGroup direction="horizontal" className="h-full">
+                {/* Panel for Chat component */}
+                <ResizablePanel 
+                  defaultSize={50}
+                  minSize={30}
+                  maxSize={70}
+                  className="transition-all duration-300 ease-in-out"
+                >
+                  <Card className="glass h-full rounded-xl overflow-hidden">
+                    <CardContent className="p-4 h-full overflow-hidden">
+                      <CofounderChat />
+                    </CardContent>
+                  </Card>
+                </ResizablePanel>
+                
+                {/* Enhanced resize handle between chat and canvas */}
+                <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
+                  <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 group-hover:scale-105">
+                    <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
+                    <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
                   </div>
-                  <CanvasOutput />
-                </CardContent>
-              </Card>
-            </ResizablePanel>
-          </ResizablePanelGroup>
+                </ResizableHandle>
+                
+                {/* Panel for Canvas Output */}
+                <ResizablePanel 
+                  defaultSize={50}
+                  minSize={30}
+                  maxSize={70}
+                  className="transition-all duration-300 ease-in-out"
+                >
+                  <Card className="glass h-full rounded-xl overflow-hidden">
+                    <CardContent className="p-4 h-full overflow-hidden">
+                      <CanvasOutput />
+                    </CardContent>
+                  </Card>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </div>
         </motion.div>
       </div>
 
