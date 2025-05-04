@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -118,24 +117,20 @@ const LaunchPath: React.FC = () => {
           <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <div className="relative h-full">
-              {/* New improved collapse button - fixed position with smooth transitions */}
+              {/* New centered and rounded collapse button fixed to the right border */}
               <button 
                 onClick={toggleLeftPanel}
                 className={cn(
-                  "absolute z-10 top-1/2 -translate-y-1/2",
-                  "w-6 h-20 flex items-center justify-center",
-                  "bg-white/5 backdrop-blur-md",
-                  "border border-white/20 shadow-md",
+                  "absolute z-10 top-6 -right-3",
+                  "w-6 h-12 flex items-center justify-center",
+                  "bg-white/10 backdrop-blur-md",
+                  "border border-white/20",
+                  "rounded-full shadow-md",
                   "transition-all duration-300 ease-in-out",
-                  "hover:bg-white/10 hover:border-white/30",
+                  "hover:bg-white/15 hover:border-white/30",
                   "focus:outline-none focus:ring-2 focus:ring-white/20",
-                  isLeftPanelCollapsed 
-                    ? "left-0 rounded-r-md" 
-                    : "left-[calc(20vw-6px)] rounded-l-md",
+                  isLeftPanelCollapsed ? "translate-x-0" : "translate-x-0",
                 )}
-                style={{
-                  transform: `translateY(-50%)`,
-                }}
                 aria-label="Toggle sidebar"
               >
                 <ChevronLeft className={cn(
