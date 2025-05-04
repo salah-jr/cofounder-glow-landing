@@ -70,9 +70,9 @@ const phaseTasks = {
 const progressSteps = ["Idea", "Validation", "Planning", "Prototype", "Development", "Launch", "Growth"];
 
 const LaunchPath: React.FC = () => {
-  // State for managing the roadmap progress
-  const [currentPhase, setCurrentPhase] = useState("idea");
-  const [completedPhases, setCompletedPhases] = useState<string[]>([]);
+  // State for managing the roadmap progress - now on second step (validation)
+  const [currentPhase, setCurrentPhase] = useState("validation");
+  const [completedPhases, setCompletedPhases] = useState<string[]>(["idea"]);
   
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
@@ -102,8 +102,8 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress Bar with enhanced spacing */}
-      <div className="w-full mt-6 mb-8 px-10">
+      {/* Progress Bar with enhanced spacing - increased vertical margins */}
+      <div className="w-full mt-8 mb-10 px-10">
         <ProgressBar 
           steps={progressSteps.length} 
           currentStep={getCurrentStepIndex()}
