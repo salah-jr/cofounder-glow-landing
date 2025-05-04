@@ -17,16 +17,10 @@ const ResizablePanelGroup = ({
   />
 )
 
-interface ResizablePanelProps extends React.ComponentProps<typeof ResizablePrimitive.Panel> {
-  collapsed?: boolean;
-  onCollapse?: () => void;
-  onExpand?: () => void;
-}
-
-// Enhanced ResizablePanel with collapsible functionality
+// Using the basic ResizablePanel without custom collapsible functionality
 const ResizablePanel = ResizablePrimitive.Panel
 
-// Enhanced to accept a hidden prop and to have a more modern design
+// Enhanced to support bidirectional resizing
 const ResizableHandle = ({
   withHandle,
   className,
@@ -38,7 +32,7 @@ const ResizableHandle = ({
 }) => (
   <ResizablePrimitive.PanelResizeHandle
     className={cn(
-      "relative flex w-px items-center justify-center transition-all duration-300 ease-in-out",
+      "relative flex w-px items-center justify-center transition-all duration-300 ease-in-out cursor-col-resize",
       "after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
       "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
       "data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full",

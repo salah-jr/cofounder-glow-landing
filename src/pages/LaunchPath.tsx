@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -70,18 +69,11 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
-  // Initialize with the panel visible by default
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
-
+  
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
     // Implement actual status change logic here
-  };
-
-  // Toggle left panel collapse state
-  const toggleLeftPanel = () => {
-    setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
   };
 
   return (
@@ -118,49 +110,24 @@ const LaunchPath: React.FC = () => {
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
               defaultSize={20}
-              minSize={0}
-              maxSize={20}
-              collapsible={true}
-              collapsedSize={0}
-              className={cn(
-                "h-full transition-all duration-300 ease-in-out relative",
-                isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
-              )}
+              minSize={10}
+              maxSize={30}
+              className="h-full"
             >
-              {!isLeftPanelCollapsed && (
-                <Card className="glass h-full rounded-xl overflow-hidden">
-                  <CardContent className="p-4 h-full">
-                    <PhaseSidebar 
-                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                      onTaskStatusChange={handleTaskStatusChange}
-                    />
-                  </CardContent>
-                </Card>
-              )}
+              <Card className="glass h-full rounded-xl overflow-hidden">
+                <CardContent className="p-4 h-full">
+                  <PhaseSidebar 
+                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                    onTaskStatusChange={handleTaskStatusChange}
+                  />
+                </CardContent>
+              </Card>
             </ResizablePanel>
-            
-            {/* Collapse/Expand button positioned absolutely */}
-            <div 
-              className={cn(
-                "absolute top-1/2 z-20 transform -translate-y-1/2 transition-all duration-300",
-                isLeftPanelCollapsed ? "left-0" : "left-[calc(20%-3px)]"
-              )}
-              onClick={toggleLeftPanel}
-            >
-              <div className="flex items-center justify-center w-6 h-16 bg-white/10 backdrop-blur-md rounded-full cursor-pointer hover:bg-white/15 transition-all duration-300 border border-white/10 shadow-lg group">
-                <div className="flex items-center justify-center w-full h-full">
-                  {isLeftPanelCollapsed ? 
-                    <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" /> : 
-                    <ChevronLeft className="w-4 h-4 text-white/70 group-hover:text-white/90 transition-all" />
-                  }
-                </div>
-              </div>
-            </div>
               
             {/* Second Panel - Chat with Co-founder */}
             <ResizablePanel 
-              defaultSize={isLeftPanelCollapsed ? 50 : 40}
+              defaultSize={40}
               minSize={30}
               className="flex-grow"
             >
@@ -171,7 +138,7 @@ const LaunchPath: React.FC = () => {
               </Card>
             </ResizablePanel>
             
-            {/* Enhanced resize handle between 2nd and 3rd panel */}
+            {/* Enhanced resize handle between 2nd and 3rd panel - bidirectional */}
             <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
               <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 group-hover:scale-105">
                 <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
@@ -181,7 +148,7 @@ const LaunchPath: React.FC = () => {
             
             {/* Third Panel - Canvas Output Area */}
             <ResizablePanel 
-              defaultSize={isLeftPanelCollapsed ? 50 : 40}
+              defaultSize={40}
               minSize={30}
               className="flex-grow"
             >
