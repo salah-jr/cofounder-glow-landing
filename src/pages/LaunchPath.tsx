@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -69,7 +70,7 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
-  // Initialize with the panel visible by default (changed from true to false)
+  // Initialize with the panel visible by default
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // Handle task status change
@@ -127,7 +128,7 @@ const LaunchPath: React.FC = () => {
               )}
             >
               {!isLeftPanelCollapsed && (
-                <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
+                <Card className="glass h-full rounded-xl overflow-hidden">
                   <CardContent className="p-4 h-full">
                     <PhaseSidebar 
                       phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
@@ -161,15 +162,16 @@ const LaunchPath: React.FC = () => {
             <ResizablePanel 
               defaultSize={isLeftPanelCollapsed ? 50 : 40}
               minSize={30}
+              className="flex-grow"
             >
-              <Card className="glass h-full border-0 rounded-none overflow-hidden">
+              <Card className="glass h-full rounded-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <CofounderChat />
                 </CardContent>
               </Card>
             </ResizablePanel>
             
-            {/* Enhanced resize handle between 2nd and 3rd panel - no shadow on hover */}
+            {/* Enhanced resize handle between 2nd and 3rd panel */}
             <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
               <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 group-hover:scale-105">
                 <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
@@ -181,8 +183,9 @@ const LaunchPath: React.FC = () => {
             <ResizablePanel 
               defaultSize={isLeftPanelCollapsed ? 50 : 40}
               minSize={30}
+              className="flex-grow"
             >
-              <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
+              <Card className="glass h-full rounded-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <div className="flex items-center pb-4 border-b border-white/10">
                     <ScrollText className="w-5 h-5 mr-2 text-white/70" />
