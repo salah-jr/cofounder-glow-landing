@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -115,10 +116,11 @@ const LaunchPath: React.FC = () => {
           <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
-              defaultSize={isLeftPanelCollapsed ? 0 : 20}
+              defaultSize={20}
               minSize={0}
               maxSize={20}
-              className="h-full transition-all duration-300 ease-in-out relative"
+              className={`h-full transition-all duration-300 ease-in-out relative ${isLeftPanelCollapsed ? "w-0 p-0 m-0 overflow-hidden" : ""}`}
+              style={{ flexGrow: isLeftPanelCollapsed ? 0 : 1 }}
             >
               {/* Modern Collapse Button - positioned at the right edge of the left panel */}
               <div 
@@ -149,10 +151,11 @@ const LaunchPath: React.FC = () => {
               )}
             </ResizablePanel>
               
-            {/* Second Panel - Chat with Co-founder - expanded to take 50% when sidebar collapsed */}
+            {/* Second Panel - Chat with Co-founder */}
             <ResizablePanel 
-              defaultSize={isLeftPanelCollapsed ? 50 : 40} 
+              defaultSize={isLeftPanelCollapsed ? 50 : 40}
               className="h-full"
+              style={{ flexGrow: isLeftPanelCollapsed ? 2 : 1 }}
             >
               <Card className="glass h-full border-0 rounded-none overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
@@ -169,8 +172,12 @@ const LaunchPath: React.FC = () => {
               </div>
             </ResizableHandle>
             
-            {/* Third Panel - Canvas Output Area - expanded to take 50% when sidebar collapsed */}
-            <ResizablePanel defaultSize={isLeftPanelCollapsed ? 50 : 40}>
+            {/* Third Panel - Canvas Output Area */}
+            <ResizablePanel 
+              defaultSize={isLeftPanelCollapsed ? 50 : 40}
+              className="h-full"
+              style={{ flexGrow: isLeftPanelCollapsed ? 2 : 1 }}
+            >
               <Card className="glass h-full border-0 rounded-r-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
                   <div className="flex items-center pb-4 border-b border-white/10">

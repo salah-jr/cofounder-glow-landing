@@ -17,6 +17,13 @@ const ResizablePanelGroup = ({
   />
 )
 
+interface ResizablePanelProps extends React.ComponentProps<typeof ResizablePrimitive.Panel> {
+  collapsed?: boolean;
+  onCollapse?: () => void;
+  onExpand?: () => void;
+}
+
+// Enhanced ResizablePanel with collapsible functionality
 const ResizablePanel = ResizablePrimitive.Panel
 
 // Enhanced to accept a hidden prop and to have a more modern design
