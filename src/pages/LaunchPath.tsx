@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -116,15 +117,39 @@ const LaunchPath: React.FC = () => {
           {/* Main layout container */}
           <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
-            <div className={cn(
-              "h-full transition-all duration-300 ease-in-out shrink-0",
-              isLeftPanelCollapsed ? "w-0" : "w-1/5"
-            )}>
-              <div className="relative h-full">
-                <Card className={cn(
-                  "glass h-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out",
-                  isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
-                )}>
+            <div className="relative h-full">
+              {/* New improved collapse button - fixed position with smooth transitions */}
+              <button 
+                onClick={toggleLeftPanel}
+                className={cn(
+                  "absolute z-10 top-1/2 -translate-y-1/2",
+                  "w-6 h-20 flex items-center justify-center",
+                  "bg-white/5 backdrop-blur-md",
+                  "border border-white/20 shadow-md",
+                  "transition-all duration-300 ease-in-out",
+                  "hover:bg-white/10 hover:border-white/30",
+                  "focus:outline-none focus:ring-2 focus:ring-white/20",
+                  isLeftPanelCollapsed 
+                    ? "left-0 rounded-r-md" 
+                    : "left-[calc(20vw-6px)] rounded-l-md",
+                )}
+                style={{
+                  transform: `translateY(-50%)`,
+                }}
+                aria-label="Toggle sidebar"
+              >
+                <ChevronLeft className={cn(
+                  "w-4 h-4 text-white/70",
+                  "transition-transform duration-300 ease-in-out",
+                  isLeftPanelCollapsed && "rotate-180"
+                )} />
+              </button>
+
+              <div className={cn(
+                "h-full overflow-hidden transition-all duration-300 ease-in-out",
+                isLeftPanelCollapsed ? "w-0 opacity-0" : "w-[20vw] opacity-100"
+              )}>
+                <Card className="glass h-full rounded-xl overflow-hidden">
                   <CardContent className="p-4 h-full">
                     <PhaseSidebar 
                       phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
@@ -134,30 +159,6 @@ const LaunchPath: React.FC = () => {
                   </CardContent>
                 </Card>
               </div>
-            </div>
-            
-            {/* Modernized toggle button for left panel */}
-            <div 
-              className={cn(
-                "absolute left-0 top-1/2 z-20 -translate-y-1/2",
-                "w-8 h-8 flex items-center justify-center",
-                "bg-white/5 backdrop-blur-md",
-                "rounded-full border border-white/20",
-                "cursor-pointer transition-all duration-300 hover:bg-white/10",
-                "shadow-sm"
-              )}
-              onClick={toggleLeftPanel}
-              style={{
-                transform: `translateX(${isLeftPanelCollapsed ? '16px' : 'calc(20vw - 16px)'}) translateY(-50%)`,
-                transition: 'transform 0.3s ease-in-out',
-              }}
-            >
-              <ChevronLeft 
-                className={cn(
-                  "h-5 w-5 text-white/70 transition-transform duration-300",
-                  isLeftPanelCollapsed && "rotate-180"
-                )} 
-              />
             </div>
             
             {/* Right side panels container */}
@@ -181,8 +182,8 @@ const LaunchPath: React.FC = () => {
                   </Card>
                 </ResizablePanel>
                 
-                {/* Enhanced resize handle between chat and canvas */}
-                <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
+                {/* Enhanced resize handle between chat and canvas with better responsiveness */}
+                <ResizableHandle withHandle className="bg-transparent transition-all duration-200">
                   <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 group-hover:scale-105">
                     <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
                     <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />

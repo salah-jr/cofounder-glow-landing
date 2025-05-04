@@ -47,7 +47,7 @@ const ResizablePanel = ({
   )
 }
 
-// Enhanced to support bidirectional resizing
+// Enhanced to support bidirectional resizing with improved responsiveness
 const ResizableHandle = ({
   withHandle,
   className,
@@ -59,7 +59,7 @@ const ResizableHandle = ({
 }) => (
   <ResizablePrimitive.PanelResizeHandle
     className={cn(
-      "relative flex w-px items-center justify-center transition-all duration-300 ease-in-out cursor-col-resize",
+      "relative flex w-px items-center justify-center cursor-col-resize",
       "after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
       "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
       "data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full",
@@ -69,6 +69,14 @@ const ResizableHandle = ({
       hidden && "opacity-0 pointer-events-none",
       className
     )}
+    // Improved responsiveness with these properties
+    tagName="div"
+    data-superfluid="true"
+    style={{ 
+      // Increase hit area for better usability
+      touchAction: "none",
+      userSelect: "none"
+    }}
     {...props}
   >
     {withHandle && (
