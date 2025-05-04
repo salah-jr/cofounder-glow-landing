@@ -142,15 +142,15 @@ const LaunchPath: React.FC = () => {
               </div>
             </ResizablePanel>
             
-            {/* Modernized toggle button */}
+            {/* Grey toggle button */}
             <div 
               className={cn(
                 "absolute left-[calc(var(--panel-left,0px)_+_var(--panel-width,0px)_-_3px)] top-1/2 z-20 -translate-y-1/2",
                 "w-8 h-8 flex items-center justify-center",
-                "bg-gradient-to-r from-[#9b87f5]/90 to-[#1EAEDB]/90 backdrop-blur-md",
+                "bg-white/10 backdrop-blur-md",
                 "rounded-full border border-white/20",
                 "cursor-pointer transition-all duration-300 hover:scale-110",
-                "shadow-[0_0_15px_rgba(155,135,245,0.3)] hover:shadow-[0_0_20px_rgba(155,135,245,0.5)]"
+                "shadow-[0_0_10px_rgba(255,255,255,0.1)] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"
               )}
               onClick={toggleLeftPanel}
               style={{
@@ -161,7 +161,7 @@ const LaunchPath: React.FC = () => {
             >
               <ChevronLeft 
                 className={cn(
-                  "h-5 w-5 text-white transition-transform duration-300",
+                  "h-5 w-5 text-white/70 transition-transform duration-300",
                   isLeftPanelCollapsed && "rotate-180"
                 )} 
               />
@@ -182,7 +182,7 @@ const LaunchPath: React.FC = () => {
             
             {/* Enhanced resize handle between 2nd and 3rd panel - only affects chat and canvas */}
             <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
-              <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-[#9b87f5]/40 to-[#1EAEDB]/40 backdrop-blur-sm transition-all duration-300 hover:from-[#9b87f5]/60 hover:to-[#1EAEDB]/60 group-hover:scale-105">
+              <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 group-hover:scale-105">
                 <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
                 <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
               </div>
