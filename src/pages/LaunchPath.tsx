@@ -102,15 +102,13 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress Bar with added spacing */}
-      <div className="w-full mt-4 mb-5 px-6">
+      {/* Progress Bar with enhanced spacing */}
+      <div className="w-full mt-6 mb-8 px-10">
         <ProgressBar 
           steps={progressSteps.length} 
           currentStep={getCurrentStepIndex()}
           labels={progressSteps}
           showLabels={true}
-          collapsed={isProgressCollapsed}
-          onToggleCollapse={() => setIsProgressCollapsed(!isProgressCollapsed)}
         />
       </div>
       
