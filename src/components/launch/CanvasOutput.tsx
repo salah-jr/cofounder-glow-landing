@@ -12,7 +12,7 @@ export default function CanvasOutput({
 }: CanvasOutputProps) {
   return <div className={cn("flex flex-col h-full", className)}>
       {/* Document header - sticky with just the download button */}
-      <div className="flex items-center justify-end mb-6 sticky top-0 z-10 bg-opacity-95 backdrop-blur-md py-2 bg-none">
+      <div className="flex items-center justify-end mb-6 sticky top-0 z-10 bg-opacity-95 backdrop-blur-md py-2 bg-none px-[9px]">
         <Button variant="ghost" size="sm" className="h-8 px-2 text-white/70 hover:text-white hover:bg-white/10">
           <Download className="w-4 h-4 mr-2" />
           Download
