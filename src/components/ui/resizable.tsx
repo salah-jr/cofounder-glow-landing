@@ -56,43 +56,46 @@ const ResizableHandle = ({
 }: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
   withHandle?: boolean,
   hidden?: boolean
-}) => (
-  <ResizablePrimitive.PanelResizeHandle
-    className={cn(
-      "relative flex w-px items-center justify-center cursor-col-resize",
-      "after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
-      "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
-      "data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full",
-      "data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0",
-      "group hover:after:bg-white/20",
-      "[&[data-panel-group-direction=vertical]>div]:rotate-90",
-      hidden && "opacity-0 pointer-events-none",
-      className
-    )}
-    // Maximum responsiveness settings for fluid resize experience
-    tagName="div"
-    data-superfluid="true"
-    data-high-precision="true"
-    style={{ 
-      // Enhanced hit area and performance optimizations
-      touchAction: "none",
-      userSelect: "none",
-      willChange: "transform",
-      backfaceVisibility: "hidden",
-      transform: "translateZ(0)",
-      // Improved responsiveness - fixed TypeScript error by removing imageRendering
-      pointerEvents: "auto"
-    }}
-    // Reduce update throttling for more immediate feedback
-    updateThrottleMilliseconds={0}
-    {...props}
-  >
-    {withHandle && (
-      <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/20 group-hover:scale-105">
-        <GripVertical className="h-3 w-3 text-white/50 group-hover:text-white/70 transition-colors" />
-      </div>
-    )}
-  </ResizablePrimitive.PanelResizeHandle>
-)
+}) => {
+  // Extract updateThrottleMilliseconds if it exists in props before passing to ResizablePrimitive.PanelResizeHandle
+  const { updateThrottleMilliseconds, ...restProps } = props as any;
+  
+  return (
+    <ResizablePrimitive.PanelResizeHandle
+      className={cn(
+        "relative flex w-px items-center justify-center cursor-col-resize",
+        "after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
+        "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
+        "data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full",
+        "data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0",
+        "group hover:after:bg-white/20",
+        "[&[data-panel-group-direction=vertical]>div]:rotate-90",
+        hidden && "opacity-0 pointer-events-none",
+        className
+      )}
+      // Maximum responsiveness settings for fluid resize experience
+      tagName="div"
+      data-superfluid="true"
+      data-high-precision="true"
+      style={{ 
+        // Enhanced hit area and performance optimizations
+        touchAction: "none",
+        userSelect: "none",
+        willChange: "transform",
+        backfaceVisibility: "hidden",
+        transform: "translateZ(0)",
+        // Improved responsiveness - fixed TypeScript error by removing imageRendering
+        pointerEvents: "auto"
+      }}
+      {...restProps}
+    >
+      {withHandle && (
+        <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/20 group-hover:scale-105">
+          <GripVertical className="h-3 w-3 text-white/50 group-hover:text-white/70 transition-colors" />
+        </div>
+      )}
+    </ResizablePrimitive.PanelResizeHandle>
+  )
+}
 
 export { ResizablePanelGroup, ResizablePanel, ResizableHandle }
