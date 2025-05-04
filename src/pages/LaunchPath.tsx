@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -91,17 +90,19 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress bar section */}
+      {/* Progress bar section with new streamlined design */}
       <div className="w-full px-6 pt-6 pb-4 flex-shrink-0">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="my-4"
+          transition={{ duration: 0.4 }}
         >
-          {/* Top horizontal bar - Roadmap Progress */}
-          <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in">
-            <RoadmapProgress currentPhase={currentPhase} completedPhases={completedPhases} />
+          {/* Modernized progress bar container */}
+          <div className="glass p-4 rounded-xl border border-white/10">
+            <RoadmapProgress 
+              currentPhase={currentPhase} 
+              completedPhases={completedPhases} 
+            />
           </div>
         </motion.div>
       </div>
@@ -109,69 +110,70 @@ const LaunchPath: React.FC = () => {
       {/* Main content area */}
       <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
           className="h-full"
         >
           {/* 3-compartment layout using ResizablePanel */}
-          <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl animate-fade-in">
+          <ResizablePanelGroup direction="horizontal" className="h-full rounded-xl">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
               defaultSize={20}
-              minSize={isLeftPanelCollapsed ? 0 : 10}
+              minSize={10}
               maxSize={30}
               collapsible={true}
-              isCollapsed={isLeftPanelCollapsed}
-              collapsedSize={0}
-              className="h-full transition-all duration-300 ease-in-out"
+              className={cn(
+                "transition-all duration-500 ease-in-out",
+                isLeftPanelCollapsed ? "opacity-0 max-w-0 w-0 p-0 m-0" : "opacity-100"
+              )}
+              style={{ flexGrow: isLeftPanelCollapsed ? 0 : undefined }}
             >
-              <div className="relative h-full">
-                <Card className={cn(
-                  "glass h-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out",
-                  isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
-                )}>
-                  <CardContent className="p-4 h-full">
-                    <PhaseSidebar 
-                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                      onTaskStatusChange={handleTaskStatusChange}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
+              <Card className="glass h-full rounded-xl overflow-hidden">
+                <CardContent className="p-4 h-full">
+                  <PhaseSidebar 
+                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                    onTaskStatusChange={handleTaskStatusChange}
+                  />
+                </CardContent>
+              </Card>
             </ResizablePanel>
             
-            {/* Grey toggle button */}
+            {/* Redesigned collapse button - always visible */}
             <div 
               className={cn(
-                "absolute left-[calc(var(--panel-left,0px)_+_var(--panel-width,0px)_-_3px)] top-1/2 z-20 -translate-y-1/2",
-                "w-8 h-8 flex items-center justify-center",
-                "bg-white/10 backdrop-blur-md",
-                "rounded-full border border-white/20",
-                "cursor-pointer transition-all duration-300 hover:scale-110",
-                "shadow-[0_0_10px_rgba(255,255,255,0.1)] hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                "z-20 flex items-center",
+                isLeftPanelCollapsed 
+                  ? "mr-2" // Provide some margin when collapsed
+                  : "-ml-5" // Slightly overlay on the panel when expanded
               )}
-              onClick={toggleLeftPanel}
-              style={{
-                // This ensures the button moves with the panel
-                '--panel-left': isLeftPanelCollapsed ? '6px' : '0px',
-                '--panel-width': isLeftPanelCollapsed ? '0px' : '20%',
-              } as React.CSSProperties}
             >
-              <ChevronLeft 
+              <button 
+                onClick={toggleLeftPanel}
                 className={cn(
-                  "h-5 w-5 text-white/70 transition-transform duration-300",
-                  isLeftPanelCollapsed && "rotate-180"
-                )} 
-              />
+                  "w-8 h-20 flex items-center justify-center",
+                  "bg-white/5 backdrop-blur-md hover:bg-white/10",
+                  "rounded-r-lg border border-white/10",
+                  "cursor-pointer transition-all duration-300",
+                  "group"
+                )}
+                aria-label={isLeftPanelCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <ChevronLeft 
+                  className={cn(
+                    "h-4 w-4 text-white/40 group-hover:text-white/70 transition-all duration-300",
+                    isLeftPanelCollapsed && "rotate-180"
+                  )} 
+                />
+              </button>
             </div>
               
             {/* Second Panel - Chat with Co-founder */}
             <ResizablePanel 
               defaultSize={40}
               minSize={30}
-              className="flex-grow transition-all duration-300 ease-in-out"
+              className="transition-all duration-300 ease-in-out"
             >
               <Card className="glass h-full rounded-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">
@@ -192,7 +194,7 @@ const LaunchPath: React.FC = () => {
             <ResizablePanel 
               defaultSize={40}
               minSize={30}
-              className="flex-grow transition-all duration-300 ease-in-out"
+              className="transition-all duration-300 ease-in-out"
             >
               <Card className="glass h-full rounded-xl overflow-hidden">
                 <CardContent className="p-4 h-full overflow-hidden">

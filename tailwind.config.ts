@@ -73,13 +73,18 @@ export default {
         "pulse-subtle": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.8" }
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" }
         }
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
         "slide-in": "slide-in 0.4s ease-out",
         "zoom-in": "zoom-in 0.3s ease-out",
-        "pulse-subtle": "pulse-subtle 2s infinite ease-in-out"
+        "pulse-subtle": "pulse-subtle 2s infinite ease-in-out",
+        "shimmer": "shimmer 2s infinite linear"
       },
     },
   },
