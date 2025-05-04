@@ -69,19 +69,23 @@ const ResizableHandle = ({
       hidden && "opacity-0 pointer-events-none",
       className
     )}
-    // Improved responsiveness with higher resolution and reduced lag
+    // Maximum responsiveness settings for fluid resize experience
     tagName="div"
     data-superfluid="true"
     data-high-precision="true"
     style={{ 
-      // Increase hit area for better usability
+      // Enhanced hit area and performance optimizations
       touchAction: "none",
       userSelect: "none",
-      // Additional properties for improved responsiveness
       willChange: "transform",
       backfaceVisibility: "hidden",
-      transform: "translateZ(0)"
+      transform: "translateZ(0)",
+      // Improved responsiveness
+      imageRendering: "optimizeSpeed",
+      pointerEvents: "auto"
     }}
+    // Reduce update throttling for more immediate feedback
+    updateThrottleMilliseconds={0}
     {...props}
   >
     {withHandle && (

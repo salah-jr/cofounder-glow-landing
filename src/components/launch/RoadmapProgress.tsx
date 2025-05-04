@@ -1,8 +1,8 @@
+
 import { useState } from "react";
-import { Check, ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 
@@ -49,8 +49,6 @@ export default function RoadmapProgress({
   const [isExpanded, setIsExpanded] = useState(true);
   const [hoveredPhase, setHoveredPhase] = useState<string | null>(null);
 
-  // Calculate progress percentage
-  const progress = Math.max((phases.findIndex(p => p.id === currentPhase) + 1) / phases.length * 100, completedPhases.length / phases.length * 100);
   return <TooltipProvider>
       <div className="w-full relative">
         <div className="flex justify-between items-center mb-3">
@@ -65,23 +63,7 @@ export default function RoadmapProgress({
           </button>
         </div>
         
-        {/* Modern progress bar - fluid and animated */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/5 rounded-full blur-md"></div>
-          <Progress value={progress} className="h-2 bg-white/5 backdrop-blur-md border border-white/10" indicatorClassName="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] shadow-[0_0_15px_rgba(155,135,245,0.5)] transition-all duration-1000 ease-in-out" />
-          
-          {/* Animated glow effect that follows progress */}
-          <motion.div className="absolute top-0 h-2 rounded-full blur-md bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] opacity-50" style={{
-          width: `${Math.min(progress + 5, 100)}%`,
-          filter: 'blur(8px)'
-        }} animate={{
-          opacity: [0.3, 0.5, 0.3]
-        }} transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }} />
-        </div>
+        {/* Progress bar removed */}
         
         {/* Expanded phase visualization - only visible when expanded */}
         <AnimatePresence>

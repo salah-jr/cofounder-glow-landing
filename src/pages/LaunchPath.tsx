@@ -90,23 +90,8 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress bar section */}
-      <div className="w-full px-6 pt-6 pb-4 flex-shrink-0">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="my-4"
-        >
-          {/* Top horizontal bar - Roadmap Progress */}
-          <div className="glass p-4 rounded-xl border border-white/10 animate-fade-in">
-            <RoadmapProgress currentPhase={currentPhase} completedPhases={completedPhases} />
-          </div>
-        </motion.div>
-      </div>
-      
-      {/* Main content area */}
-      <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
+      {/* Main content area - removed progress bar section */}
+      <div className="w-full px-6 py-6 flex-grow overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -117,19 +102,18 @@ const LaunchPath: React.FC = () => {
           <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <div className="relative h-full">
-              {/* New centered and rounded collapse button fixed to the right border */}
+              {/* Perfectly centered circular collapse button on right border */}
               <button 
                 onClick={toggleLeftPanel}
                 className={cn(
-                  "absolute z-10 top-6 -right-3",
-                  "w-6 h-12 flex items-center justify-center",
+                  "absolute z-10 top-1/2 -right-3 -translate-y-1/2",
+                  "w-6 h-6 flex items-center justify-center",
                   "bg-white/10 backdrop-blur-md",
                   "border border-white/20",
                   "rounded-full shadow-md",
                   "transition-all duration-300 ease-in-out",
                   "hover:bg-white/15 hover:border-white/30",
                   "focus:outline-none focus:ring-2 focus:ring-white/20",
-                  isLeftPanelCollapsed ? "translate-x-0" : "translate-x-0",
                 )}
                 aria-label="Toggle sidebar"
               >
