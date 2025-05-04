@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Paperclip, User } from "lucide-react";
@@ -33,11 +34,21 @@ export default function CofounderChat({ className }: CofounderChatProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
   
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  
+  // Cleanup typing timeout on component unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
   
   const handleSendMessage = () => {
     if (input.trim() === "") return;
@@ -54,8 +65,13 @@ export default function CofounderChat({ className }: CofounderChatProps) {
     setIsTyping(true);
     setCurrentMood("thinking");
     
+    // Clear any existing timeout to prevent race conditions
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    
     // Simulate AI response after a delay
-    setTimeout(() => {
+    typingTimeoutRef.current = window.setTimeout(() => {
       const responseMessages = [
         "That's interesting! How have you validated this problem with potential customers?",
         "Tell me more about your target audience for this solution.",
@@ -76,7 +92,8 @@ export default function CofounderChat({ className }: CofounderChatProps) {
       
       setCurrentMood(isInsight ? "excited" : "neutral");
       setMessages(prev => [...prev, cofounderMessage]);
-      setIsTyping(false);
+      setIsTyping(false); // Explicitly set typing to false when message is added
+      typingTimeoutRef.current = null; // Reset timeout ref
     }, 1500);
   };
 
@@ -160,34 +177,38 @@ export default function CofounderChat({ className }: CofounderChatProps) {
             ))}
             
             {/* Typing indicator - only visible when isTyping is true */}
-            {isTyping && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="px-2 py-4"
-              >
-                <div className="flex items-center gap-1">
-                  <div className="flex space-x-1 items-center">
-                    <motion.div 
-                      className="w-2 h-2 rounded-full bg-white/60" 
-                      animate={{ y: ["0px", "-5px", "0px"] }} 
-                      transition={{ duration: 1, repeat: Infinity, repeatType: "loop" }}
-                    />
-                    <motion.div 
-                      className="w-2 h-2 rounded-full bg-white/60" 
-                      animate={{ y: ["0px", "-5px", "0px"] }} 
-                      transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.2 }}
-                    />
-                    <motion.div 
-                      className="w-2 h-2 rounded-full bg-white/60" 
-                      animate={{ y: ["0px", "-5px", "0px"] }} 
-                      transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.4 }}
-                    />
+            <AnimatePresence>
+              {isTyping && (
+                <motion.div
+                  key="typing-indicator"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="px-2 py-4"
+                >
+                  <div className="flex items-center gap-1">
+                    <div className="flex space-x-1 items-center">
+                      <motion.div 
+                        className="w-2 h-2 rounded-full bg-white/60" 
+                        animate={{ y: ["0px", "-5px", "0px"] }} 
+                        transition={{ duration: 1, repeat: Infinity, repeatType: "loop" }}
+                      />
+                      <motion.div 
+                        className="w-2 h-2 rounded-full bg-white/60" 
+                        animate={{ y: ["0px", "-5px", "0px"] }} 
+                        transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.2 }}
+                      />
+                      <motion.div 
+                        className="w-2 h-2 rounded-full bg-white/60" 
+                        animate={{ y: ["0px", "-5px", "0px"] }} 
+                        transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.4 }}
+                      />
+                    </div>
+                    <span className="ml-2 text-sm text-white/60">Co-founder is thinking...</span>
                   </div>
-                  <span className="ml-2 text-sm text-white/60">Co-founder is thinking...</span>
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             <div ref={messagesEndRef} />
           </AnimatePresence>
