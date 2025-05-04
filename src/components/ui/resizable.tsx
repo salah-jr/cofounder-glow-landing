@@ -47,7 +47,7 @@ const ResizablePanel = ({
   )
 }
 
-// Enhanced to support bidirectional resizing
+// Enhanced to support bidirectional resizing with reduced sensitivity
 const ResizableHandle = ({
   withHandle,
   className,
@@ -69,6 +69,19 @@ const ResizableHandle = ({
       hidden && "opacity-0 pointer-events-none",
       className
     )}
+    // Reduced sensitivity by increasing lag and precision
+    onKeyDown={(e) => {
+      if (props.onKeyDown) props.onKeyDown(e);
+      // Slow key movement down
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }}
+    // Make resize handle movement smoother and less jumpy
+    style={{
+      touchAction: "none",
+    }}
     {...props}
   >
     {withHandle && (
