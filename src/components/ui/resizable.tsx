@@ -43,7 +43,7 @@ const ResizableHandle = ({
       "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
       "data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full",
       "data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0",
-      "group hover:after:bg-white/20",
+      "group",
       "[&[data-panel-group-direction=vertical]>div]:rotate-90",
       hidden && "opacity-0 pointer-events-none",
       className
@@ -51,8 +51,8 @@ const ResizableHandle = ({
     {...props}
   >
     {withHandle && (
-      <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/20 group-hover:scale-105">
-        <GripVertical className="h-3 w-3 text-white/50 group-hover:text-white/70 transition-colors" />
+      <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20">
+        <GripVertical className="h-3 w-3 text-white/50 hover:text-white/70 transition-colors" />
       </div>
     )}
   </ResizablePrimitive.PanelResizeHandle>
