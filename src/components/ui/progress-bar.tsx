@@ -63,7 +63,7 @@ export const ProgressBar = ({
         </div>
         
         {/* Step indicators - properly centered over the bar */}
-        <div className="absolute top-0 left-0 w-full flex justify-between my-[3px]">
+        <div className="absolute top-0 left-0 w-full flex justify-between my-[4px]">
           {Array.from({
           length: steps
         }).map((_, index) => {
