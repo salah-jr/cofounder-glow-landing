@@ -69,7 +69,7 @@ const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
-  // Initialize with the panel visible by default
+  // Initialize with the panel visible by default (changed from true to false)
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // Handle task status change
@@ -126,15 +126,17 @@ const LaunchPath: React.FC = () => {
                 isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
               )}
             >
-              <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
-                <CardContent className="p-4 h-full">
-                  <PhaseSidebar 
-                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                    onTaskStatusChange={handleTaskStatusChange}
-                  />
-                </CardContent>
-              </Card>
+              {!isLeftPanelCollapsed && (
+                <Card className="glass h-full border-0 rounded-l-xl overflow-hidden">
+                  <CardContent className="p-4 h-full">
+                    <PhaseSidebar 
+                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                      onTaskStatusChange={handleTaskStatusChange}
+                    />
+                  </CardContent>
+                </Card>
+              )}
             </ResizablePanel>
             
             {/* Collapse/Expand button positioned absolutely */}
