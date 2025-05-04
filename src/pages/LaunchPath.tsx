@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -118,27 +117,29 @@ const LaunchPath: React.FC = () => {
           <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <div className={cn(
-              "h-full transition-all duration-300 ease-in-out relative shrink-0",
+              "h-full transition-all duration-300 ease-in-out shrink-0",
               isLeftPanelCollapsed ? "w-0" : "w-1/5"
             )}>
-              <Card className={cn(
-                "glass h-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out",
-                isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
-              )}>
-                <CardContent className="p-4 h-full">
-                  <PhaseSidebar 
-                    phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                    tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                    onTaskStatusChange={handleTaskStatusChange}
-                  />
-                </CardContent>
-              </Card>
+              <div className="relative h-full">
+                <Card className={cn(
+                  "glass h-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out",
+                  isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
+                )}>
+                  <CardContent className="p-4 h-full">
+                    <PhaseSidebar 
+                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
+                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                      onTaskStatusChange={handleTaskStatusChange}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
             </div>
             
-            {/* Modernized toggle button for left panel - now fixed to the left edge */}
+            {/* Modernized toggle button for left panel */}
             <div 
               className={cn(
-                "absolute left-6 top-1/2 z-20 -translate-y-1/2",
+                "absolute left-0 top-1/2 z-20 -translate-y-1/2",
                 "w-8 h-8 flex items-center justify-center",
                 "bg-white/5 backdrop-blur-md",
                 "rounded-full border border-white/20",
@@ -147,9 +148,8 @@ const LaunchPath: React.FC = () => {
               )}
               onClick={toggleLeftPanel}
               style={{
-                transform: `translateY(-50%)`,
-                left: isLeftPanelCollapsed ? '16px' : 'calc(20% + 6px)',
-                transition: 'left 0.3s ease-in-out',
+                transform: `translateX(${isLeftPanelCollapsed ? '16px' : 'calc(20vw - 16px)'}) translateY(-50%)`,
+                transition: 'transform 0.3s ease-in-out',
               }}
             >
               <ChevronLeft 
@@ -160,7 +160,7 @@ const LaunchPath: React.FC = () => {
               />
             </div>
             
-            {/* Right side panels container - consistent gap with left panel */}
+            {/* Right side panels container */}
             <div className={cn(
               "flex-grow ml-4 transition-all duration-300",
               isLeftPanelCollapsed ? "ml-8" : ""
@@ -170,8 +170,8 @@ const LaunchPath: React.FC = () => {
                 {/* Panel for Chat component */}
                 <ResizablePanel 
                   defaultSize={50}
-                  minSize={35}
-                  maxSize={65}
+                  minSize={30}
+                  maxSize={70}
                   className="transition-all duration-300 ease-in-out"
                 >
                   <Card className="glass h-full rounded-xl overflow-hidden">
@@ -181,7 +181,7 @@ const LaunchPath: React.FC = () => {
                   </Card>
                 </ResizablePanel>
                 
-                {/* Enhanced resize handle between chat and canvas - less responsive to mouse movement */}
+                {/* Enhanced resize handle between chat and canvas */}
                 <ResizableHandle withHandle className="bg-transparent transition-all duration-200 hover:bg-white/10">
                   <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 group-hover:scale-105">
                     <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
@@ -192,8 +192,8 @@ const LaunchPath: React.FC = () => {
                 {/* Panel for Canvas Output */}
                 <ResizablePanel 
                   defaultSize={50}
-                  minSize={35}
-                  maxSize={65}
+                  minSize={30}
+                  maxSize={70}
                   className="transition-all duration-300 ease-in-out"
                 >
                   <Card className="glass h-full rounded-xl overflow-hidden">
