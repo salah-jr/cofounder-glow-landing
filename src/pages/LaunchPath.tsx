@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -70,10 +71,18 @@ const LaunchPath: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState("idea");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
   
+  // State for the collapsible left panel
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
     // Implement actual status change logic here
+  };
+  
+  // Toggle left panel collapse
+  const toggleLeftPanel = () => {
+    setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
   };
 
   return (
@@ -110,11 +119,35 @@ const LaunchPath: React.FC = () => {
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <ResizablePanel 
               defaultSize={20}
-              minSize={10}
+              minSize={isLeftPanelCollapsed ? 0 : 10}
               maxSize={30}
-              className="h-full"
+              collapsible={true}
+              isCollapsed={isLeftPanelCollapsed}
+              collapsedSize={0}
+              className="h-full relative"
             >
-              <Card className="glass h-full rounded-xl overflow-hidden">
+              {/* Toggle button for left panel - positioned at the edge */}
+              <div 
+                className={cn(
+                  "absolute -right-3 top-1/2 z-20 -translate-y-1/2 flex items-center justify-center",
+                  "h-6 w-6 rounded-full bg-white/10 backdrop-blur-md border border-white/10",
+                  "cursor-pointer transition-all duration-300 hover:bg-white/20",
+                  "shadow-md hover:shadow-lg"
+                )}
+                onClick={toggleLeftPanel}
+              >
+                <ChevronLeft 
+                  className={cn(
+                    "h-4 w-4 text-white/70 transition-transform duration-300",
+                    isLeftPanelCollapsed && "rotate-180"
+                  )} 
+                />
+              </div>
+              
+              <Card className={cn(
+                "glass h-full rounded-xl overflow-hidden transition-opacity duration-200",
+                isLeftPanelCollapsed ? "opacity-0" : "opacity-100"
+              )}>
                 <CardContent className="p-4 h-full">
                   <PhaseSidebar 
                     phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 

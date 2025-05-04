@@ -18,7 +18,34 @@ const ResizablePanelGroup = ({
 )
 
 // Using the basic ResizablePanel without custom collapsible functionality
-const ResizablePanel = ResizablePrimitive.Panel
+const ResizablePanel = ({
+  className,
+  defaultSize,
+  collapsible = false,
+  collapsedSize = 0,
+  minSize = 0,
+  isCollapsed = false,
+  onCollapse,
+  ...props
+}: React.ComponentProps<typeof ResizablePrimitive.Panel> & {
+  collapsible?: boolean,
+  collapsedSize?: number,
+  isCollapsed?: boolean,
+  onCollapse?: (collapsed: boolean) => void
+}) => {
+  return (
+    <ResizablePrimitive.Panel 
+      defaultSize={defaultSize}
+      minSize={collapsible && isCollapsed ? collapsedSize : minSize}
+      className={cn(
+        "transition-all duration-300",
+        isCollapsed && "min-w-[0px] max-w-[0px]",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
 // Enhanced to support bidirectional resizing
 const ResizableHandle = ({
