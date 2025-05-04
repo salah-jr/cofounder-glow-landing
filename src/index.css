@@ -62,10 +62,6 @@
     opacity: 0.5;
     filter: blur(8px);
   }
-  
-  .shadow-glow {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-  }
 }
 
 /* Custom slider styles for roadmap progress */
@@ -90,14 +86,3 @@
   transform: translateY(-50%) !important;
   cursor: default !important;
 }
-
-/* Shimmer animation for progress bar */
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite linear;
-}
-
