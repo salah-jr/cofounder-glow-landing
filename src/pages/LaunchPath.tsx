@@ -68,24 +68,23 @@ const phaseTasks = {
 
 // Define progress steps
 const progressSteps = ["Idea", "Validation", "Planning", "Prototype", "Development", "Launch", "Growth"];
-
 const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress - now on second step (validation)
   const [currentPhase, setCurrentPhase] = useState("validation");
   const [completedPhases, setCompletedPhases] = useState<string[]>(["idea"]);
-  
+
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
-  
+
   // State for progress bar collapse
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
-  
+
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
     // Implement actual status change logic here
   };
-  
+
   // Toggle left panel collapse
   const toggleLeftPanel = () => {
     setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
@@ -95,87 +94,52 @@ const LaunchPath: React.FC = () => {
   const getCurrentStepIndex = () => {
     return progressSteps.findIndex(step => step.toLowerCase() === currentPhase) + 1;
   };
-
-  return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
+  return <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <div className="w-full px-6">
         <Navbar />
       </div>
       
       {/* Progress Bar with reduced spacing */}
-      <div className="w-full mt-4 mb-4 px-10">
-        <ProgressBar 
-          steps={progressSteps.length} 
-          currentStep={getCurrentStepIndex()}
-          labels={progressSteps}
-          showLabels={true}
-        />
+      <div className="w-full mt-0 mb-4 px-10 my-[12px]">
+        <ProgressBar steps={progressSteps.length} currentStep={getCurrentStepIndex()} labels={progressSteps} showLabels={true} />
       </div>
       
       {/* Main content area */}
       <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="h-full"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.2
+      }} className="h-full">
           {/* Main layout container */}
           <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
             <div className="relative h-full">
               {/* Perfectly centered circular collapse button on right border */}
-              <button 
-                onClick={toggleLeftPanel}
-                className={cn(
-                  "absolute z-10 top-1/2 -right-3 -translate-y-1/2",
-                  "w-6 h-6 flex items-center justify-center",
-                  "bg-white/10 backdrop-blur-md",
-                  "border border-white/20",
-                  "rounded-full shadow-md",
-                  "transition-all duration-300 ease-in-out",
-                  "hover:bg-white/15 hover:border-white/30",
-                  "focus:outline-none focus:ring-2 focus:ring-white/20",
-                )}
-                aria-label="Toggle sidebar"
-              >
-                <ChevronLeft className={cn(
-                  "w-4 h-4 text-white/70",
-                  "transition-transform duration-300 ease-in-out",
-                  isLeftPanelCollapsed && "rotate-180"
-                )} />
+              <button onClick={toggleLeftPanel} className={cn("absolute z-10 top-1/2 -right-3 -translate-y-1/2", "w-6 h-6 flex items-center justify-center", "bg-white/10 backdrop-blur-md", "border border-white/20", "rounded-full shadow-md", "transition-all duration-300 ease-in-out", "hover:bg-white/15 hover:border-white/30", "focus:outline-none focus:ring-2 focus:ring-white/20")} aria-label="Toggle sidebar">
+                <ChevronLeft className={cn("w-4 h-4 text-white/70", "transition-transform duration-300 ease-in-out", isLeftPanelCollapsed && "rotate-180")} />
               </button>
 
-              <div className={cn(
-                "h-full overflow-hidden transition-all duration-300 ease-in-out",
-                isLeftPanelCollapsed ? "w-0 opacity-0" : "w-[20vw] opacity-100"
-              )}>
+              <div className={cn("h-full overflow-hidden transition-all duration-300 ease-in-out", isLeftPanelCollapsed ? "w-0 opacity-0" : "w-[20vw] opacity-100")}>
                 <Card className="glass h-full rounded-xl overflow-hidden">
                   <CardContent className="p-4 h-full">
-                    <PhaseSidebar 
-                      phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
-                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                      onTaskStatusChange={handleTaskStatusChange}
-                    />
+                    <PhaseSidebar phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} onTaskStatusChange={handleTaskStatusChange} />
                   </CardContent>
                 </Card>
               </div>
             </div>
             
             {/* Right side panels container */}
-            <div className={cn(
-              "flex-grow ml-4 transition-all duration-300",
-              isLeftPanelCollapsed ? "ml-8" : ""
-            )}>
+            <div className={cn("flex-grow ml-4 transition-all duration-300", isLeftPanelCollapsed ? "ml-8" : "")}>
               {/* Right side panels with resizable functionality */}
               <ResizablePanelGroup direction="horizontal" className="h-full">
                 {/* Panel for Chat component */}
-                <ResizablePanel 
-                  defaultSize={50}
-                  minSize={30}
-                  maxSize={70}
-                  className="transition-all duration-300 ease-in-out"
-                >
+                <ResizablePanel defaultSize={50} minSize={30} maxSize={70} className="transition-all duration-300 ease-in-out">
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">
                       <CofounderChat />
@@ -192,12 +156,7 @@ const LaunchPath: React.FC = () => {
                 </ResizableHandle>
                 
                 {/* Panel for Canvas Output */}
-                <ResizablePanel 
-                  defaultSize={50}
-                  minSize={30}
-                  maxSize={70}
-                  className="transition-all duration-300 ease-in-out"
-                >
+                <ResizablePanel defaultSize={50} minSize={30} maxSize={70} className="transition-all duration-300 ease-in-out">
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">
                       <CanvasOutput />
@@ -215,8 +174,6 @@ const LaunchPath: React.FC = () => {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
       </div>
-    </div>
-  );
-}
-
+    </div>;
+};
 export default LaunchPath;
