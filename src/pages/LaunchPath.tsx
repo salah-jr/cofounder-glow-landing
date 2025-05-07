@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -148,7 +147,7 @@ const LaunchPath: React.FC = () => {
               </button>
 
               <div className={cn(
-                "h-full overflow-hidden transition-all duration-500 ease-in-out", // Increased duration for smoother transition
+                "h-full overflow-hidden transition-all duration-300 ease-in-out",
                 isLeftPanelCollapsed ? "w-0 opacity-0" : "w-[20vw] opacity-100"
               )}>
                 <Card className="glass h-full rounded-xl overflow-hidden">
@@ -165,7 +164,7 @@ const LaunchPath: React.FC = () => {
             
             {/* Right side panels container */}
             <div className={cn(
-              "flex-grow ml-4 transition-all duration-500 ease-in-out", // Increased duration for smoother transition
+              "flex-grow ml-4 transition-all duration-300",
               isLeftPanelCollapsed ? "ml-8" : ""
             )}>
               {/* Right side panels with resizable functionality */}
@@ -175,7 +174,7 @@ const LaunchPath: React.FC = () => {
                   defaultSize={50}
                   minSize={30}
                   maxSize={70}
-                  className="transition-all duration-500 ease-in-out" // Increased duration for smoother transition
+                  className="transition-all duration-300 ease-in-out"
                 >
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">
@@ -185,8 +184,8 @@ const LaunchPath: React.FC = () => {
                 </ResizablePanel>
                 
                 {/* Enhanced resize handle between chat and canvas with better responsiveness */}
-                <ResizableHandle withHandle className="bg-transparent transition-all duration-500"> {/* Increased duration */}
-                  <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-500 hover:bg-white/20 group-hover:scale-105"> {/* Increased duration */}
+                <ResizableHandle withHandle className="bg-transparent transition-all duration-200">
+                  <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 group-hover:scale-105">
                     <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
                     <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
                   </div>
@@ -197,7 +196,7 @@ const LaunchPath: React.FC = () => {
                   defaultSize={50}
                   minSize={30}
                   maxSize={70}
-                  className="transition-all duration-500 ease-in-out" // Increased duration for smoother transition
+                  className="transition-all duration-300 ease-in-out"
                 >
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">

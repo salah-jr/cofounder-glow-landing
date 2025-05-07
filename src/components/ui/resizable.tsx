@@ -38,7 +38,7 @@ const ResizablePanel = ({
       defaultSize={defaultSize}
       minSize={collapsible && isCollapsed ? collapsedSize : minSize}
       className={cn(
-        "transition-all duration-500 ease-in-out", // Increased duration for smoother transitions
+        "transition-all duration-300",
         isCollapsed && "min-w-[0px] max-w-[0px]",
         className
       )}
@@ -87,18 +87,11 @@ const ResizableHandle = ({
         // Improved responsiveness - fixed TypeScript error by removing imageRendering
         pointerEvents: "auto"
       }}
-      // Add smoother transitions during resize
-      onDragging={() => {
-        document.documentElement.style.cursor = 'col-resize';
-      }}
-      onDragEnd={() => {
-        document.documentElement.style.cursor = '';
-      }}
       {...restProps}
     >
       {withHandle && (
-        <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-500 group-hover:bg-white/20 group-hover:scale-105"> {/* Increased duration */}
-          <GripVertical className="h-3 w-3 text-white/50 group-hover:text-white/70 transition-colors duration-500" /> {/* Increased duration */}
+        <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/20 group-hover:scale-105">
+          <GripVertical className="h-3 w-3 text-white/50 group-hover:text-white/70 transition-colors" />
         </div>
       )}
     </ResizablePrimitive.PanelResizeHandle>
