@@ -102,7 +102,7 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress Bar with hover interaction */}
+      {/* Progress Bar with click interaction */}
       <div className="w-full mt-4 mb-2 px-10">
         <ProgressBar 
           steps={progressSteps.length} 

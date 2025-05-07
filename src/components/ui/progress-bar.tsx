@@ -40,16 +40,13 @@ export const ProgressBar = ({
   if (!isVisible) return null;
   
   return (
-    <div 
-      className={cn("relative py-2", className)} 
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
-    >
+    <div className={cn("relative py-2", className)}>
       {/* Current step indicator - always visible */}
       <motion.div 
         className="mb-2 text-center cursor-pointer"
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.2 }}
+        onClick={() => setIsExpanded(!isExpanded)}
       >
         <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium">
           Step {currentStep} of {steps}: {labels?.[currentStep - 1]}
@@ -63,7 +60,7 @@ export const ProgressBar = ({
         </span>
       </motion.div>
       
-      {/* Progress bar - only visible on hover */}
+      {/* Progress bar - only visible when expanded */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div 
