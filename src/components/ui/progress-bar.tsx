@@ -41,14 +41,14 @@ export const ProgressBar = ({
   
   return (
     <div className={cn("relative py-2", className)}>
-      {/* Current step indicator - always visible */}
+      {/* Current step indicator - always visible and fully clickable */}
       <motion.div 
-        className="mb-2 text-center cursor-pointer"
+        className="mb-2 text-center"
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.2 }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium">
+        <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium cursor-pointer w-auto">
           Step {currentStep} of {steps}: {labels?.[currentStep - 1]}
           <ChevronDown 
             size={16} 
