@@ -67,7 +67,7 @@ export const ProgressBar = ({
       <AnimatePresence>
         {isExpanded && (
           <motion.div 
-            className="relative w-full my-4"
+            className="relative w-full my-4 mb-8" // Added mb-8 for extra space below when expanded
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
