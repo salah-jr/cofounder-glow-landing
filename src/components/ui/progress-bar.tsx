@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -74,9 +75,10 @@ export const ProgressBar = ({
             transform: 'translateY(-50%)'
           }}> {/* Added transform to center indicators */}
                 <motion.div className={cn("rounded-full flex items-center justify-center border transform transition-all duration-300", isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] border-transparent" : isCurrent ? "bg-gradient-to-r from-[#33C3F0] to-[#1EAEDB] border-white/20 glow" : "bg-white/20 border-white/10")} style={{
-              width: isCurrent ? '18px' : '14px',
-              height: isCurrent ? '18px' : '14px',
-              zIndex: 10
+              width: isCurrent ? '24px' : '20px',  // Increased size from 18px/14px to 24px/20px
+              height: isCurrent ? '24px' : '20px', // Increased size from 18px/14px to 24px/20px
+              zIndex: 10,
+              opacity: 1  // Explicitly set opacity to 1
             }} animate={isCurrent ? {
               scale: [1, 1.2, 1],
               boxShadow: ['0 0 5px rgba(155,135,245,0.3)', '0 0 10px rgba(155,135,245,0.6)', '0 0 5px rgba(155,135,245,0.3)'],
@@ -86,9 +88,10 @@ export const ProgressBar = ({
                 ease: "easeInOut"
               }
             } : {}}>
-                  {isCompleted && <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-white">
+                  {isCompleted && <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white"> {/* Increased icon size from 3.5 to 4 */}
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
                     </svg>}
+                  {!isCompleted && <span className="text-xs text-white font-medium">{index + 1}</span>} {/* Added text for non-completed steps */}
                 </motion.div>
                 
                 {/* Step labels positioned directly under the indicators */}
