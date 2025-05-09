@@ -18,7 +18,7 @@ interface PhaseTaskProps {
   status: TaskStatus;
   tooltip?: string;
   onClick?: () => void;
-  onResetChat?: () => void; // New prop for resetting chat
+  onResetChat?: () => void;
 }
 
 export default function PhaseTask({ 
@@ -41,20 +41,31 @@ export default function PhaseTask({
     }
   };
   
+  // Determine if this task is idea-related
+  const isIdeaTask = title.toLowerCase().includes("idea") || 
+                     id.toLowerCase().includes("idea") || 
+                     title.toLowerCase().includes("value proposition") ||
+                     title.toLowerCase().includes("validation hypothesis") ||
+                     id === "task1" || // First task in the idea phase
+                     id === "task6";   // First task in the validation phase
+  
+  // Determine if this task is active (in-progress)
+  const isActive = status === "in-progress";
+  
   const handleClick = () => {
-    // Check if this task is related to an idea
-    const isIdeaRelated = title.toLowerCase().includes("idea") || 
-                          id.toLowerCase().includes("idea") || 
-                          id === "task1" || // First task in the idea phase
-                          id === "task6"; // First task in the validation phase
+    console.log(`Clicked on task: ${title}, isIdeaTask: ${isIdeaTask}, isActive: ${isActive}`);
     
-    console.log(`Clicked on task: ${title}, isIdeaRelated: ${isIdeaRelated}`);
+    // If the task is active (in-progress), don't do anything
+    if (isActive) {
+      console.log("Task is active, ignoring click");
+      return;
+    }
     
     // Call the onClick handler first
     if (onClick) onClick();
     
     // If this is an idea-related task, reset chat
-    if (isIdeaRelated && onResetChat) {
+    if (isIdeaTask && onResetChat) {
       console.log("Resetting chat from PhaseTask...");
       onResetChat();
     }
@@ -63,14 +74,17 @@ export default function PhaseTask({
   return (
     <motion.div
       whileHover={{ 
-        scale: 1.01,
-        background: "linear-gradient(135deg, rgba(155, 135, 245, 0.05), rgba(30, 174, 219, 0.05))"
+        scale: isActive ? 1 : 1.01,
+        background: isActive ? undefined : "linear-gradient(135deg, rgba(155, 135, 245, 0.05), rgba(30, 174, 219, 0.05))"
       }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: isActive ? 1 : 0.98 }}
       className={cn(
-        "px-2 py-3 cursor-pointer transition-all border-b border-white/10",
+        "px-2 py-3 transition-all border-b border-white/10",
         status === "complete" ? "border-l-green-400 border-l-2" : "",
-        status === "in-progress" ? "border-l-blue-400 border-l-2" : ""
+        status === "in-progress" ? "border-l-blue-400 border-l-2" : "",
+        isActive ? 
+          "bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/10 cursor-default" : 
+          "cursor-pointer"
       )}
       onClick={handleClick}
     >
@@ -84,7 +98,10 @@ export default function PhaseTask({
           )}>
             <StatusIcon />
           </div>
-          <span className="text-sm text-white">{title}</span>
+          <span className={cn(
+            "text-sm",
+            isActive ? "text-white font-medium" : "text-white"
+          )}>{title}</span>
         </div>
         
         <div className="flex items-center gap-2">
