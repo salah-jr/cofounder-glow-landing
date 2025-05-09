@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import RoadmapProgress from "@/components/launch/RoadmapProgress";
 import PhaseSidebar from "@/components/launch/PhaseSidebar";
-import CofounderChat from "@/components/launch/CofounderChat";
+import CofounderChat, { CofounderChatRef } from "@/components/launch/CofounderChat";
 import CanvasOutput from "@/components/launch/CanvasOutput";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
@@ -77,8 +77,8 @@ const LaunchPath: React.FC = () => {
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   
-  // Reference to the chat component for resetting
-  const chatRef = useRef<any>(null);
+  // Reference to the chat component for resetting - updated type
+  const chatRef = useRef<CofounderChatRef>(null);
   
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -98,9 +98,9 @@ const LaunchPath: React.FC = () => {
 
   // Reset chat function
   const handleResetChat = () => {
-    // Use window method since we exposed it there
-    if (window && (window as any).resetCofounderChat) {
-      (window as any).resetCofounderChat();
+    // Use the chatRef directly
+    if (chatRef.current) {
+      chatRef.current.resetChat();
     }
   };
 

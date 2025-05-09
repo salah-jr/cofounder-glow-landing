@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Paperclip, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,12 @@ interface CofounderChatProps {
   onReset?: () => void; // Optional callback when chat is reset
 }
 
-export default function CofounderChat({ className, onReset }: CofounderChatProps) {
+// Define ref methods that can be accessed from parent component
+export interface CofounderChatRef {
+  resetChat: () => void;
+}
+
+const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ className, onReset }, ref) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -71,6 +76,11 @@ export default function CofounderChat({ className, onReset }: CofounderChatProps
     // Call the onReset callback if provided
     if (onReset) onReset();
   };
+
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    resetChat
+  }));
   
   // Make the resetChat function accessible via a ref
   useEffect(() => {
@@ -309,4 +319,9 @@ export default function CofounderChat({ className, onReset }: CofounderChatProps
       </div>
     </div>
   );
-}
+});
+
+// Display name for better debugging
+CofounderChat.displayName = "CofounderChat";
+
+export default CofounderChat;
