@@ -45,8 +45,8 @@ export default function PhaseTask({
     // Call the onClick handler first
     if (onClick) onClick();
     
-    // If this is an idea task (likely contains "idea" in the title or id), reset chat
-    if ((title.toLowerCase().includes("idea") || id.includes("idea")) && onResetChat) {
+    // If this contains "idea" in the title, reset chat
+    if (title.toLowerCase().includes("idea") && onResetChat) {
       onResetChat();
     }
   };
