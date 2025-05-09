@@ -38,7 +38,7 @@ const ResizablePanel = ({
       defaultSize={defaultSize}
       minSize={collapsible && isCollapsed ? collapsedSize : minSize}
       className={cn(
-        "transition-all duration-300",
+        "transition-all duration-500",
         isCollapsed && "min-w-[0px] max-w-[0px]",
         className
       )}
@@ -63,7 +63,7 @@ const ResizableHandle = ({
   return (
     <ResizablePrimitive.PanelResizeHandle
       className={cn(
-        "relative flex w-px items-center justify-center cursor-col-resize",
+        "relative flex w-px items-center justify-center cursor-col-resize transition-opacity duration-500",
         "after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
         "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
         "data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full",
@@ -90,7 +90,7 @@ const ResizableHandle = ({
       {...restProps}
     >
       {withHandle && (
-        <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/20 group-hover:scale-105">
+        <div className="z-10 flex h-9 w-2 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors duration-300 group-hover:bg-white/20 group-hover:scale-105">
           <GripVertical className="h-3 w-3 text-white/50 group-hover:text-white/70 transition-colors" />
         </div>
       )}

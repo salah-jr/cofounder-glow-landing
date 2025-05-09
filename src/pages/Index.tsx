@@ -1,4 +1,5 @@
 
+import React from "react";
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
@@ -7,8 +8,9 @@ import PricingSection from "@/components/PricingSection";
 import Logo from "@/components/Logo";
 import Footer from "@/components/Footer";
 
-const Index = () => {
-  return <>
+const Index: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-[#1A1F2C]">
       <Navbar />
       <div className="relative min-h-screen">
         {/* Hero Section with Integrated Services */}
@@ -37,7 +39,7 @@ const Index = () => {
         </div>
 
         {/* Background gradient circles */}
-        <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
         </div>
@@ -52,7 +54,8 @@ const Index = () => {
       </div>
       
       <Footer />
-    </>;
+    </div>
+  );
 };
 
 export default Index;

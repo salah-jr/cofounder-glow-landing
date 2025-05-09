@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 interface ProgressBarProps {
   steps: number;
@@ -48,7 +48,7 @@ export const ProgressBar = ({
         transition={{ duration: 0.2 }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium">
+        <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium w-full">
           Step {currentStep} of {steps}: {labels?.[currentStep - 1]}
           <ChevronDown 
             size={16} 
@@ -68,7 +68,7 @@ export const ProgressBar = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
           >
             {/* Background track */}
             <div 
