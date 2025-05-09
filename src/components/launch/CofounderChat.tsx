@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Paperclip, User } from "lucide-react";
@@ -57,6 +58,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
   
   // Function to reset the chat
   const resetChat = () => {
+    console.log("resetChat function called in CofounderChat");
+    
     // Clear any existing typing timeouts
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -75,6 +78,11 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     
     // Call the onReset callback if provided
     if (onReset) onReset();
+    
+    // Force scroll to bottom after reset
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }, 100);
   };
 
   // Expose methods via ref
@@ -168,25 +176,34 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     }
   };
 
-  // Expose the resetChat method
-  (CofounderChat as any).resetChat = resetChat;
-
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      <div className="flex items-center pb-4 border-b border-white/10">
-        <Avatar className="h-8 w-8 mr-2">
-          <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
-          <AvatarFallback className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]">CF</AvatarFallback>
-        </Avatar>
-        <h3 className="text-lg font-semibold text-white">Co-founder</h3>
-        <div className={cn(
-          "ml-2 h-3 w-3 rounded-full",
-          currentMood === "thinking" 
-            ? "bg-[#FEF7CD]" 
-            : currentMood === "excited" 
-              ? "bg-[#F2FCE2]" 
-              : "bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]"
-        )} />
+      <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex items-center">
+          <Avatar className="h-8 w-8 mr-2">
+            <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
+            <AvatarFallback className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]">CF</AvatarFallback>
+          </Avatar>
+          <h3 className="text-lg font-semibold text-white">Co-founder</h3>
+          <div className={cn(
+            "ml-2 h-3 w-3 rounded-full",
+            currentMood === "thinking" 
+              ? "bg-[#FEF7CD]" 
+              : currentMood === "excited" 
+                ? "bg-[#F2FCE2]" 
+                : "bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]"
+          )} />
+        </div>
+        
+        {/* Added reset button for easier testing */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={resetChat}
+          className="text-xs text-white/50 hover:text-white"
+        >
+          Reset Chat
+        </Button>
       </div>
       
       <ScrollArea className="flex-1 py-4">

@@ -42,11 +42,20 @@ export default function PhaseTask({
   };
   
   const handleClick = () => {
+    // Check if this task is related to an idea
+    const isIdeaRelated = title.toLowerCase().includes("idea") || 
+                          id.toLowerCase().includes("idea") || 
+                          id === "task1" || // First task in the idea phase
+                          id === "task6"; // First task in the validation phase
+    
+    console.log(`Clicked on task: ${title}, isIdeaRelated: ${isIdeaRelated}`);
+    
     // Call the onClick handler first
     if (onClick) onClick();
     
-    // If this contains "idea" in the title, reset chat
-    if (title.toLowerCase().includes("idea") && onResetChat) {
+    // If this is an idea-related task, reset chat
+    if (isIdeaRelated && onResetChat) {
+      console.log("Resetting chat from PhaseTask...");
       onResetChat();
     }
   };

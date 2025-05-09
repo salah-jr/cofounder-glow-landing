@@ -96,11 +96,15 @@ const LaunchPath: React.FC = () => {
     return progressSteps.findIndex(step => step.toLowerCase() === currentPhase) + 1;
   };
 
-  // Reset chat function
+  // Reset chat function - enhanced with console log for debugging
   const handleResetChat = () => {
+    console.log("handleResetChat called in LaunchPath");
     // Use the chatRef directly
     if (chatRef.current) {
+      console.log("Calling resetChat method via ref");
       chatRef.current.resetChat();
+    } else {
+      console.error("chatRef is null - cannot reset chat");
     }
   };
 
