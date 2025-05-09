@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import RoadmapProgress from "@/components/launch/RoadmapProgress";
@@ -77,8 +77,8 @@ const LaunchPath: React.FC = () => {
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   
-  // State for progress bar collapse
-  const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
+  // Reference to the chat component for resetting
+  const chatRef = useRef<any>(null);
   
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -94,6 +94,14 @@ const LaunchPath: React.FC = () => {
   // Get current step number for progress bar
   const getCurrentStepIndex = () => {
     return progressSteps.findIndex(step => step.toLowerCase() === currentPhase) + 1;
+  };
+
+  // Reset chat function
+  const handleResetChat = () => {
+    // Use window method since we exposed it there
+    if (window && (window as any).resetCofounderChat) {
+      (window as any).resetCofounderChat();
+    }
   };
 
   return (
@@ -156,6 +164,7 @@ const LaunchPath: React.FC = () => {
                       phase={currentPhase.charAt(0).toUpperCase() + currentPhase.slice(1)} 
                       tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
                       onTaskStatusChange={handleTaskStatusChange}
+                      onResetChat={handleResetChat}
                     />
                   </CardContent>
                 </Card>
@@ -174,11 +183,11 @@ const LaunchPath: React.FC = () => {
                   defaultSize={50}
                   minSize={30}
                   maxSize={70}
-                  className="transition-all duration-300 ease-in-out"
+                  className="transition-all duration-500 ease-in-out"
                 >
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">
-                      <CofounderChat />
+                      <CofounderChat ref={chatRef} />
                     </CardContent>
                   </Card>
                 </ResizablePanel>
@@ -196,7 +205,7 @@ const LaunchPath: React.FC = () => {
                   defaultSize={50}
                   minSize={30}
                   maxSize={70}
-                  className="transition-all duration-300 ease-in-out"
+                  className="transition-all duration-500 ease-in-out"
                 >
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">

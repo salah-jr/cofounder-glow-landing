@@ -48,7 +48,7 @@ export const ProgressBar = ({
         transition={{ duration: 0.2 }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium w-full">
+        <span className="text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium mx-auto">
           Step {currentStep} of {steps}: {labels?.[currentStep - 1]}
           <ChevronDown 
             size={16} 

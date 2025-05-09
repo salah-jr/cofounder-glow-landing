@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Paperclip, User } from "lucide-react";
@@ -17,9 +16,10 @@ interface Message {
 
 interface CofounderChatProps {
   className?: string;
+  onReset?: () => void; // Optional callback when chat is reset
 }
 
-export default function CofounderChat({ className }: CofounderChatProps) {
+export default function CofounderChat({ className, onReset }: CofounderChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -46,6 +46,43 @@ export default function CofounderChat({ className }: CofounderChatProps) {
     return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
+  
+  // Function to reset the chat
+  const resetChat = () => {
+    // Clear any existing typing timeouts
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    
+    // Reset to initial state
+    setMessages([{
+      id: Date.now().toString(),
+      text: "Let's talk about your idea! What's the core problem your product aims to solve?",
+      sender: "cofounder"
+    }]);
+    setInput("");
+    setIsTyping(false);
+    setCurrentMood("neutral");
+    
+    // Call the onReset callback if provided
+    if (onReset) onReset();
+  };
+  
+  // Make the resetChat function accessible via a ref
+  useEffect(() => {
+    // Expose resetChat method to parent component
+    if (window) {
+      (window as any).resetCofounderChat = resetChat;
+    }
+    
+    return () => {
+      // Clean up
+      if (window && (window as any).resetCofounderChat) {
+        delete (window as any).resetCofounderChat;
       }
     };
   }, []);
@@ -120,6 +157,9 @@ export default function CofounderChat({ className }: CofounderChatProps) {
       inputRef.current?.focus();
     }
   };
+
+  // Expose the resetChat method
+  (CofounderChat as any).resetChat = resetChat;
 
   return (
     <div className={cn("flex flex-col h-full", className)}>
@@ -232,7 +272,6 @@ export default function CofounderChat({ className }: CofounderChatProps) {
               scrollbarWidth: "none"
             }}
           />
-          {/* Using global CSS styling approach instead of jsx prop which caused the type error */}
           <style>
             {`
               textarea::-webkit-scrollbar {

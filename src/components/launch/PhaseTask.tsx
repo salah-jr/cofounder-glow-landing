@@ -18,9 +18,17 @@ interface PhaseTaskProps {
   status: TaskStatus;
   tooltip?: string;
   onClick?: () => void;
+  onResetChat?: () => void; // New prop for resetting chat
 }
 
-export default function PhaseTask({ id, title, status, tooltip, onClick }: PhaseTaskProps) {
+export default function PhaseTask({ 
+  id, 
+  title, 
+  status, 
+  tooltip, 
+  onClick,
+  onResetChat 
+}: PhaseTaskProps) {
   // Status icon based on task status
   const StatusIcon = () => {
     switch (status) {
@@ -30,6 +38,16 @@ export default function PhaseTask({ id, title, status, tooltip, onClick }: Phase
         return <Clock size={16} className="text-blue-400 animate-pulse-subtle" />;
       default:
         return <Circle size={16} className="text-white/40" />;
+    }
+  };
+  
+  const handleClick = () => {
+    // Call the onClick handler first
+    if (onClick) onClick();
+    
+    // If this is an idea task (likely contains "idea" in the title or id), reset chat
+    if ((title.toLowerCase().includes("idea") || id.includes("idea")) && onResetChat) {
+      onResetChat();
     }
   };
   
@@ -45,7 +63,7 @@ export default function PhaseTask({ id, title, status, tooltip, onClick }: Phase
         status === "complete" ? "border-l-green-400 border-l-2" : "",
         status === "in-progress" ? "border-l-blue-400 border-l-2" : ""
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div className="flex items-center gap-3 justify-between">
         <div className="flex items-center gap-3">

@@ -20,9 +20,10 @@ interface PhaseSidebarProps {
   phase: string;
   tasks: Task[];
   onTaskStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
+  onResetChat?: () => void; // Add this prop
 }
 
-export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: PhaseSidebarProps) {
+export default function PhaseSidebar({ phase, tasks, onTaskStatusChange, onResetChat }: PhaseSidebarProps) {
   const handleTaskClick = (taskId: string) => {
     // You could add additional functionality here in the future
     if (onTaskStatusChange) {
@@ -77,6 +78,7 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange }: Phase
                 status={task.status}
                 tooltip={task.tooltip}
                 onClick={() => handleTaskClick(task.id)}
+                onResetChat={onResetChat}
               />
             </motion.div>
           ))}
