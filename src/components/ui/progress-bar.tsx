@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Signal } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 interface ProgressBarProps {
   steps: number;
   currentStep: number;
@@ -12,6 +13,7 @@ interface ProgressBarProps {
   className?: string;
   height?: number;
 }
+
 export const ProgressBar = ({
   steps,
   currentStep,
@@ -38,21 +40,30 @@ export const ProgressBar = ({
   
   if (!isVisible) return null;
   
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+  
   return <TooltipProvider>
       <div className={cn("relative py-2", className)}>
-        {/* Modern floating indicator with wave animation - FULL BUTTON NOW CLICKABLE */}
-        <motion.div className="mb-4 text-center" initial={{
-        y: -5,
-        opacity: 0
-      }} animate={{
-        y: 0,
-        opacity: 1
-      }} transition={{
-        duration: 0.4
-      }}>
-          <button 
-            onClick={() => setIsExpanded(!isExpanded)} 
-            className="group inline-flex items-center gap-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white font-medium mx-auto px-4 py-1.5 w-auto cursor-pointer transition-all duration-300 hover:bg-black/30 hover:border-white/20"
+        {/* Modern floating indicator with wave animation - ENTIRE DIV IS CLICKABLE */}
+        <motion.div 
+          className="mb-2 text-center cursor-pointer" 
+          onClick={toggleExpanded}
+          initial={{
+            y: -5,
+            opacity: 0
+          }} 
+          animate={{
+            y: 0,
+            opacity: 1
+          }} 
+          transition={{
+            duration: 0.4
+          }}
+        >
+          <div 
+            className="group inline-flex items-center gap-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white font-medium mx-auto px-4 py-1.5 w-auto transition-all duration-300 hover:bg-black/30 hover:border-white/20"
           >
             <Signal className={cn("h-3.5 w-3.5 text-[#9b87f5] transition-transform duration-500", isExpanded ? "animate-pulse" : "animate-none")} />
             <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent text-sm">
@@ -65,7 +76,7 @@ export const ProgressBar = ({
           }} className="ml-1">
               <ChevronDown size={12} className="text-white/70" />
             </motion.div>
-          </button>
+          </div>
         </motion.div>
         
         {/* Progress visualization - only visible when expanded */}
