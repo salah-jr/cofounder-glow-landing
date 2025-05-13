@@ -1,18 +1,28 @@
 
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Paperclip, User } from "lucide-react";
+import { Send, Paperclip, User, File, Image, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+
+interface FileAttachment {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  preview?: string;
+}
 
 interface Message {
   id: string;
   text: string;
   sender: "user" | "cofounder";
   isInsight?: boolean;
+  files?: FileAttachment[];
 }
 
 interface CofounderChatProps {
@@ -37,6 +47,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
+  const [attachedFiles, setAttachedFiles] = useState<FileAttachment[]>([]);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -75,6 +87,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     setInput("");
     setIsTyping(false);
     setCurrentMood("neutral");
+    setAttachedFiles([]);
     
     // Call the onReset callback if provided
     if (onReset) onReset();
@@ -106,17 +119,19 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
   }, []);
   
   const handleSendMessage = () => {
-    if (input.trim() === "") return;
+    if (input.trim() === "" && attachedFiles.length === 0) return;
     
     // Add user message with send animation
     const userMessage: Message = {
       id: Date.now().toString(),
       text: input,
-      sender: "user"
+      sender: "user",
+      files: attachedFiles.length > 0 ? [...attachedFiles] : undefined
     };
     
     setMessages(prev => [...prev, userMessage]);
     setInput("");
+    setAttachedFiles([]); // Clear attachments after sending
     setIsTyping(true);
     setCurrentMood("thinking");
     
@@ -167,13 +182,127 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      // In a real implementation, you would handle file uploads here
-      console.log("File selected:", files[0].name);
+      const newFiles: FileAttachment[] = Array.from(files).map(file => {
+        const id = Math.random().toString(36).substring(2, 9);
+        const fileObj: FileAttachment = {
+          id,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        };
+        
+        // Create preview for images
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            setAttachedFiles(prev => 
+              prev.map(f => f.id === id ? { ...f, preview: reader.result as string } : f)
+            );
+          };
+          reader.readAsDataURL(file);
+        }
+        
+        return fileObj;
+      });
       
-      // For now, we'll just acknowledge the file in the chat
-      setInput(`I'm attaching ${files[0].name}`);
-      inputRef.current?.focus();
+      setAttachedFiles(prev => [...prev, ...newFiles]);
+      
+      // Clear the input to allow selecting the same file again
+      if (e.target) {
+        e.target.value = '';
+      }
     }
+  };
+
+  const removeAttachment = (id: string) => {
+    setAttachedFiles(prev => prev.filter(file => file.id !== id));
+  };
+
+  // Function to format file size
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  // Render file attachments
+  const renderFileAttachments = () => {
+    if (attachedFiles.length === 0) return null;
+    
+    return (
+      <div className="flex flex-wrap gap-2 px-4 mb-3 max-h-32 overflow-y-auto scrollbar-hide">
+        {attachedFiles.map((file) => (
+          <div 
+            key={file.id} 
+            className="flex items-center bg-white/10 backdrop-blur-sm rounded-md pr-2 overflow-hidden group"
+          >
+            {file.preview ? (
+              <div className="h-10 w-10 relative mr-2">
+                <AspectRatio ratio={1/1} className="bg-muted">
+                  <img 
+                    src={file.preview} 
+                    alt={file.name}
+                    className="object-cover h-full w-full" 
+                  />
+                </AspectRatio>
+              </div>
+            ) : (
+              <div className="h-10 w-10 bg-white/5 flex items-center justify-center mr-2">
+                <File className="h-5 w-5 text-white/70" />
+              </div>
+            )}
+            <div className="mr-2">
+              <p className="text-xs font-medium text-white/90 truncate max-w-[100px]">{file.name}</p>
+              <p className="text-[10px] text-white/60">{formatFileSize(file.size)}</p>
+            </div>
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-6 w-6 p-0 text-white/60 hover:text-white hover:bg-white/10"
+              onClick={() => removeAttachment(file.id)}
+            >
+              <X size={14} />
+            </Button>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Render attached files in a message
+  const renderMessageFiles = (messageFiles?: FileAttachment[]) => {
+    if (!messageFiles || messageFiles.length === 0) return null;
+    
+    return (
+      <div className="mt-2 flex flex-wrap gap-2">
+        {messageFiles.map((file) => (
+          <div 
+            key={file.id} 
+            className="flex items-center bg-white/5 rounded-md overflow-hidden max-w-[200px]"
+          >
+            {file.preview ? (
+              <div className="h-16 w-16 relative">
+                <AspectRatio ratio={1/1} className="bg-muted">
+                  <img 
+                    src={file.preview} 
+                    alt={file.name}
+                    className="object-cover h-full w-full" 
+                  />
+                </AspectRatio>
+              </div>
+            ) : (
+              <div className="h-10 w-10 bg-white/5 flex items-center justify-center">
+                <File className="h-5 w-5 text-white/70" />
+              </div>
+            )}
+            <div className="p-2">
+              <p className="text-xs font-medium text-white/90 truncate max-w-[120px]">{file.name}</p>
+              <p className="text-[10px] text-white/60">{formatFileSize(file.size)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -195,7 +324,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
           )} />
         </div>
         
-        {/* Added reset button for easier testing */}
         <Button 
           variant="ghost" 
           size="sm" 
@@ -237,7 +365,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
                     "py-2 px-1",
                     "text-white" // Always white text for all messages
                   )}>
-                    <p>{message.text}</p>
+                    {message.text && <p>{message.text}</p>}
+                    {renderMessageFiles(message.files)}
                   </div>
                 </div>
               </motion.div>
@@ -284,6 +413,9 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       
       <Separator className="bg-white/10 my-4" />
       
+      {/* Show attached files */}
+      {renderFileAttachments()}
+      
       <div className="pt-0">
         <div className="relative">
           <textarea
@@ -304,29 +436,44 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
               textarea::-webkit-scrollbar {
                 display: none;
               }
+              .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+              }
+              .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
             `}
           </style>
           <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-            <Button
-              onClick={handleFileAttachment}
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-full hover:bg-white/10"
-            >
-              <Paperclip size={18} className="text-white/70" />
-              <input 
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </Button>
+            <div className="flex items-center">
+              {attachedFiles.length > 0 && (
+                <span className="mr-2 text-xs bg-white/10 text-white/80 px-2 py-0.5 rounded-full">
+                  {attachedFiles.length}
+                </span>
+              )}
+              <Button
+                onClick={handleFileAttachment}
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+              >
+                <Paperclip size={18} className="text-white/70" />
+                <input 
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  multiple
+                />
+              </Button>
+            </div>
             <Button 
               onClick={handleSendMessage}
-              disabled={!input.trim()}
+              disabled={!input.trim() && attachedFiles.length === 0}
               className={cn(
                 "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md transition-all duration-300",
-                !input.trim() ? "opacity-50" : "hover:opacity-90"
+                (!input.trim() && attachedFiles.length === 0) ? "opacity-50" : "hover:opacity-90"
               )}
             >
               <Send size={18} />
