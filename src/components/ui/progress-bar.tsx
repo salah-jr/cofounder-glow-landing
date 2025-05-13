@@ -45,11 +45,11 @@ export const ProgressBar = ({
   };
   
   return <TooltipProvider>
-      <div className={cn("relative py-2", className)}>
+      {/* Added cursor-pointer to the entire container so clicking anywhere toggles */}
+      <div className={cn("relative py-2 cursor-pointer", className)} onClick={toggleExpanded}>
         {/* Modern floating indicator with wave animation - ENTIRE DIV IS CLICKABLE */}
         <motion.div 
-          className="mb-2 text-center cursor-pointer" 
-          onClick={toggleExpanded}
+          className="mb-2 text-center" 
           initial={{
             y: -5,
             opacity: 0
@@ -81,7 +81,7 @@ export const ProgressBar = ({
         
         {/* Progress visualization - only visible when expanded */}
         <AnimatePresence>
-          {isExpanded && <motion.div className="relative w-full mb-6" initial={{
+          {isExpanded && <motion.div className="relative w-full mb-8" initial={{
           opacity: 0,
           height: 0
         }} animate={{
@@ -127,10 +127,11 @@ export const ProgressBar = ({
                   </motion.div>
                 </div>
                 
-                {/* Interactive step indicators properly centered ON the track */}
-                <div className="absolute top-0 left-0 w-full flex justify-between" style={{
-              transform: 'translateY(-50%)'
-            }}>
+                {/* Interactive step indicators precisely centered on the track */}
+                <div className="absolute left-0 w-full flex justify-between" style={{
+                  top: `${height/2}px`,
+                  transform: 'translateY(-50%)'
+                }}>
                   {Array.from({
                 length: steps
               }).map((_, index) => {
@@ -172,11 +173,12 @@ export const ProgressBar = ({
                           ease: "easeInOut"
                         }} />}
                               
+                              {/* Updated the inactive dot size and opacity */}
                               {isUpcoming && <div className="w-1.5 h-1.5 bg-white/40 rounded-full" />}
                             </motion.div>
                             
                             {/* Step labels positioned under indicators - properly spaced */}
-                            {showLabels && labels && <motion.div className="absolute top-7 text-center" initial={{
+                            {showLabels && labels && <motion.div className="absolute top-8 text-center" initial={{
                         opacity: 0,
                         y: -5
                       }} animate={{

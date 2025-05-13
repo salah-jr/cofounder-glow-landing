@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
-import { motion } from "framer-motion";
+
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import RoadmapProgress from "@/components/launch/RoadmapProgress";
 import PhaseSidebar from "@/components/launch/PhaseSidebar";
@@ -75,9 +76,15 @@ const LaunchPath: React.FC = () => {
 
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  
+  // State to track progress bar expanded state
+  const [isProgressBarExpanded, setIsProgressBarExpanded] = useState(false);
 
   // Reference to the chat component for resetting - updated type
   const chatRef = useRef<CofounderChatRef>(null);
+  
+  // Effect to watch progress bar state changes
+  const mainContentRef = useRef<HTMLDivElement>(null);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -106,28 +113,52 @@ const LaunchPath: React.FC = () => {
       console.error("chatRef is null - cannot reset chat");
     }
   };
-  return <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
+  
+  // Track progress bar expanded state changes 
+  const handleProgressBarToggle = (isExpanded: boolean) => {
+    setIsProgressBarExpanded(isExpanded);
+  };
+
+  return (
+    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
       <div className="w-full px-6">
         <Navbar />
       </div>
       
-      {/* Progress Bar with reduced bottom margin */}
-      <div className="w-full mt-2 px-6 mb-2">
-        <ProgressBar steps={progressSteps.length} currentStep={getCurrentStepIndex()} labels={progressSteps} showLabels={true} height={4} />
+      {/* Progress Bar with dynamic spacing based on expanded state */}
+      <div className={cn(
+        "w-full mt-2 px-6 transition-all duration-500 ease-in-out", 
+        isProgressBarExpanded ? "mb-4" : "mb-2"
+      )}>
+        <ProgressBar 
+          steps={progressSteps.length} 
+          currentStep={getCurrentStepIndex()} 
+          labels={progressSteps} 
+          showLabels={true} 
+          height={4} 
+        />
       </div>
       
-      {/* Main content area */}
-      <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        delay: 0.2
-      }} className="h-full">
+      {/* Main content area with smooth height transition */}
+      <div 
+        ref={mainContentRef}
+        className="w-full px-6 pb-6 flex-grow overflow-hidden transition-all duration-500 ease-in-out"
+      >
+        <motion.div 
+          initial={{
+            opacity: 0,
+            y: 20
+          }} 
+          animate={{
+            opacity: 1,
+            y: 0
+          }} 
+          transition={{
+            duration: 0.5,
+            delay: 0.2
+          }} 
+          className="h-full"
+        >
           {/* Main layout container */}
           <div className="flex h-full rounded-xl animate-fade-in">
             {/* First Panel - Left Sidebar with Phase Tasks */}
@@ -186,6 +217,7 @@ const LaunchPath: React.FC = () => {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
       </div>
-    </div>;
+    </div>
+  );
 };
 export default LaunchPath;
