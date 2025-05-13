@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { Paperclip, X } from "lucide-react";
 import { Button } from "./ui/button";
 
