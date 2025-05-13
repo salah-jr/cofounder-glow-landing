@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -114,13 +115,14 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress Bar with click interaction */}
-      <div className="w-full mt-4 mb-2 px-10">
+      {/* Progress Bar with updated styling */}
+      <div className="w-full mt-2 px-6">
         <ProgressBar 
           steps={progressSteps.length} 
           currentStep={getCurrentStepIndex()}
           labels={progressSteps}
           showLabels={true}
+          height={4}
         />
       </div>
       
