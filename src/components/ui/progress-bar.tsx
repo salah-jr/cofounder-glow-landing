@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,10 +35,12 @@ export const ProgressBar = ({
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+  
   if (!isVisible) return null;
+  
   return <TooltipProvider>
       <div className={cn("relative py-2", className)}>
-        {/* Modern floating indicator with wave animation */}
+        {/* Modern floating indicator with wave animation - FULL BUTTON NOW CLICKABLE */}
         <motion.div className="mb-4 text-center" initial={{
         y: -5,
         opacity: 0
@@ -47,7 +50,10 @@ export const ProgressBar = ({
       }} transition={{
         duration: 0.4
       }}>
-          <button onClick={() => setIsExpanded(!isExpanded)} className="group inline-flex items-center gap-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white font-medium mx-auto px-4 py-1.5 cursor-pointer transition-all duration-300 hover:bg-black/30 hover:border-white/20">
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            className="group inline-flex items-center gap-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white font-medium mx-auto px-4 py-1.5 w-auto cursor-pointer transition-all duration-300 hover:bg-black/30 hover:border-white/20"
+          >
             <Signal className={cn("h-3.5 w-3.5 text-[#9b87f5] transition-transform duration-500", isExpanded ? "animate-pulse" : "animate-none")} />
             <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent text-sm">
               Phase {currentStep}: {labels?.[currentStep - 1]}
@@ -110,7 +116,7 @@ export const ProgressBar = ({
                   </motion.div>
                 </div>
                 
-                {/* Interactive step indicators positioned ON the track - updated positioning */}
+                {/* Interactive step indicators properly centered ON the track */}
                 <div className="absolute top-0 left-0 w-full flex justify-between" style={{
               transform: 'translateY(-50%)'
             }}>
@@ -158,7 +164,7 @@ export const ProgressBar = ({
                               {isUpcoming && <div className="w-1.5 h-1.5 bg-white/40 rounded-full" />}
                             </motion.div>
                             
-                            {/* Step labels positioned under indicators - improved spacing */}
+                            {/* Step labels positioned under indicators - properly spaced */}
                             {showLabels && labels && <motion.div className="absolute top-7 text-center" initial={{
                         opacity: 0,
                         y: -5
