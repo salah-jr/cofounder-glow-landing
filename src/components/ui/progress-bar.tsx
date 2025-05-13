@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Signal } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ProgressBarProps {
   steps: number;
@@ -40,120 +41,201 @@ export const ProgressBar = ({
   if (!isVisible) return null;
   
   return (
-    <div className={cn("relative py-2", className)}>
-      {/* Current step indicator - always visible */}
-      <motion.div 
-        className="mb-2 text-center"
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.2 }}
-      >
-        {/* Make the entire button clickable */}
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="inline-block rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white font-medium mx-auto px-4 py-1 cursor-pointer"
+    <TooltipProvider>
+      <div className={cn("relative py-2", className)}>
+        {/* Modern floating indicator with wave animation */}
+        <motion.div 
+          className="mb-4 text-center"
+          initial={{ y: -5, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
         >
-          Step {currentStep} of {steps}: {labels?.[currentStep - 1]}
-          <ChevronDown 
-            size={16} 
-            className={cn(
-              "inline ml-2 transition-transform duration-300",
-              isExpanded && "transform rotate-180"
-            )}
-          />
-        </button>
-      </motion.div>
-      
-      {/* Progress bar - only visible when expanded */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div 
-            className="relative w-full my-4 mb-8" // Added mb-8 for extra space below when expanded
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.5 }}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="group inline-flex items-center gap-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white font-medium mx-auto px-5 py-2 cursor-pointer transition-all duration-300 hover:bg-black/30 hover:border-white/20"
           >
-            {/* Background track */}
-            <div 
-              className="w-full bg-white/10 rounded-full overflow-hidden shadow-inner" 
-              style={{ height: `${height}px` }}
+            <Signal className={cn(
+              "h-4 w-4 text-[#9b87f5] transition-transform duration-500",
+              isExpanded ? "animate-pulse" : "animate-none"
+            )} />
+            <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+              Phase {currentStep}: {labels?.[currentStep - 1]}
+            </span>
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+              className="ml-1"
             >
-              {/* Animated fill */}
-              <motion.div 
-                className="h-full bg-gradient-to-r from-[#9b87f5] via-[#33C3F0] to-[#1EAEDB] rounded-full" 
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPercentage}%` }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              />
-            </div>
-            
-            {/* Step indicators - properly centered over the bar */}
-            <div className="absolute top-0 left-0 w-full flex justify-between my-[4px]">
-              {Array.from({length: steps}).map((_, index) => {
-                const isCompleted = index < currentStep - 1;
-                const isCurrent = index === currentStep - 1;
-                const isUpcoming = index > currentStep - 1;
-                
-                return (
-                  <div 
-                    key={index} 
-                    className="flex flex-col items-center relative" 
-                    style={{ transform: 'translateY(-50%)' }}
-                  >
-                    <motion.div 
-                      className={cn("rounded-full flex items-center justify-center border transform transition-all duration-300", 
-                        isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] border-transparent" : 
-                        isCurrent ? "bg-gradient-to-r from-[#33C3F0] to-[#1EAEDB] border-white/20 glow" : 
-                        "bg-white/20 border-white/10"
-                      )} 
-                      style={{
-                        width: isCurrent ? '24px' : '20px',
-                        height: isCurrent ? '24px' : '20px',
-                        zIndex: 10,
-                        opacity: 1
-                      }} 
-                      animate={isCurrent ? {
-                        scale: [1, 1.2, 1],
-                        boxShadow: ['0 0 5px rgba(155,135,245,0.3)', '0 0 10px rgba(155,135,245,0.6)', '0 0 5px rgba(155,135,245,0.3)'],
-                        transition: {
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        }
-                      } : {}}
-                    >
-                      {isCompleted && (
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                      )}
-                    </motion.div>
-                    
-                    {/* Step labels positioned directly under the indicators */}
-                    {showLabels && labels && (
-                      <div className="absolute top-6 text-center min-w-max">
-                        <span 
-                          className={cn(
-                            "text-xs transform -translate-x-1/2 whitespace-nowrap", 
-                            index + 1 === currentStep ? "text-white font-medium" : 
-                            index + 1 < currentStep ? "text-white/80" : "text-white/50"
-                          )} 
-                          style={{
-                            fontSize: index + 1 === currentStep ? '0.75rem' : '0.7rem',
-                            left: '50%'
-                          }}
+              <ChevronDown size={14} className="text-white/70" />
+            </motion.div>
+          </button>
+        </motion.div>
+        
+        {/* Progress visualization - only visible when expanded */}
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div 
+              className="relative w-full mb-10 mt-6"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              {/* Modern progress track */}
+              <div 
+                className="w-full bg-gradient-to-r from-white/5 to-white/10 rounded-xl overflow-hidden backdrop-blur-sm border border-white/5 shadow-inner" 
+                style={{ height: `${height+4}px` }}
+              >
+                {/* Animated progress fill with glow effect */}
+                <motion.div 
+                  className="h-full relative rounded-xl overflow-hidden"
+                  style={{ width: `${progressPercentage}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                  {/* Main gradient fill */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#9b87f5] via-[#33C3F0] to-[#1EAEDB] rounded-xl" />
+                  
+                  {/* Animated shine effect */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    initial={{ x: '-100%' }}
+                    animate={{ x: '200%' }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      duration: 2, 
+                      ease: "easeInOut",
+                      repeatDelay: 0.5
+                    }}
+                  />
+                </motion.div>
+              </div>
+              
+              {/* Interactive step indicators */}
+              <div className="absolute top-0 left-0 w-full flex justify-between px-1" style={{ transform: 'translateY(-50%)' }}>
+                {Array.from({length: steps}).map((_, index) => {
+                  const isCompleted = index < currentStep - 1;
+                  const isCurrent = index === currentStep - 1;
+                  const isUpcoming = index > currentStep - 1;
+                  
+                  return (
+                    <Tooltip key={index}>
+                      <TooltipTrigger asChild>
+                        <motion.div 
+                          className="flex flex-col items-center cursor-pointer"
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.2 }}
                         >
-                          {labels[index]}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+                          <motion.div 
+                            className={cn(
+                              "rounded-full flex items-center justify-center shadow-lg z-10",
+                              isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] border-2 border-white/30" : 
+                              isCurrent ? "bg-gradient-to-r from-[#33C3F0] to-[#1EAEDB] border-2 border-white/30" : 
+                              "bg-white/10 backdrop-blur-sm border border-white/20"
+                            )} 
+                            style={{
+                              width: isCurrent ? '28px' : isCompleted ? '24px' : '20px',
+                              height: isCurrent ? '28px' : isCompleted ? '24px' : '20px',
+                            }}
+                            animate={isCurrent ? {
+                              boxShadow: [
+                                '0 0 5px rgba(155,135,245,0.3)', 
+                                '0 0 15px rgba(155,135,245,0.6)', 
+                                '0 0 5px rgba(155,135,245,0.3)'
+                              ],
+                            } : {}}
+                            transition={{
+                              duration: 2,
+                              repeat: Infinity,
+                              ease: "easeInOut"
+                            }}
+                          >
+                            {isCompleted && (
+                              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                              </svg>
+                            )}
+                            
+                            {isCurrent && (
+                              <motion.div 
+                                className="w-3 h-3 bg-white rounded-full"
+                                animate={{ 
+                                  scale: [1, 1.2, 1],
+                                  opacity: [0.7, 1, 0.7]
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat: Infinity,
+                                  ease: "easeInOut"
+                                }}
+                              />
+                            )}
+                            
+                            {isUpcoming && (
+                              <div className="w-2 h-2 bg-white/40 rounded-full" />
+                            )}
+                          </motion.div>
+                          
+                          {/* Step labels positioned under indicators */}
+                          {showLabels && labels && (
+                            <motion.div 
+                              className="absolute top-8 text-center w-24"
+                              style={{ transform: 'translateX(-50%)', left: '50%' }}
+                              initial={{ opacity: 0, y: -5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                            >
+                              <span 
+                                className={cn(
+                                  "text-xs whitespace-nowrap px-2 py-1 rounded-md backdrop-blur-sm",
+                                  isCurrent ? "bg-white/10 text-white font-medium" : 
+                                  isCompleted ? "text-white/80" : "text-white/40"
+                                )}
+                              >
+                                {labels[index]}
+                              </span>
+                            </motion.div>
+                          )}
+                        </motion.div>
+                      </TooltipTrigger>
+                      <TooltipContent 
+                        side="bottom"
+                        className="bg-black/80 backdrop-blur-xl border-white/10 text-white"
+                      >
+                        <p>{labels?.[index]}</p>
+                        <p className="text-xs text-white/70">
+                          {isCompleted ? "Completed" : isCurrent ? "In Progress" : "Upcoming"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+              
+              {/* Connector lines between steps */}
+              <div className="absolute top-0 left-0 w-full px-4" style={{ transform: 'translateY(-50%)' }}>
+                {Array.from({length: steps - 1}).map((_, index) => {
+                  const isCompleted = index < currentStep - 1;
+                  return (
+                    <div 
+                      key={index} 
+                      className={cn(
+                        "absolute h-[2px]",
+                        isCompleted ? "bg-gradient-to-r from-[#9b87f5] to-[#33C3F0]" : "bg-white/10"
+                      )}
+                      style={{
+                        left: `${(index / (steps - 1)) * 100}%`,
+                        width: `${100 / (steps - 1)}%`,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </TooltipProvider>
   );
 };
