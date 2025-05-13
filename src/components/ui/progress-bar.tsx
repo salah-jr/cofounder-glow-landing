@@ -81,7 +81,7 @@ export const ProgressBar = ({
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <div className="relative">
+              <div className="relative mt-8">
                 {/* Modern progress track */}
                 <div 
                   className="w-full bg-gradient-to-r from-white/5 to-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/5 shadow-inner" 
@@ -113,7 +113,7 @@ export const ProgressBar = ({
                   </motion.div>
                 </div>
                 
-                {/* Interactive step indicators positioned ON the track */}
+                {/* Interactive step indicators positioned ON the track - updated positioning */}
                 <div className="absolute top-0 left-0 w-full flex justify-between" style={{ transform: 'translateY(-50%)' }}>
                   {Array.from({length: steps}).map((_, index) => {
                     const isCompleted = index < currentStep - 1;
@@ -180,10 +180,10 @@ export const ProgressBar = ({
                               )}
                             </motion.div>
                             
-                            {/* Step labels positioned under indicators */}
+                            {/* Step labels positioned under indicators - improved spacing */}
                             {showLabels && labels && (
                               <motion.div 
-                                className="absolute top-6 text-center"
+                                className="absolute top-7 text-center"
                                 initial={{ opacity: 0, y: -5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
