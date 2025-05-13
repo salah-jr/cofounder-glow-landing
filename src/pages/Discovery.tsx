@@ -5,6 +5,7 @@ import { useDiscovery } from "@/context/DiscoveryContext";
 import Question from "@/components/discovery/Question";
 import AnswerCard from "@/components/discovery/AnswerCard";
 import Results from "@/components/discovery/Results";
+import Navbar from "@/components/Navbar";
 
 const Discovery = () => {
   const { currentQuestionIndex, answers, questions, isComplete, selectAnswer } = useDiscovery();
@@ -39,6 +40,8 @@ const Discovery = () => {
 
   return (
     <div className="min-h-screen flex flex-col pt-16 px-4 relative overflow-hidden bg-[#1A1F2C]">
+      <Navbar />
+      
       {/* Background shapes */}
       <motion.div
         className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-gradient-to-br from-[#9b87f5]/5 to-transparent rounded-full blur-3xl"
