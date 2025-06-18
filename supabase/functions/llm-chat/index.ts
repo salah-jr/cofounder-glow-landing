@@ -44,6 +44,42 @@ Communication style:
 
 Remember: You're not just answering questions - you're actively helping them build a successful startup. Think like an experienced entrepreneur who wants to see them succeed.`;
 
+// Enhanced retry function with exponential backoff
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 5,
+  baseDelay: number = 1000
+): Promise<T> {
+  let lastError: Error
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error as Error
+      
+      // If it's the last attempt, throw the error
+      if (attempt === maxRetries) {
+        console.error(`Final attempt failed after ${maxRetries} retries:`, lastError.message)
+        throw lastError
+      }
+      
+      // Check if it's a rate limit error (429) or server error (5xx)
+      const errorStatus = (error as any).status
+      if (errorStatus === 429 || (errorStatus >= 500 && errorStatus < 600)) {
+        const delay = baseDelay * Math.pow(2, attempt)
+        console.log(`API error ${errorStatus}, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+      } else {
+        // For other errors (4xx except 429), throw immediately
+        throw error
+      }
+    }
+  }
+  
+  throw lastError!
+}
+
 // OpenAI API call function with proper error handling
 async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
   console.log('Making OpenAI API request with', messages.length, 'messages')
@@ -234,12 +270,17 @@ Deno.serve(async (req) => {
 
     console.log('Prepared messages for OpenAI:', messages.length)
 
-    // Call OpenAI API
+    // Call OpenAI API with retry logic
     let openaiData
     try {
-      openaiData = await callOpenAI(messages, openaiApiKey)
+      console.log('Calling OpenAI with retry logic...')
+      openaiData = await retryWithBackoff(
+        () => callOpenAI(messages, openaiApiKey),
+        5, // Max 5 retries
+        1000 // Start with 1 second delay
+      )
     } catch (openaiError) {
-      console.error('OpenAI API call failed:', openaiError)
+      console.error('OpenAI API call failed after retries:', openaiError)
       
       // Handle specific OpenAI errors
       let errorMessage = 'Failed to get AI response'
