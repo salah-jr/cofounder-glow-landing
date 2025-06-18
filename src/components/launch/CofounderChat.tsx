@@ -217,9 +217,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     } catch (error: any) {
       console.error('Error getting AI response:', error);
       
-      // Set error state
-      setError(error.message || 'Failed to get AI response');
-      
       // Enhanced error handling for rate limits
       let fallbackMessage = "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, I'd suggest focusing on clearly defining your target audience and the specific problem you're solving.";
       
@@ -235,6 +232,9 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
                  error.message?.toLowerCase().includes('connection')) {
         fallbackMessage = "I'm experiencing connectivity issues. Please check your internet connection and try again.";
       }
+      
+      // Set error state with the user-friendly message
+      setError(fallbackMessage);
       
       const fallbackMessageObj: Message = {
         id: (Date.now() + 1).toString(),
