@@ -16,62 +16,23 @@ interface ChatRequest {
   conversationHistory?: ChatMessage[]
 }
 
-// Enhanced retry function with exponential backoff
-async function retryWithBackoff<T>(
-  fn: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 1000
-): Promise<T> {
-  let lastError: Error
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn()
-    } catch (error) {
-      lastError = error as Error
-      
-      // If it's the last attempt, throw the error
-      if (attempt === maxRetries) {
-        console.error(`Final attempt failed after ${maxRetries} retries:`, lastError.message)
-        throw lastError
-      }
-      
-      // Check if it's a rate limit error (429) or server error (5xx)
-      const errorStatus = (error as any).status
-      if (errorStatus === 429 || (errorStatus >= 500 && errorStatus < 600)) {
-        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 1000 // Add jitter
-        console.log(`API error ${errorStatus}, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
-        await new Promise(resolve => setTimeout(resolve, delay))
-      } else {
-        // For other errors (4xx except 429), throw immediately
-        throw error
-      }
-    }
-  }
-  
-  throw lastError!
-}
-
-// OpenAI API call function with proper authentication
+// OpenAI API call function with proper error handling
 async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
-  console.log('Making OpenAI API request...')
+  console.log('Making OpenAI API request with', messages.length, 'messages')
   
   const requestBody = {
     model: 'gpt-3.5-turbo',
     messages: messages,
-    max_tokens: 150, // Reduced to minimize rate limit issues
+    max_tokens: 300,
     temperature: 0.7,
     stream: false,
   }
-
-  console.log('Request payload:', JSON.stringify(requestBody, null, 2))
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${openaiApiKey}`,
       'Content-Type': 'application/json',
-      'User-Agent': 'Supabase-Edge-Function/1.0',
     },
     body: JSON.stringify(requestBody),
   })
@@ -80,7 +41,6 @@ async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
 
   if (!response.ok) {
     let errorMessage = `OpenAI API error: ${response.status}`
-    let errorDetails = ''
     
     try {
       const errorData = await response.json()
@@ -88,19 +48,16 @@ async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
       
       if (errorData.error?.message) {
         errorMessage = errorData.error.message
-        errorDetails = errorData.error.type || ''
       }
     } catch (parseError) {
       console.error('Failed to parse error response:', parseError)
       errorMessage = `OpenAI API error: ${response.status} ${response.statusText}`
     }
     
-    console.error('OpenAI API error:', errorMessage, errorDetails)
+    console.error('OpenAI API error:', errorMessage)
     
-    // Create a custom error that includes the status code
     const error = new Error(errorMessage) as any
     error.status = response.status
-    error.type = errorDetails
     throw error
   }
 
@@ -111,88 +68,196 @@ async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
 }
 
 Deno.serve(async (req) => {
-  console.log('Edge function called:', req.method, req.url)
+  console.log('=== Edge function called ===')
+  console.log('Method:', req.method)
+  console.log('URL:', req.url)
+  console.log('Headers:', Object.fromEntries(req.headers.entries()))
   
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('Handling CORS preflight request')
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // Verify the request is authenticated
+    // Get and validate authorization header
     const authHeader = req.headers.get('Authorization')
+    console.log('Auth header present:', !!authHeader)
+    
     if (!authHeader) {
       console.error('No authorization header provided')
-      throw new Error('No authorization header')
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Authorization header required'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
     }
 
-    console.log('Authorization header present')
-
-    // Initialize Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
-    )
-
-    // Verify the user is authenticated
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
-    if (authError || !user) {
-      console.error('Authentication failed:', authError?.message)
-      throw new Error('Unauthorized')
+    // Parse request body
+    let requestBody
+    try {
+      const bodyText = await req.text()
+      console.log('Raw request body:', bodyText)
+      requestBody = JSON.parse(bodyText)
+      console.log('Parsed request body:', requestBody)
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError)
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Invalid JSON in request body'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      )
     }
 
-    console.log('User authenticated:', user.id)
-
-    // Parse the request body
-    const requestBody = await req.json()
-    console.log('Request body received:', requestBody)
-    
     const { message, conversationHistory = [] }: ChatRequest = requestBody
 
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
-      throw new Error('Valid message is required')
+      console.error('Invalid message provided:', message)
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Valid message is required'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      )
     }
 
-    // Get the OpenAI API key from Supabase secrets
+    // Initialize Supabase client for user verification
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing Supabase environment variables')
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Server configuration error'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        }
+      )
+    }
+
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: { Authorization: authHeader },
+      },
+    })
+
+    // Verify user authentication
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
+    console.log('User verification result:', { user: !!user, error: authError?.message })
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError?.message)
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'User authentication failed'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      )
+    }
+
+    console.log('User authenticated successfully:', user.id)
+
+    // Get OpenAI API key
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openaiApiKey) {
       console.error('OpenAI API key not found in environment variables')
-      throw new Error('OpenAI API key not configured')
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'OpenAI API key not configured'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        }
+      )
     }
 
-    console.log('OpenAI API key found, key length:', openaiApiKey.length)
+    console.log('OpenAI API key found, length:', openaiApiKey.length)
 
-    // Prepare the conversation for OpenAI - send user message directly
+    // Prepare messages for OpenAI - send user message directly as requested
     const messages: ChatMessage[] = [
-      { role: 'system', content: 'You are a helpful AI assistant.' },
       ...conversationHistory.slice(-8), // Keep last 8 messages for context
       { role: 'user', content: message.trim() }
     ]
 
-    console.log(`Prepared ${messages.length} messages for OpenAI`)
+    console.log('Prepared messages for OpenAI:', messages.length)
 
-    // Make request to OpenAI with retry mechanism
-    const openaiData = await retryWithBackoff(
-      () => callOpenAI(messages, openaiApiKey),
-      3, // Max 3 retries
-      2000 // Start with 2 second delay
-    )
+    // Call OpenAI API
+    let openaiData
+    try {
+      openaiData = await callOpenAI(messages, openaiApiKey)
+    } catch (openaiError) {
+      console.error('OpenAI API call failed:', openaiError)
+      
+      // Handle specific OpenAI errors
+      let errorMessage = 'Failed to get AI response'
+      let statusCode = 500
+      
+      if ((openaiError as any).status === 429) {
+        errorMessage = 'RATE_LIMIT_EXCEEDED'
+        statusCode = 429
+      } else if ((openaiError as any).status === 401) {
+        errorMessage = 'OpenAI API authentication failed'
+        statusCode = 401
+      } else if ((openaiError as any).status >= 500) {
+        errorMessage = 'OpenAI service temporarily unavailable'
+        statusCode = 503
+      }
+      
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: errorMessage
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: statusCode,
+        }
+      )
+    }
 
     const aiResponse = openaiData.choices?.[0]?.message?.content
 
     if (!aiResponse) {
       console.error('No response content from OpenAI:', openaiData)
-      throw new Error('No response from OpenAI')
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'No response from OpenAI'
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        }
+      )
     }
 
     console.log('OpenAI request successful, response length:', aiResponse.length)
 
-    // Return the AI response
+    // Return successful response
     return new Response(
       JSON.stringify({
         success: true,
@@ -206,38 +271,17 @@ Deno.serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Error in llm-chat function:', error)
-    
-    // Provide more specific error messages
-    let errorMessage = error.message || 'An unexpected error occurred'
-    let statusCode = 500
-    
-    if ((error as any).status === 429) {
-      errorMessage = 'OpenAI API rate limit exceeded. Please try again in a moment.'
-      statusCode = 429
-    } else if ((error as any).status === 401) {
-      errorMessage = 'OpenAI API authentication failed. Please check the API key configuration.'
-      statusCode = 401
-    } else if ((error as any).status >= 500) {
-      errorMessage = 'OpenAI service is temporarily unavailable. Please try again later.'
-      statusCode = 503
-    } else if (error.message === 'Unauthorized') {
-      errorMessage = 'User authentication required'
-      statusCode = 401
-    } else if (error.message.includes('Valid message is required')) {
-      errorMessage = 'Please provide a valid message'
-      statusCode = 400
-    }
+    console.error('Unexpected error in edge function:', error)
     
     return new Response(
       JSON.stringify({
         success: false,
-        error: errorMessage,
+        error: 'Internal server error',
         details: error.message
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: statusCode,
+        status: 500,
       }
     )
   }

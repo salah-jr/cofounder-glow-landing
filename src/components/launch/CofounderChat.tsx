@@ -132,6 +132,9 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
         throw new Error("You must be logged in to use the AI assistant");
       }
 
+      console.log('Calling LLM function with message:', userMessage);
+      console.log('Session token present:', !!session.access_token);
+
       // Prepare conversation history for the LLM
       const llmHistory = conversationHistory
         .filter(msg => msg.sender !== "cofounder" || !msg.isInsight) // Exclude insight messages
@@ -141,24 +144,40 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
           content: msg.text
         }));
 
+      const requestPayload = {
+        message: userMessage,
+        conversationHistory: llmHistory
+      };
+
+      console.log('Request payload:', requestPayload);
+
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/llm-chat`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message: userMessage,
-          conversationHistory: llmHistory
-        })
+        body: JSON.stringify(requestPayload)
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok) {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+          console.log('Error response data:', errorData);
+        } catch (parseError) {
+          console.error('Failed to parse error response:', parseError);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Success response data:', data);
       
       if (!data.success) {
         throw new Error(data.error || 'Failed to get AI response');
