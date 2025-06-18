@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Facebook, Twitter, Linkedin, User, LogOut } from "lucide-react";
 import Logo from "./Logo";
@@ -17,7 +16,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, profile, logout, isLoading } = useAuth();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -41,12 +40,22 @@ const Navbar = () => {
 
   // Generate user initials for avatar
   const getUserInitials = () => {
-    if (!user || !user.name) return "U";
-    const nameParts = user.name.split(" ");
-    if (nameParts.length >= 2) {
-      return `${nameParts[0][0]}${nameParts[1][0]}`;
+    if (profile?.full_name) {
+      const nameParts = profile.full_name.split(" ");
+      if (nameParts.length >= 2) {
+        return `${nameParts[0][0]}${nameParts[1][0]}`;
+      }
+      return nameParts[0][0];
     }
-    return nameParts[0][0];
+    return user?.email?.[0]?.toUpperCase() || "U";
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -97,15 +106,23 @@ const Navbar = () => {
               </a>
             </div>
 
-            {isAuthenticated ? (
+            {isLoading ? (
+              <div className="w-9 h-9 bg-white/10 rounded-full animate-pulse" />
+            ) : isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none">
                   <Avatar className="h-9 w-9 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white">
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white">
+                      {getUserInitials()}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 glass border-white/10 bg-[#1A1F2C]/90">
-                  <DropdownMenuItem className="cursor-pointer text-white" onClick={logout}>
+                  <DropdownMenuItem className="cursor-pointer text-white flex-col items-start">
+                    <div className="font-medium">{profile?.full_name || user?.email}</div>
+                    <div className="text-xs text-white/60">{user?.email}</div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer text-white" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -175,13 +192,20 @@ const Navbar = () => {
                     <Linkedin className="w-5 h-5" />
                   </a>
                 </div>
-                {isAuthenticated ? (
-                  <button 
-                    onClick={logout}
-                    className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
-                  >
-                    Log out
-                  </button>
+                {isLoading ? (
+                  <div className="w-full h-10 bg-white/10 rounded-lg animate-pulse" />
+                ) : isAuthenticated ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="text-white/80 text-sm">
+                      {profile?.full_name || user?.email}
+                    </div>
+                    <button 
+                      onClick={handleLogout}
+                      className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
+                    >
+                      Log out
+                    </button>
+                  </div>
                 ) : (
                   <>
                     <a href="/login" className="text-white/80 hover:text-white transition-colors text-lg">
