@@ -33,8 +33,8 @@ async function retryWithBackoff<T>(
         throw lastError
       }
       
-      // Check if it's a rate limit error (429)
-      if (error instanceof Response && error.status === 429) {
+      // Check if it's a rate limit error (429) - Fixed the condition
+      if ((error as any).status === 429) {
         const delay = baseDelay * Math.pow(2, attempt)
         console.log(`Rate limited, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
         await new Promise(resolve => setTimeout(resolve, delay))
@@ -173,7 +173,7 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
     
     // Provide more specific error messages for rate limiting
     let errorMessage = error.message || 'An unexpected error occurred'
-    if (error.status === 429) {
+    if ((error as any).status === 429) {
       errorMessage = 'OpenAI API rate limit exceeded. Please try again in a moment.'
     }
     
@@ -184,7 +184,7 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: error.status === 429 ? 429 : 500,
+        status: (error as any).status === 429 ? 429 : 500,
       }
     )
   }
