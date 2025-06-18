@@ -19,8 +19,8 @@ interface ChatRequest {
 // Enhanced retry function with exponential backoff
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 2000
+  maxRetries: number = 5,
+  baseDelay: number = 1000
 ): Promise<T> {
   let lastError: Error
 
@@ -162,11 +162,11 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
 
     console.log(`Making OpenAI request with ${messages.length} messages...`)
 
-    // Make request to OpenAI with retry mechanism
+    // Make request to OpenAI with enhanced retry mechanism
     const openaiData = await retryWithBackoff(
       () => callOpenAI(messages, openaiApiKey),
-      3, // Max 3 retries
-      2000 // Start with 2 second delay
+      5, // Max 5 retries (increased from 3)
+      1000 // Start with 1 second delay (reduced from 2000 for faster initial retry)
     )
 
     const aiResponse = openaiData.choices[0]?.message?.content
