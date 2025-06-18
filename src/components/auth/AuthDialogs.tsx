@@ -58,7 +58,13 @@ export default function AuthDialogs() {
         closeDialogs();
       }
     } catch (error: any) {
-      const errorMessage = error?.message || "An unexpected error occurred";
+      let errorMessage = error?.message || "An unexpected error occurred";
+      
+      // Handle specific email confirmation error
+      if (error?.message === "Email not confirmed") {
+        errorMessage = "Your email address has not been confirmed. Please check your inbox for a confirmation link.";
+      }
+      
       toast({
         title: `${type === "login" ? "Login" : type === "register" ? "Registration" : "Password Reset"} Failed`,
         description: errorMessage,
