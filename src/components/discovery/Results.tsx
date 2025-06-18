@@ -8,7 +8,7 @@ import BackgroundShapes from "./BackgroundShapes";
 import ResultsHeader from "./ResultsHeader";
 import ResultCard from "./ResultCard";
 import Navbar from "@/components/Navbar";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import LoginForm from "@/components/auth/LoginForm";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -109,6 +109,9 @@ const Results: React.FC = () => {
               </Button>
             </DialogTrigger>
             <DialogContent className="glass border border-white/10 w-[90%] max-w-md rounded-lg p-0 overflow-hidden animate-fade-in">
+              <DialogHeader>
+                <DialogTitle className="sr-only">Login</DialogTitle>
+              </DialogHeader>
               <LoginForm
                 onRegisterClick={() => {}}
                 onForgotPasswordClick={() => {}}

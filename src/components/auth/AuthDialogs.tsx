@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
@@ -61,6 +60,11 @@ export default function AuthDialogs() {
           </button>
         </DialogTrigger>
         <DialogContent className="glass border border-white/10 w-[90%] max-w-md rounded-lg p-0 overflow-hidden animate-fade-in">
+          <DialogHeader>
+            <DialogTitle className="sr-only">
+              {activeDialog === "login" ? "Login" : activeDialog === "register" ? "Register" : "Forgot Password"}
+            </DialogTitle>
+          </DialogHeader>
           {activeDialog === "login" && (
             <LoginForm
               onRegisterClick={() => handleSwitchDialog("register")}
