@@ -1,6 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -17,7 +14,71 @@ interface ChatRequest {
   conversationHistory?: ChatMessage[]
 }
 
-serve(async (req) => {
+// Retry function with exponential backoff
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> {
+  let lastError: Error
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error as Error
+      
+      // If it's the last attempt, throw the error
+      if (attempt === maxRetries) {
+        throw lastError
+      }
+      
+      // Check if it's a rate limit error (429)
+      if (error instanceof Response && error.status === 429) {
+        const delay = baseDelay * Math.pow(2, attempt)
+        console.log(`Rate limited, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+      } else {
+        // For non-rate-limit errors, throw immediately
+        throw error
+      }
+    }
+  }
+  
+  throw lastError!
+}
+
+// OpenAI API call function
+async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openaiApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 500,
+      temperature: 0.7,
+      stream: false,
+    }),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.text()
+    console.error('OpenAI API error:', errorData)
+    
+    // Create a custom error that includes the status code
+    const error = new Error(`OpenAI API error: ${response.status}`) as any
+    error.status = response.status
+    throw error
+  }
+
+  return response.json()
+}
+
+Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -81,29 +142,13 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
       { role: 'user', content: message }
     ]
 
-    // Make request to OpenAI
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: messages,
-        max_tokens: 500,
-        temperature: 0.7,
-        stream: false,
-      }),
-    })
+    // Make request to OpenAI with retry mechanism
+    const openaiData = await retryWithBackoff(
+      () => callOpenAI(messages, openaiApiKey),
+      3, // Max 3 retries
+      2000 // Start with 2 second delay
+    )
 
-    if (!openaiResponse.ok) {
-      const errorData = await openaiResponse.text()
-      console.error('OpenAI API error:', errorData)
-      throw new Error(`OpenAI API error: ${openaiResponse.status}`)
-    }
-
-    const openaiData = await openaiResponse.json()
     const aiResponse = openaiData.choices[0]?.message?.content
 
     if (!aiResponse) {
@@ -126,15 +171,24 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
   } catch (error) {
     console.error('Error in llm-chat function:', error)
     
+    // Provide more specific error messages for rate limiting
+    let errorMessage = error.message || 'An unexpected error occurred'
+    if (error.status === 429) {
+      errorMessage = 'OpenAI API rate limit exceeded. Please try again in a moment.'
+    }
+    
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || 'An unexpected error occurred'
+        error: errorMessage
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
+        status: error.status === 429 ? 429 : 500,
       }
     )
   }
 })
+
+// Import statements need to be at the top, but keeping them here for clarity
+import { createClient } from 'npm:@supabase/supabase-js@2'
