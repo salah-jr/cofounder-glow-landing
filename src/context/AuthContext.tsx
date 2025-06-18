@@ -113,6 +113,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, email: string, password: string) => {
     try {
       setIsLoading(true);
+      
+      // First, sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -125,6 +127,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         throw error;
+      }
+
+      // If user was created successfully and we have a session
+      if (data.user && data.session) {
+        // Create the profile record manually to ensure it exists
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            email: data.user.email!,
+            full_name: name,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+          // If profile creation fails, we should clean up the auth user
+          await supabase.auth.signOut();
+          throw new Error('Failed to create user profile. Please try again.');
+        }
       }
 
       // Note: User will need to confirm email if email confirmation is enabled
