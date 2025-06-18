@@ -44,91 +44,86 @@ Communication style:
 
 Remember: You're not just answering questions - you're actively helping them build a successful startup. Think like an experienced entrepreneur who wants to see them succeed.`;
 
-// Enhanced retry function with exponential backoff
-async function retryWithBackoff<T>(
-  fn: () => Promise<T>,
-  maxRetries: number = 5,
-  baseDelay: number = 1000
-): Promise<T> {
-  let lastError: Error
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn()
-    } catch (error) {
-      lastError = error as Error
-      
-      // If it's the last attempt, throw the error
-      if (attempt === maxRetries) {
-        console.error(`Final attempt failed after ${maxRetries} retries:`, lastError.message)
-        throw lastError
-      }
-      
-      // Check if it's a rate limit error (429) or server error (5xx)
-      const errorStatus = (error as any).status
-      if (errorStatus === 429 || (errorStatus >= 500 && errorStatus < 600)) {
-        const delay = baseDelay * Math.pow(2, attempt)
-        console.log(`API error ${errorStatus}, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
-        await new Promise(resolve => setTimeout(resolve, delay))
-      } else {
-        // For other errors (4xx except 429), throw immediately
-        throw error
-      }
-    }
-  }
-  
-  throw lastError!
-}
-
-// OpenAI API call function with proper error handling
-async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
+// OpenAI API call function with unlimited retries for rate limits
+async function callOpenAIWithUnlimitedRetries(messages: ChatMessage[], openaiApiKey: string) {
   console.log('Making OpenAI API request with', messages.length, 'messages')
   
   const requestBody = {
     model: 'gpt-3.5-turbo',
     messages: messages,
-    max_tokens: 500,
+    max_tokens: 800,
     temperature: 0.7,
     stream: false,
   }
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${openaiApiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  })
+  let attempt = 0
+  const maxAttempts = 20 // Increased max attempts
+  const baseDelay = 500 // Reduced base delay
 
-  console.log('OpenAI API response status:', response.status)
-
-  if (!response.ok) {
-    let errorMessage = `OpenAI API error: ${response.status}`
-    
+  while (attempt < maxAttempts) {
     try {
-      const errorData = await response.json()
-      console.log('OpenAI error response:', errorData)
+      console.log(`OpenAI API attempt ${attempt + 1}/${maxAttempts}`)
       
-      if (errorData.error?.message) {
-        errorMessage = errorData.error.message
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+
+      console.log('OpenAI API response status:', response.status)
+
+      if (response.ok) {
+        const responseData = await response.json()
+        console.log('OpenAI API response received successfully')
+        return responseData
       }
-    } catch (parseError) {
-      console.error('Failed to parse error response:', parseError)
-      errorMessage = `OpenAI API error: ${response.status} ${response.statusText}`
+
+      // Handle rate limit errors with exponential backoff
+      if (response.status === 429) {
+        const delay = baseDelay * Math.pow(1.5, attempt) // Gentler exponential backoff
+        console.log(`Rate limit hit, waiting ${delay}ms before retry ${attempt + 1}`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+        attempt++
+        continue
+      }
+
+      // Handle other errors
+      let errorMessage = `OpenAI API error: ${response.status}`
+      try {
+        const errorData = await response.json()
+        console.log('OpenAI error response:', errorData)
+        if (errorData.error?.message) {
+          errorMessage = errorData.error.message
+        }
+      } catch (parseError) {
+        console.error('Failed to parse error response:', parseError)
+        errorMessage = `OpenAI API error: ${response.status} ${response.statusText}`
+      }
+      
+      console.error('OpenAI API error:', errorMessage)
+      const error = new Error(errorMessage) as any
+      error.status = response.status
+      throw error
+
+    } catch (error) {
+      // If it's not a rate limit error, throw immediately
+      if ((error as any).status !== 429) {
+        throw error
+      }
+      
+      // For rate limit errors, continue the retry loop
+      const delay = baseDelay * Math.pow(1.5, attempt)
+      console.log(`Rate limit error, waiting ${delay}ms before retry ${attempt + 1}`)
+      await new Promise(resolve => setTimeout(resolve, delay))
+      attempt++
     }
-    
-    console.error('OpenAI API error:', errorMessage)
-    
-    const error = new Error(errorMessage) as any
-    error.status = response.status
-    throw error
   }
 
-  const responseData = await response.json()
-  console.log('OpenAI API response received successfully')
-  
-  return responseData
+  // If we've exhausted all attempts
+  throw new Error('OpenAI API rate limit exceeded after maximum retries')
 }
 
 Deno.serve(async (req) => {
@@ -270,41 +265,22 @@ Deno.serve(async (req) => {
 
     console.log('Prepared messages for OpenAI:', messages.length)
 
-    // Call OpenAI API with retry logic
+    // Call OpenAI API with unlimited retries for rate limits
     let openaiData
     try {
-      console.log('Calling OpenAI with retry logic...')
-      openaiData = await retryWithBackoff(
-        () => callOpenAI(messages, openaiApiKey),
-        5, // Max 5 retries
-        1000 // Start with 1 second delay
-      )
+      console.log('Calling OpenAI with unlimited retry logic...')
+      openaiData = await callOpenAIWithUnlimitedRetries(messages, openaiApiKey)
     } catch (openaiError) {
-      console.error('OpenAI API call failed after retries:', openaiError)
-      
-      // Handle specific OpenAI errors
-      let errorMessage = 'Failed to get AI response'
-      let statusCode = 500
-      
-      if ((openaiError as any).status === 429) {
-        errorMessage = 'RATE_LIMIT_EXCEEDED'
-        statusCode = 429
-      } else if ((openaiError as any).status === 401) {
-        errorMessage = 'OpenAI API authentication failed'
-        statusCode = 401
-      } else if ((openaiError as any).status >= 500) {
-        errorMessage = 'OpenAI service temporarily unavailable'
-        statusCode = 503
-      }
+      console.error('OpenAI API call failed:', openaiError)
       
       return new Response(
         JSON.stringify({
           success: false,
-          error: errorMessage
+          error: 'Failed to get AI response: ' + (openaiError as Error).message
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: statusCode,
+          status: 500,
         }
       )
     }

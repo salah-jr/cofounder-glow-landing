@@ -236,14 +236,13 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     } catch (error: any) {
       console.error('Error getting AI response:', error);
       
-      // Enhanced error handling for rate limits
+      // Enhanced error handling
       let fallbackMessage = "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, I'd suggest focusing on clearly defining your target audience and the specific problem you're solving.";
       
       // Check for specific error types
-      if (error.message === 'RATE_LIMIT_EXCEEDED' || 
-          error.message?.toLowerCase().includes('rate limit') ||
+      if (error.message?.toLowerCase().includes('rate limit') ||
           error.message?.toLowerCase().includes('too many requests')) {
-        fallbackMessage = "The AI co-founder is currently very busy helping other entrepreneurs. Please try sending your message again in a moment. While you wait, consider outlining your key business assumptions or target market insights.";
+        fallbackMessage = "I'm experiencing high demand right now. Let me try to help you anyway. Could you tell me more about your target market and how you plan to reach them?";
       } else if (error.message?.toLowerCase().includes('authentication') ||
                  error.message?.toLowerCase().includes('unauthorized')) {
         fallbackMessage = "There seems to be an authentication issue. Please try refreshing the page and logging in again.";
