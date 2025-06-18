@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Paperclip, User, File, Image, X } from "lucide-react";
@@ -8,6 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 
 interface FileAttachment {
   id: string;
@@ -23,14 +24,14 @@ interface Message {
   sender: "user" | "cofounder";
   isInsight?: boolean;
   files?: FileAttachment[];
+  timestamp: Date;
 }
 
 interface CofounderChatProps {
   className?: string;
-  onReset?: () => void; // Optional callback when chat is reset
+  onReset?: () => void;
 }
 
-// Define ref methods that can be accessed from parent component
 export interface CofounderChatRef {
   resetChat: () => void;
 }
@@ -40,7 +41,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     {
       id: "1",
       text: "Hi there! I'm your Co-founder AI assistant. I'm here to help you refine your startup idea. What's the core problem your product solves?",
-      sender: "cofounder"
+      sender: "cofounder",
+      timestamp: new Date()
     }
   ]);
   
@@ -48,11 +50,14 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
   const [isTyping, setIsTyping] = useState(false);
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
   const [attachedFiles, setAttachedFiles] = useState<FileAttachment[]>([]);
+  const [error, setError] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
+  
+  const { session } = useAuth();
   
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -82,12 +87,14 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     setMessages([{
       id: Date.now().toString(),
       text: "Let's talk about your idea! What's the core problem your product aims to solve?",
-      sender: "cofounder"
+      sender: "cofounder",
+      timestamp: new Date()
     }]);
     setInput("");
     setIsTyping(false);
     setCurrentMood("neutral");
     setAttachedFiles([]);
+    setError(null);
     
     // Call the onReset callback if provided
     if (onReset) onReset();
@@ -117,21 +124,72 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       }
     };
   }, []);
+
+  // Function to call the LLM Edge Function
+  const callLLMFunction = async (userMessage: string, conversationHistory: Message[]) => {
+    try {
+      if (!session) {
+        throw new Error("You must be logged in to use the AI assistant");
+      }
+
+      // Prepare conversation history for the LLM
+      const llmHistory = conversationHistory
+        .filter(msg => msg.sender !== "cofounder" || !msg.isInsight) // Exclude insight messages
+        .slice(-10) // Keep last 10 messages for context
+        .map(msg => ({
+          role: msg.sender === "user" ? "user" : "assistant",
+          content: msg.text
+        }));
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/llm-chat`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          conversationHistory: llmHistory
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to get AI response');
+      }
+
+      return data.response;
+    } catch (error) {
+      console.error('Error calling LLM function:', error);
+      throw error;
+    }
+  };
   
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (input.trim() === "" && attachedFiles.length === 0) return;
+    
+    // Clear any previous errors
+    setError(null);
     
     // Add user message with send animation
     const userMessage: Message = {
       id: Date.now().toString(),
       text: input,
       sender: "user",
-      files: attachedFiles.length > 0 ? [...attachedFiles] : undefined
+      files: attachedFiles.length > 0 ? [...attachedFiles] : undefined,
+      timestamp: new Date()
     };
     
+    const currentInput = input;
     setMessages(prev => [...prev, userMessage]);
     setInput("");
-    setAttachedFiles([]); // Clear attachments after sending
+    setAttachedFiles([]);
     setIsTyping(true);
     setCurrentMood("thinking");
     
@@ -140,31 +198,40 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       clearTimeout(typingTimeoutRef.current);
     }
     
-    // Simulate AI response after a delay
-    typingTimeoutRef.current = window.setTimeout(() => {
-      const responseMessages = [
-        "That's interesting! How have you validated this problem with potential customers?",
-        "Tell me more about your target audience for this solution.",
-        "What makes your approach unique compared to existing solutions?",
-        "How do you envision monetizing this solution?",
-        "What resources do you need to bring this idea to life?"
-      ];
-      
-      const randomResponse = responseMessages[Math.floor(Math.random() * responseMessages.length)];
-      const isInsight = Math.random() > 0.7; // 30% chance to be an insight
+    try {
+      // Call the LLM Edge Function
+      const aiResponse = await callLLMFunction(currentInput, messages);
       
       const cofounderMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: randomResponse,
+        text: aiResponse,
         sender: "cofounder",
-        isInsight
+        isInsight: Math.random() > 0.8, // 20% chance to be an insight
+        timestamp: new Date()
       };
       
-      setCurrentMood(isInsight ? "excited" : "neutral");
+      setCurrentMood("excited");
       setMessages(prev => [...prev, cofounderMessage]);
-      setIsTyping(false); // Explicitly set typing to false when message is added
-      typingTimeoutRef.current = null; // Reset timeout ref
-    }, 1500);
+      setIsTyping(false);
+      
+    } catch (error: any) {
+      console.error('Error getting AI response:', error);
+      
+      // Set error state
+      setError(error.message || 'Failed to get AI response');
+      
+      // Add fallback message
+      const fallbackMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, I'd suggest focusing on clearly defining your target audience and the specific problem you're solving.",
+        sender: "cofounder",
+        timestamp: new Date()
+      };
+      
+      setCurrentMood("neutral");
+      setMessages(prev => [...prev, fallbackMessage]);
+      setIsTyping(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -333,6 +400,13 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
           Reset Chat
         </Button>
       </div>
+
+      {/* Error display */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <p className="text-red-400 text-sm">{error}</p>
+        </div>
+      )}
       
       <ScrollArea className="flex-1 py-4">
         <div className="space-y-4">
@@ -363,7 +437,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
                 )}>
                   <div className={cn(
                     "py-2 px-1",
-                    "text-white" // Always white text for all messages
+                    "text-white"
                   )}>
                     {message.text && <p>{message.text}</p>}
                     {renderMessageFiles(message.files)}
@@ -424,7 +498,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask your co-founder anything..."
-            className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60 scrollbar-hide"
+            disabled={isTyping}
+            className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60 scrollbar-hide disabled:opacity-50"
             style={{ 
               overflowY: "auto", 
               msOverflowStyle: "none", 
@@ -456,7 +531,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
                 onClick={handleFileAttachment}
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full hover:bg-white/10"
+                disabled={isTyping}
+                className="h-8 w-8 rounded-full hover:bg-white/10 disabled:opacity-50"
               >
                 <Paperclip size={18} className="text-white/70" />
                 <input 
@@ -470,10 +546,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
             </div>
             <Button 
               onClick={handleSendMessage}
-              disabled={!input.trim() && attachedFiles.length === 0}
+              disabled={(!input.trim() && attachedFiles.length === 0) || isTyping}
               className={cn(
                 "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md transition-all duration-300",
-                (!input.trim() && attachedFiles.length === 0) ? "opacity-50" : "hover:opacity-90"
+                ((!input.trim() && attachedFiles.length === 0) || isTyping) ? "opacity-50" : "hover:opacity-90"
               )}
             >
               <Send size={18} />
