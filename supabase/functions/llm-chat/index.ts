@@ -16,11 +16,11 @@ interface ChatRequest {
   conversationHistory?: ChatMessage[]
 }
 
-// Enhanced retry function with exponential backoff
+// Enhanced retry function with exponential backoff and longer delays for rate limits
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  maxRetries: number = 5,
-  baseDelay: number = 1000
+  maxRetries: number = 6,
+  baseDelay: number = 2000
 ): Promise<T> {
   let lastError: Error
 
@@ -38,9 +38,14 @@ async function retryWithBackoff<T>(
       
       // Check if it's a rate limit error (429) or server error (5xx)
       const errorStatus = (error as any).status
-      if (errorStatus === 429 || (errorStatus >= 500 && errorStatus < 600)) {
+      if (errorStatus === 429) {
+        // For rate limits, use longer delays
+        const delay = Math.min(baseDelay * Math.pow(2, attempt), 30000) // Cap at 30 seconds
+        console.log(`Rate limit hit, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+      } else if (errorStatus >= 500 && errorStatus < 600) {
         const delay = baseDelay * Math.pow(2, attempt)
-        console.log(`API error ${errorStatus}, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
+        console.log(`Server error ${errorStatus}, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`)
         await new Promise(resolve => setTimeout(resolve, delay))
       } else {
         // For other errors (4xx except 429), throw immediately
@@ -52,7 +57,7 @@ async function retryWithBackoff<T>(
   throw lastError!
 }
 
-// OpenAI API call function with better error handling
+// OpenAI API call function with reduced token usage
 async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -63,7 +68,7 @@ async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
     body: JSON.stringify({
       model: 'gpt-3.5-turbo',
       messages: messages,
-      max_tokens: 500,
+      max_tokens: 250, // Reduced from 500 to help with rate limits
       temperature: 0.7,
       stream: false,
     }),
@@ -139,24 +144,14 @@ Deno.serve(async (req) => {
 
     console.log('OpenAI API key found, proceeding with request...')
 
-    // Prepare the conversation for OpenAI
-    const systemPrompt = `You are an AI co-founder assistant helping entrepreneurs build their startups. You provide strategic business advice, help with planning, market research, product development, and general startup guidance. Be helpful, insightful, and encouraging while providing practical advice.
+    // Prepare the conversation for OpenAI with more concise system prompt
+    const systemPrompt = `You are an AI co-founder assistant helping entrepreneurs build startups. Provide strategic business advice on planning, market research, product development, and growth. Be helpful, insightful, and encouraging with practical advice.
 
-Key areas you help with:
-- Business strategy and planning
-- Market research and validation
-- Product development guidance
-- Fundraising advice
-- Team building
-- Marketing and growth strategies
-- Financial planning
-- Legal and operational considerations
-
-Keep responses conversational, actionable, and tailored to startup needs. Ask clarifying questions when needed to provide better guidance. Limit responses to 2-3 paragraphs for readability.`
+Keep responses concise (1-2 paragraphs) and actionable. Ask clarifying questions when needed.`
 
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
-      ...conversationHistory.slice(-8), // Keep last 8 messages for context
+      ...conversationHistory.slice(-6), // Reduced from 8 to 6 messages for context
       { role: 'user', content: message }
     ]
 
@@ -165,8 +160,8 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
     // Make request to OpenAI with enhanced retry mechanism
     const openaiData = await retryWithBackoff(
       () => callOpenAI(messages, openaiApiKey),
-      5, // Max 5 retries (increased from 3)
-      1000 // Start with 1 second delay (reduced from 2000 for faster initial retry)
+      6, // Increased max retries
+      2000 // Increased base delay to 2 seconds
     )
 
     const aiResponse = openaiData.choices[0]?.message?.content
@@ -198,7 +193,7 @@ Keep responses conversational, actionable, and tailored to startup needs. Ask cl
     let statusCode = 500
     
     if ((error as any).status === 429) {
-      errorMessage = 'OpenAI API rate limit exceeded. Please try again in a moment.'
+      errorMessage = 'RATE_LIMIT_EXCEEDED'
       statusCode = 429
     } else if ((error as any).status === 401) {
       errorMessage = 'OpenAI API authentication failed. Please check the API key configuration.'

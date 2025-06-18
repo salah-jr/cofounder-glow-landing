@@ -220,16 +220,31 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       // Set error state
       setError(error.message || 'Failed to get AI response');
       
-      // Add fallback message
-      const fallbackMessage: Message = {
+      // Enhanced error handling for rate limits
+      let fallbackMessage = "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, I'd suggest focusing on clearly defining your target audience and the specific problem you're solving.";
+      
+      // Check for specific error types
+      if (error.message === 'RATE_LIMIT_EXCEEDED' || 
+          error.message?.toLowerCase().includes('rate limit') ||
+          error.message?.toLowerCase().includes('too many requests')) {
+        fallbackMessage = "The AI co-founder is currently very busy helping other entrepreneurs. Please try sending your message again in a moment. While you wait, consider outlining your key business assumptions or target market insights.";
+      } else if (error.message?.toLowerCase().includes('authentication') ||
+                 error.message?.toLowerCase().includes('unauthorized')) {
+        fallbackMessage = "There seems to be an authentication issue. Please try refreshing the page and logging in again.";
+      } else if (error.message?.toLowerCase().includes('network') ||
+                 error.message?.toLowerCase().includes('connection')) {
+        fallbackMessage = "I'm experiencing connectivity issues. Please check your internet connection and try again.";
+      }
+      
+      const fallbackMessageObj: Message = {
         id: (Date.now() + 1).toString(),
-        text: "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, I'd suggest focusing on clearly defining your target audience and the specific problem you're solving.",
+        text: fallbackMessage,
         sender: "cofounder",
         timestamp: new Date()
       };
       
       setCurrentMood("neutral");
-      setMessages(prev => [...prev, fallbackMessage]);
+      setMessages(prev => [...prev, fallbackMessageObj]);
       setIsTyping(false);
     }
   };
