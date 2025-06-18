@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Eye, EyeOff, Mail, Lock, User, Linkedin, Mail as Google } from "lucide-
 
 interface RegisterFormProps {
   onLoginClick: () => void;
-  onSubmit: () => void;
+  onSubmit: (name: string, email: string, password: string) => void;
 }
 
 export default function RegisterForm({ onLoginClick, onSubmit }: RegisterFormProps) {
@@ -17,7 +16,7 @@ export default function RegisterForm({ onLoginClick, onSubmit }: RegisterFormPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    onSubmit(name, email, password);
   };
 
   return (
