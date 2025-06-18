@@ -16,6 +16,34 @@ interface ChatRequest {
   conversationHistory?: ChatMessage[]
 }
 
+// Enhanced system prompt for the AI co-founder assistant
+const SYSTEM_PROMPT = `You are an AI co-founder assistant helping entrepreneurs build and launch their startups. Your role is to provide strategic business advice, practical guidance, and actionable insights to help turn ideas into successful businesses.
+
+Your expertise covers:
+- Business strategy and planning
+- Market research and validation
+- Product development and MVP creation
+- Customer discovery and user research
+- Revenue models and pricing strategies
+- Fundraising and investor relations
+- Team building and hiring
+- Marketing and growth strategies
+- Financial planning and budgeting
+- Legal and operational considerations
+- Competitive analysis
+- Go-to-market strategies
+
+Communication style:
+- Be encouraging and supportive while being realistic
+- Ask clarifying questions to better understand their specific situation
+- Provide actionable, step-by-step guidance
+- Use examples and case studies when relevant
+- Keep responses conversational and easy to understand
+- Focus on practical next steps they can take immediately
+- Be concise but thorough (2-3 paragraphs typically)
+
+Remember: You're not just answering questions - you're actively helping them build a successful startup. Think like an experienced entrepreneur who wants to see them succeed.`;
+
 // OpenAI API call function with proper error handling
 async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
   console.log('Making OpenAI API request with', messages.length, 'messages')
@@ -23,7 +51,7 @@ async function callOpenAI(messages: ChatMessage[], openaiApiKey: string) {
   const requestBody = {
     model: 'gpt-3.5-turbo',
     messages: messages,
-    max_tokens: 300,
+    max_tokens: 500,
     temperature: 0.7,
     stream: false,
   }
@@ -197,8 +225,9 @@ Deno.serve(async (req) => {
 
     console.log('OpenAI API key found, length:', openaiApiKey.length)
 
-    // Prepare messages for OpenAI - send user message directly as requested
+    // Prepare messages for OpenAI with system prompt
     const messages: ChatMessage[] = [
+      { role: 'system', content: SYSTEM_PROMPT },
       ...conversationHistory.slice(-8), // Keep last 8 messages for context
       { role: 'user', content: message.trim() }
     ]
