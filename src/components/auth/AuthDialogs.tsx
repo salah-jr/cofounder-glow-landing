@@ -9,53 +9,76 @@ import { useAuth } from "@/context/AuthContext";
 type AuthDialogType = "login" | "register" | "forgotPassword";
 
 export default function AuthDialogs() {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [activeDialog, setActiveDialog] = useState<AuthDialogType>("login");
   const { toast } = useToast();
-  const { login } = useAuth();
+  const { login, register } = useAuth();
 
   const handleSwitchDialog = (type: AuthDialogType) => {
     setActiveDialog(type);
+    // If switching from login to register, close login and open register
+    if (type === "register" && loginDialogOpen) {
+      setLoginDialogOpen(false);
+      setRegisterDialogOpen(true);
+    }
+    // If switching from register to login, close register and open login
+    if (type === "login" && registerDialogOpen) {
+      setRegisterDialogOpen(false);
+      setLoginDialogOpen(true);
+    }
   };
 
-  const closeDialog = () => {
-    setDialogOpen(false);
+  const closeDialogs = () => {
+    setLoginDialogOpen(false);
+    setRegisterDialogOpen(false);
   };
 
-  const handleFormSubmit = async (type: "login" | "register" | "resetPassword", email?: string, password?: string) => {
-    if (type === "login" && email && password) {
-      try {
+  const handleFormSubmit = async (type: "login" | "register" | "resetPassword", email?: string, password?: string, name?: string) => {
+    try {
+      if (type === "login" && email && password) {
         await login(email, password);
         toast({
           title: "Login Successful",
           description: "Welcome back!",
         });
-      } catch (error) {
+        closeDialogs();
+      } else if (type === "register" && name && email && password) {
+        await register(name, email, password);
         toast({
-          title: "Login Failed",
-          description: "Please check your credentials and try again.",
-          variant: "destructive"
+          title: "Registration Successful",
+          description: "Your account has been created successfully!",
         });
-        return;
+        closeDialogs();
+      } else if (type === "resetPassword") {
+        toast({
+          title: "Password Reset Email Sent",
+          description: "Check your email for instructions to reset your password.",
+        });
+        closeDialogs();
       }
-    } else {
+    } catch (error: any) {
+      const errorMessage = error?.message || "An unexpected error occurred";
       toast({
-        title: type === "resetPassword" ? "Password Reset Email Sent" : `${type === "login" ? "Login" : "Registration"} Successful`,
-        description: type === "resetPassword" 
-          ? "Check your email for instructions to reset your password."
-          : type === "login" 
-            ? "Welcome back!" 
-            : "Your account has been created.",
+        title: `${type === "login" ? "Login" : type === "register" ? "Registration" : "Password Reset"} Failed`,
+        description: errorMessage,
+        variant: "destructive"
       });
     }
-    closeDialog();
   };
   
   return (
     <>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {/* Login Dialog */}
+      <Dialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen}>
         <DialogTrigger asChild className="hidden md:block">
-          <button className="text-white/80 hover:text-white transition-colors">
+          <button 
+            className="text-white/80 hover:text-white transition-colors"
+            onClick={() => {
+              setActiveDialog("login");
+              setLoginDialogOpen(true);
+            }}
+          >
             Login
           </button>
         </DialogTrigger>
@@ -75,7 +98,7 @@ export default function AuthDialogs() {
           {activeDialog === "register" && (
             <RegisterForm
               onLoginClick={() => handleSwitchDialog("login")}
-              onSubmit={() => handleFormSubmit("register")}
+              onSubmit={(name, email, password) => handleFormSubmit("register", email, password, name)}
             />
           )}
           {activeDialog === "forgotPassword" && (
@@ -87,14 +110,45 @@ export default function AuthDialogs() {
         </DialogContent>
       </Dialog>
       
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {/* Register Dialog */}
+      <Dialog open={registerDialogOpen} onOpenChange={setRegisterDialogOpen}>
         <DialogTrigger asChild className="hidden md:block">
-          <a
+          <button
             className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+            onClick={() => {
+              setActiveDialog("register");
+              setRegisterDialogOpen(true);
+            }}
           >
             Register
-          </a>
+          </button>
         </DialogTrigger>
+        <DialogContent className="glass border border-white/10 w-[90%] max-w-md rounded-lg p-0 overflow-hidden animate-fade-in">
+          <DialogHeader>
+            <DialogTitle className="sr-only">
+              {activeDialog === "login" ? "Login" : activeDialog === "register" ? "Register" : "Forgot Password"}
+            </DialogTitle>
+          </DialogHeader>
+          {activeDialog === "login" && (
+            <LoginForm
+              onRegisterClick={() => handleSwitchDialog("register")}
+              onForgotPasswordClick={() => handleSwitchDialog("forgotPassword")}
+              onSubmit={(email, password) => handleFormSubmit("login", email, password)}
+            />
+          )}
+          {activeDialog === "register" && (
+            <RegisterForm
+              onLoginClick={() => handleSwitchDialog("login")}
+              onSubmit={(name, email, password) => handleFormSubmit("register", email, password, name)}
+            />
+          )}
+          {activeDialog === "forgotPassword" && (
+            <ForgotPasswordForm
+              onBackToLoginClick={() => handleSwitchDialog("login")}
+              onSubmit={() => handleFormSubmit("resetPassword")}
+            />
+          )}
+        </DialogContent>
       </Dialog>
     </>
   );
