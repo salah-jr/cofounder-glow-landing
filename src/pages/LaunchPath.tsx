@@ -1,8 +1,7 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
-import RoadmapProgress from "@/components/launch/RoadmapProgress";
+import ModernProgressIndicator from "@/components/launch/ModernProgressIndicator";
 import PhaseSidebar from "@/components/launch/PhaseSidebar";
 import CofounderChat, { CofounderChatRef } from "@/components/launch/CofounderChat";
 import CanvasOutput from "@/components/launch/CanvasOutput";
@@ -11,7 +10,6 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { TaskStatus } from "@/components/launch/PhaseTask";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ProgressBar } from "@/components/ui/progress-bar";
 
 // Enhanced tasks data with icons and tooltips
 const phaseTasks = {
@@ -67,8 +65,6 @@ const phaseTasks = {
   // Other phases would have their own tasks
 };
 
-// Define progress steps
-const progressSteps = ["Idea", "Validation", "Planning", "Prototype", "Development", "Launch", "Growth"];
 const LaunchPath: React.FC = () => {
   // State for managing the roadmap progress - now on second step (validation)
   const [currentPhase, setCurrentPhase] = useState("validation");
@@ -76,15 +72,9 @@ const LaunchPath: React.FC = () => {
 
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
-  
-  // State to track progress bar expanded state
-  const [isProgressBarExpanded, setIsProgressBarExpanded] = useState(false);
 
   // Reference to the chat component for resetting - updated type
   const chatRef = useRef<CofounderChatRef>(null);
-  
-  // Effect to watch progress bar state changes
-  const mainContentRef = useRef<HTMLDivElement>(null);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
@@ -95,11 +85,6 @@ const LaunchPath: React.FC = () => {
   // Toggle left panel collapse
   const toggleLeftPanel = () => {
     setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
-  };
-
-  // Get current step number for progress bar
-  const getCurrentStepIndex = () => {
-    return progressSteps.findIndex(step => step.toLowerCase() === currentPhase) + 1;
   };
 
   // Reset chat function - enhanced with console log for debugging
@@ -113,11 +98,6 @@ const LaunchPath: React.FC = () => {
       console.error("chatRef is null - cannot reset chat");
     }
   };
-  
-  // Track progress bar expanded state changes 
-  const handleProgressBarToggle = (isExpanded: boolean) => {
-    setIsProgressBarExpanded(isExpanded);
-  };
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
@@ -125,25 +105,16 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Progress Bar with dynamic spacing based on expanded state */}
-      <div className={cn(
-        "w-full mt-2 px-6 transition-all duration-500 ease-in-out", 
-        isProgressBarExpanded ? "mb-4" : "mb-2"
-      )}>
-        <ProgressBar 
-          steps={progressSteps.length} 
-          currentStep={getCurrentStepIndex()} 
-          labels={progressSteps} 
-          showLabels={true} 
-          height={4} 
+      {/* Modern Progress Indicator */}
+      <div className="w-full px-6 py-6">
+        <ModernProgressIndicator 
+          currentPhase={currentPhase}
+          completedPhases={completedPhases}
         />
       </div>
       
-      {/* Main content area with smooth height transition */}
-      <div 
-        ref={mainContentRef}
-        className="w-full px-6 pb-6 flex-grow overflow-hidden transition-all duration-500 ease-in-out"
-      >
+      {/* Main content area */}
+      <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
         <motion.div 
           initial={{
             opacity: 0,
@@ -220,4 +191,5 @@ const LaunchPath: React.FC = () => {
     </div>
   );
 };
+
 export default LaunchPath;
