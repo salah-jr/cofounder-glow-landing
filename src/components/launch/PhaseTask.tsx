@@ -36,11 +36,11 @@ export default function PhaseTask({
   const StatusIcon = () => {
     switch (status) {
       case "complete":
-        return <Check size={16} className="text-green-400" />;
+        return <Check size={14} className="text-green-400" />;
       case "in-progress":
-        return <Clock size={16} className="text-blue-400 animate-pulse-subtle" />;
+        return <Clock size={14} className="text-blue-400 animate-pulse-subtle" />;
       default:
-        return <Circle size={16} className="text-white/40" />;
+        return <Circle size={14} className="text-white/40" />;
     }
   };
   
@@ -70,17 +70,17 @@ export default function PhaseTask({
       }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "px-2 py-3 cursor-pointer transition-all border-b border-white/10",
+        "px-2 lg:px-3 py-2 lg:py-3 cursor-pointer transition-all border-b border-white/10",
         status === "complete" ? "border-l-green-400 border-l-2" : "",
         status === "in-progress" ? "border-l-blue-400 border-l-2" : "",
         isActive && "bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/10 border-l-[#9b87f5] border-l-2"
       )}
       onClick={handleClick}
     >
-      <div className="flex items-center gap-3 justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 lg:gap-3 justify-between">
+        <div className="flex items-center gap-2 lg:gap-3 min-w-0 flex-1">
           <div className={cn(
-            "w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300",
+            "w-5 h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0",
             status === "complete" ? "bg-green-400/20" : 
             status === "in-progress" ? "bg-blue-400/20" : 
             isActive ? "bg-[#9b87f5]/20" :
@@ -89,26 +89,26 @@ export default function PhaseTask({
             <StatusIcon />
           </div>
           <span className={cn(
-            "text-sm transition-colors",
+            "text-xs lg:text-sm transition-colors truncate",
             isActive ? "text-white font-medium" : "text-white"
           )}>
             {title}
           </span>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 lg:gap-2 flex-shrink-0">
           {tooltip && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="text-white/40 hover:text-white/70 transition-colors cursor-pointer">
-                  <Lightbulb size={14} />
+                <button className="text-white/40 hover:text-white/70 transition-colors cursor-pointer p-1">
+                  <Lightbulb size={12} className="lg:w-3.5 lg:h-3.5" />
                 </button>
               </DialogTrigger>
-              <DialogContent className="glass backdrop-blur-md bg-black/80 border-white/10 text-white">
+              <DialogContent className="glass backdrop-blur-md bg-black/80 border-white/10 text-white max-w-sm">
                 <DialogHeader>
-                  <DialogTitle className="text-white">{title}</DialogTitle>
+                  <DialogTitle className="text-white text-sm lg:text-base">{title}</DialogTitle>
                 </DialogHeader>
-                <p className="text-sm text-white/80 mt-2">{tooltip}</p>
+                <p className="text-xs lg:text-sm text-white/80 mt-2">{tooltip}</p>
               </DialogContent>
             </Dialog>
           )}

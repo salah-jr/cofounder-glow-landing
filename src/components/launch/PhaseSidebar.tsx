@@ -51,18 +51,19 @@ export default function PhaseSidebar({
   return (
     <div className="h-full flex flex-col">
       <motion.div 
-        className="mb-4 space-y-3"
+        className="mb-3 lg:mb-4 space-y-2 lg:space-y-3"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gradient flex items-center gap-2">
-            <span className="text-primary cosmic-gradient bg-clip-text text-transparent">🧠</span> {phase}
+          <h3 className="text-base lg:text-lg font-semibold text-gradient flex items-center gap-2">
+            <span className="text-primary cosmic-gradient bg-clip-text text-transparent">🧠</span> 
+            <span className="truncate">{phase}</span>
           </h3>
         </div>
         
-        <p className="text-sm text-white/60">Complete these steps to move forward</p>
+        <p className="text-xs lg:text-sm text-white/60">Complete these steps to move forward</p>
       </motion.div>
       
       <ScrollArea className="flex-1">
@@ -70,7 +71,7 @@ export default function PhaseSidebar({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ staggerChildren: 0.1 }}
-          className="space-y-0 pr-4"
+          className="space-y-0 pr-2 lg:pr-4"
         >
           {tasks.map((task, index) => (
             <motion.div

@@ -8,8 +8,11 @@ import CanvasOutput from "@/components/launch/CanvasOutput";
 import { Card, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { TaskStatus } from "@/components/launch/PhaseTask";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Menu, X, MessageSquare, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Define the main phases
 const mainPhases = [
@@ -178,11 +181,33 @@ const LaunchPath: React.FC = () => {
   const [currentStepId, setCurrentStepId] = useState("shape-1");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
 
-  // State for the collapsible left panel
+  // State for the collapsible left panel (desktop only)
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  
+  // State for mobile sidebar
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  
+  // State for mobile tab switching
+  const [activeTab, setActiveTab] = useState("chat");
 
   // Reference to the chat component for resetting
   const chatRef = useRef<CofounderChatRef>(null);
+
+  // Responsive breakpoint detection
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   // Handle phase click from the progress indicator
   const handlePhaseClick = (phaseId: string) => {
@@ -197,6 +222,9 @@ const LaunchPath: React.FC = () => {
     
     // Reset chat when switching phases
     handleResetChat();
+    
+    // Close mobile sidebar after selection
+    setIsMobileSidebarOpen(false);
   };
 
   // Handle task status change
@@ -210,6 +238,9 @@ const LaunchPath: React.FC = () => {
     if (phaseId !== currentPhase) {
       setCurrentPhase(phaseId);
     }
+    
+    // Close mobile sidebar after selection
+    setIsMobileSidebarOpen(false);
   };
 
   // Handle step click
@@ -222,9 +253,12 @@ const LaunchPath: React.FC = () => {
     if (phaseId !== currentPhase) {
       setCurrentPhase(phaseId);
     }
+    
+    // Close mobile sidebar after selection
+    setIsMobileSidebarOpen(false);
   };
 
-  // Toggle left panel collapse
+  // Toggle left panel collapse (desktop only)
   const toggleLeftPanel = () => {
     setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
   };
@@ -257,14 +291,204 @@ const LaunchPath: React.FC = () => {
     return parseInt(stepNumber, 10);
   };
 
+  // Mobile Sidebar Component
+  const MobileSidebar = () => (
+    <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20"
+        >
+          <Menu className="h-5 w-5 text-white" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent 
+        side="left" 
+        className="w-[300px] sm:w-[350px] bg-[#1A1F2C]/95 backdrop-blur-xl border-white/10 p-0"
+      >
+        <div className="h-full flex flex-col">
+          <div className="p-4 border-b border-white/10">
+            <h2 className="text-lg font-semibold text-white">
+              {getPhaseDisplayName(currentPhase)}
+            </h2>
+            <p className="text-sm text-white/60">Phase {getCurrentPhaseNumber()}</p>
+          </div>
+          <div className="flex-1 p-4">
+            <PhaseSidebar 
+              phase={getPhaseDisplayName(currentPhase)} 
+              tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+              currentStepId={currentStepId}
+              onTaskStatusChange={handleTaskStatusChange}
+              onStepClick={handleStepClick}
+              onResetChat={handleResetChat} 
+            />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+
+  // Desktop Layout
+  const DesktopLayout = () => (
+    <div className="flex h-full rounded-xl animate-fade-in">
+      {/* Left Sidebar with Phase Tasks */}
+      <div className="relative h-full">
+        {/* Collapse button */}
+        <button 
+          onClick={toggleLeftPanel} 
+          className={cn(
+            "absolute z-10 top-1/2 -right-3 -translate-y-1/2",
+            "w-6 h-6 flex items-center justify-center",
+            "bg-white/10 backdrop-blur-md",
+            "border border-white/20",
+            "rounded-full shadow-md",
+            "transition-all duration-300 ease-in-out",
+            "hover:bg-white/15 hover:border-white/30",
+            "focus:outline-none focus:ring-2 focus:ring-white/20"
+          )} 
+          aria-label="Toggle sidebar"
+        >
+          <ChevronLeft className={cn(
+            "w-4 h-4 text-white/70",
+            "transition-transform duration-300 ease-in-out",
+            isLeftPanelCollapsed && "rotate-180"
+          )} />
+        </button>
+
+        <div className={cn(
+          "h-full overflow-hidden transition-all duration-300 ease-in-out",
+          isLeftPanelCollapsed ? "w-0 opacity-0" : "w-[280px] lg:w-[320px] xl:w-[350px] opacity-100"
+        )}>
+          <Card className="glass h-full rounded-xl overflow-hidden">
+            <CardContent className="p-4 h-full">
+              <PhaseSidebar 
+                phase={getPhaseDisplayName(currentPhase)} 
+                tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
+                currentStepId={currentStepId}
+                onTaskStatusChange={handleTaskStatusChange}
+                onStepClick={handleStepClick}
+                onResetChat={handleResetChat} 
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      
+      {/* Right side panels container */}
+      <div className={cn(
+        "flex-grow transition-all duration-300",
+        isLeftPanelCollapsed ? "ml-8" : "ml-4"
+      )}>
+        {/* Resizable panels for desktop */}
+        <ResizablePanelGroup direction="horizontal" className="h-full">
+          {/* Chat Panel */}
+          <ResizablePanel 
+            defaultSize={isTablet ? 60 : 50} 
+            minSize={30} 
+            maxSize={70} 
+            className="transition-all duration-500 ease-in-out"
+          >
+            <Card className="glass h-full rounded-xl overflow-hidden">
+              <CardContent className="p-4 h-full overflow-hidden">
+                <CofounderChat 
+                  ref={chatRef} 
+                  currentPhaseId={currentPhase}
+                  currentStepId={currentStepId}
+                  phaseNumber={getCurrentPhaseNumber()}
+                  stepNumber={getCurrentStepNumber()}
+                />
+              </CardContent>
+            </Card>
+          </ResizablePanel>
+          
+          {/* Resize Handle */}
+          <ResizableHandle withHandle className="bg-transparent transition-all duration-200">
+            <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 group-hover:scale-105">
+              <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
+              <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
+            </div>
+          </ResizableHandle>
+          
+          {/* Canvas Panel */}
+          <ResizablePanel 
+            defaultSize={isTablet ? 40 : 50} 
+            minSize={30} 
+            maxSize={70} 
+            className="transition-all duration-500 ease-in-out"
+          >
+            <Card className="glass h-full rounded-xl overflow-hidden">
+              <CardContent className="p-4 h-full overflow-hidden">
+                <CanvasOutput />
+              </CardContent>
+            </Card>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
+    </div>
+  );
+
+  // Mobile Layout with Tabs
+  const MobileLayout = () => (
+    <div className="h-full flex flex-col">
+      <MobileSidebar />
+      
+      {/* Mobile Tab Navigation */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <TabsList className="grid w-full grid-cols-2 bg-white/5 border border-white/10 rounded-lg mx-4 mb-4">
+          <TabsTrigger 
+            value="chat" 
+            className="flex items-center gap-2 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+          >
+            <MessageSquare className="h-4 w-4" />
+            <span className="hidden sm:inline">Chat</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="canvas" 
+            className="flex items-center gap-2 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+          >
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">Canvas</span>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Tab Content */}
+        <div className="flex-1 px-4 pb-4">
+          <TabsContent value="chat" className="h-full m-0">
+            <Card className="glass h-full rounded-xl overflow-hidden">
+              <CardContent className="p-3 sm:p-4 h-full overflow-hidden">
+                <CofounderChat 
+                  ref={chatRef} 
+                  currentPhaseId={currentPhase}
+                  currentStepId={currentStepId}
+                  phaseNumber={getCurrentPhaseNumber()}
+                  stepNumber={getCurrentStepNumber()}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="canvas" className="h-full m-0">
+            <Card className="glass h-full rounded-xl overflow-hidden">
+              <CardContent className="p-3 sm:p-4 h-full overflow-hidden">
+                <CanvasOutput />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </div>
+      </Tabs>
+    </div>
+  );
+
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
-      <div className="w-full px-6">
+      {/* Navbar - responsive padding */}
+      <div className="w-full px-3 sm:px-4 lg:px-6">
         <Navbar />
       </div>
       
-      {/* Modern Progress Indicator */}
-      <div className="w-full px-6 py-6">
+      {/* Progress Indicator - responsive padding and sizing */}
+      <div className="w-full px-3 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-6">
         <ModernProgressIndicator 
           currentPhase={currentPhase}
           completedPhases={completedPhases}
@@ -272,116 +496,23 @@ const LaunchPath: React.FC = () => {
         />
       </div>
       
-      {/* Main content area */}
-      <div className="w-full px-6 pb-6 flex-grow overflow-hidden">
+      {/* Main content area - responsive padding */}
+      <div className="w-full px-3 sm:px-4 lg:px-6 pb-3 sm:pb-4 lg:pb-6 flex-grow overflow-hidden">
         <motion.div 
-          initial={{
-            opacity: 0,
-            y: 20
-          }} 
-          animate={{
-            opacity: 1,
-            y: 0
-          }} 
-          transition={{
-            duration: 0.5,
-            delay: 0.2
-          }} 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.5, delay: 0.2 }} 
           className="h-full"
         >
-          {/* Main layout container */}
-          <div className="flex h-full rounded-xl animate-fade-in">
-            {/* First Panel - Left Sidebar with Phase Tasks */}
-            <div className="relative h-full">
-              {/* Perfectly centered circular collapse button on right border */}
-              <button 
-                onClick={toggleLeftPanel} 
-                className={cn(
-                  "absolute z-10 top-1/2 -right-3 -translate-y-1/2",
-                  "w-6 h-6 flex items-center justify-center",
-                  "bg-white/10 backdrop-blur-md",
-                  "border border-white/20",
-                  "rounded-full shadow-md",
-                  "transition-all duration-300 ease-in-out",
-                  "hover:bg-white/15 hover:border-white/30",
-                  "focus:outline-none focus:ring-2 focus:ring-white/20"
-                )} 
-                aria-label="Toggle sidebar"
-              >
-                <ChevronLeft className={cn(
-                  "w-4 h-4 text-white/70",
-                  "transition-transform duration-300 ease-in-out",
-                  isLeftPanelCollapsed && "rotate-180"
-                )} />
-              </button>
-
-              <div className={cn(
-                "h-full overflow-hidden transition-all duration-300 ease-in-out",
-                isLeftPanelCollapsed ? "w-0 opacity-0" : "w-[20vw] opacity-100"
-              )}>
-                <Card className="glass h-full rounded-xl overflow-hidden">
-                  <CardContent className="p-4 h-full">
-                    <PhaseSidebar 
-                      phase={getPhaseDisplayName(currentPhase)} 
-                      tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                      currentStepId={currentStepId}
-                      onTaskStatusChange={handleTaskStatusChange}
-                      onStepClick={handleStepClick}
-                      onResetChat={handleResetChat} 
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-            
-            {/* Right side panels container */}
-            <div className={cn(
-              "flex-grow ml-4 transition-all duration-300",
-              isLeftPanelCollapsed ? "ml-8" : ""
-            )}>
-              {/* Right side panels with resizable functionality */}
-              <ResizablePanelGroup direction="horizontal" className="h-full">
-                {/* Panel for Chat component */}
-                <ResizablePanel defaultSize={50} minSize={30} maxSize={70} className="transition-all duration-500 ease-in-out">
-                  <Card className="glass h-full rounded-xl overflow-hidden">
-                    <CardContent className="p-4 h-full overflow-hidden">
-                      <CofounderChat 
-                        ref={chatRef} 
-                        currentPhaseId={currentPhase}
-                        currentStepId={currentStepId}
-                        phaseNumber={getCurrentPhaseNumber()}
-                        stepNumber={getCurrentStepNumber()}
-                      />
-                    </CardContent>
-                  </Card>
-                </ResizablePanel>
-                
-                {/* Enhanced resize handle between chat and canvas with better responsiveness */}
-                <ResizableHandle withHandle className="bg-transparent transition-all duration-200">
-                  <div className="flex h-6 w-1.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 group-hover:scale-105">
-                    <ChevronLeft className="h-3 w-3 text-white/60 transition-opacity" />
-                    <ChevronRight className="h-3 w-3 -ml-3 text-white/60 transition-opacity" />
-                  </div>
-                </ResizableHandle>
-                
-                {/* Panel for Canvas Output */}
-                <ResizablePanel defaultSize={50} minSize={30} maxSize={70} className="transition-all duration-500 ease-in-out">
-                  <Card className="glass h-full rounded-xl overflow-hidden">
-                    <CardContent className="p-4 h-full overflow-hidden">
-                      <CanvasOutput />
-                    </CardContent>
-                  </Card>
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </div>
-          </div>
+          {/* Conditional Layout based on screen size */}
+          {isMobile ? <MobileLayout /> : <DesktopLayout />}
         </motion.div>
       </div>
 
-      {/* Background gradient circles */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
+      {/* Background gradient circles - responsive positioning */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
       </div>
     </div>
   );

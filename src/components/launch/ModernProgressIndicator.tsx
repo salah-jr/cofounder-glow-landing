@@ -31,6 +31,17 @@ export default function ModernProgressIndicator({
   className 
 }: ModernProgressIndicatorProps) {
   const [clickedPhases, setClickedPhases] = useState<Set<string>>(new Set());
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const getStepStatus = (phaseId: string): "completed" | "current" | "upcoming" => {
     if (completedPhases.includes(phaseId)) return "completed";
@@ -39,7 +50,6 @@ export default function ModernProgressIndicator({
   };
 
   const handlePhaseClick = (phaseId: string) => {
-    // Add the clicked phase to the set of clicked phases
     setClickedPhases(prev => new Set([...prev, phaseId]));
     
     if (onPhaseClick) {
@@ -47,24 +57,87 @@ export default function ModernProgressIndicator({
     }
   };
 
-  // Reset clicked phases when currentPhase changes externally (not through clicks)
   useEffect(() => {
-    // If the current phase changes and it's not in our clicked set,
-    // it means it was changed externally, so we should reset
     if (!clickedPhases.has(currentPhase)) {
       setClickedPhases(new Set());
     }
   }, [currentPhase, clickedPhases]);
 
+  // Mobile version with simplified layout
+  if (isMobile) {
+    return (
+      <div className={cn("w-full px-2 py-3", className)}>
+        {/* Current phase indicator */}
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" />
+            <span className="text-sm font-medium text-white">
+              Phase {phases.findIndex(p => p.id === currentPhase) + 1} of {phases.length}
+            </span>
+          </div>
+        </div>
+
+        {/* Simplified progress bar */}
+        <div className="relative">
+          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] rounded-full"
+              initial={{ width: 0 }}
+              animate={{ 
+                width: `${((phases.findIndex(p => p.id === currentPhase) + 1) / phases.length) * 100}%` 
+              }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          </div>
+          
+          {/* Phase dots */}
+          <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between px-1">
+            {phases.map((phase, index) => {
+              const status = getStepStatus(phase.id);
+              const isCompleted = status === "completed";
+              const isCurrent = status === "current";
+              
+              return (
+                <motion.button
+                  key={phase.id}
+                  onClick={() => handlePhaseClick(phase.id)}
+                  className={cn(
+                    "w-4 h-4 rounded-full border-2 transition-all duration-300",
+                    isCurrent && "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] border-white/30 scale-125",
+                    isCompleted && "bg-green-500 border-green-400",
+                    !isCompleted && !isCurrent && "bg-white/20 border-white/30"
+                  )}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  {isCompleted && (
+                    <Check className="w-2 h-2 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Current phase name */}
+        <div className="text-center mt-4">
+          <h3 className="text-lg font-semibold text-white">
+            {phases.find(p => p.id === currentPhase)?.label}
+          </h3>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop version with full layout
   return (
-    <div className={cn("w-full px-8 py-4", className)}>
-      {/* Modern Panel Progress Bar */}
-      <div className="flex items-center justify-between gap-3">
+    <div className={cn("w-full px-4 lg:px-8 py-4", className)}>
+      {/* Desktop Progress Bar */}
+      <div className="flex items-center justify-between gap-2 lg:gap-3">
         {phases.map((phase, index) => {
           const status = getStepStatus(phase.id);
           const isCompleted = status === "completed";
           const isCurrent = status === "current";
-          const isClickable = true; // All phases are clickable for navigation
+          const isClickable = true;
           const hasBeenClicked = clickedPhases.has(phase.id);
           const shouldAnimate = isCurrent && !hasBeenClicked;
           
@@ -106,26 +179,21 @@ export default function ModernProgressIndicator({
                     ]
                   )}
                 >
-                  {/* Animated background glow for current phase - only if not clicked */}
+                  {/* Animated background glow for current phase */}
                   {isCurrent && shouldAnimate && (
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/10"
-                      animate={{
-                        opacity: [0.3, 0.6, 0.3],
-                      }}
-                      transition={{
-                        duration: 2,
-                        ease: "easeInOut",
-                      }}
+                      animate={{ opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ duration: 2, ease: "easeInOut" }}
                     />
                   )}
 
                   {/* Panel Content */}
-                  <div className="relative p-3 flex items-center gap-3">
+                  <div className="relative p-2 lg:p-3 flex items-center gap-2 lg:gap-3">
                     {/* Phase Number/Status Icon */}
                     <div
                       className={cn(
-                        "flex items-center justify-center w-8 h-8 rounded-full",
+                        "flex items-center justify-center w-6 h-6 lg:w-8 lg:h-8 rounded-full",
                         "transition-all duration-300",
                         isCurrent && "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white shadow-lg",
                         isCompleted && "bg-green-500 text-white",
@@ -133,9 +201,9 @@ export default function ModernProgressIndicator({
                       )}
                     >
                       {isCompleted ? (
-                        <Check className="w-4 h-4" />
+                        <Check className="w-3 h-3 lg:w-4 lg:h-4" />
                       ) : (
-                        <span className="text-sm font-bold">{index + 1}</span>
+                        <span className="text-xs lg:text-sm font-bold">{index + 1}</span>
                       )}
                     </div>
 
@@ -143,7 +211,7 @@ export default function ModernProgressIndicator({
                     <div className="flex-1 min-w-0">
                       <h3
                         className={cn(
-                          "font-semibold text-sm transition-colors duration-300 truncate",
+                          "font-semibold text-xs lg:text-sm transition-colors duration-300 truncate",
                           isCurrent && "text-white",
                           isCompleted && "text-green-100",
                           !isCompleted && !isCurrent && "text-white/70 group-hover:text-white/90"
@@ -156,7 +224,7 @@ export default function ModernProgressIndicator({
                     {/* Hover indicator */}
                     <ChevronRight
                       className={cn(
-                        "w-4 h-4 transition-all duration-300",
+                        "w-3 h-3 lg:w-4 lg:h-4 transition-all duration-300",
                         "opacity-0 group-hover:opacity-60 transform translate-x-1 group-hover:translate-x-0",
                         isCurrent && "text-white",
                         isCompleted && "text-green-200",
@@ -165,41 +233,36 @@ export default function ModernProgressIndicator({
                     />
                   </div>
 
-                  {/* Internal animated progress bar for current phase - only if not clicked */}
+                  {/* Progress indicators */}
                   {isCurrent && shouldAnimate && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white/10">
                       <motion.div
                         className="h-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]"
                         initial={{ width: 0 }}
                         animate={{ width: "100%" }}
-                        transition={{ 
-                          duration: 2,
-                          ease: "easeInOut",
-                        }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
                       />
                     </div>
                   )}
 
-                  {/* Static progress bar for clicked current phase */}
                   {isCurrent && hasBeenClicked && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white/10">
                       <div className="h-full w-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" />
                     </div>
                   )}
 
-                  {/* Completed phase indicator line */}
                   {isCompleted && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-green-500" />
                   )}
                 </div>
               </motion.div>
 
-              {/* Connector Arrow (except for last item) */}
+              {/* Connector Arrow */}
               {index < phases.length - 1 && (
-                <div className="flex items-center justify-center w-6 h-6 relative z-10">
+                <div className="flex items-center justify-center w-4 h-4 lg:w-6 lg:h-6 relative z-10">
                   <ChevronRight
                     className={cn(
-                      "w-4 h-4 transition-colors duration-300",
+                      "w-3 h-3 lg:w-4 lg:h-4 transition-colors duration-300",
                       isCompleted && "text-green-400",
                       isCurrent && "text-[#9b87f5]",
                       !isCompleted && !isCurrent && "text-white/30"
