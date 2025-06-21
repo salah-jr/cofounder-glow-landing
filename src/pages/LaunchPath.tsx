@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
-import SimpleProgressBar from "@/components/launch/SimpleProgressBar";
+import ModernProgressIndicator from "@/components/launch/ModernProgressIndicator";
 import PhaseSidebar from "@/components/launch/PhaseSidebar";
 import CofounderChat, { CofounderChatRef } from "@/components/launch/CofounderChat";
 import CanvasOutput from "@/components/launch/CanvasOutput";
@@ -184,6 +184,21 @@ const LaunchPath: React.FC = () => {
   // Reference to the chat component for resetting
   const chatRef = useRef<CofounderChatRef>(null);
 
+  // Handle phase click from the progress indicator
+  const handlePhaseClick = (phaseId: string) => {
+    console.log(`Phase ${phaseId} clicked`);
+    
+    // Update current phase
+    setCurrentPhase(phaseId);
+    
+    // Set current step to the first step of the new phase
+    const firstStepId = `${phaseId}-1`;
+    setCurrentStepId(firstStepId);
+    
+    // Reset chat when switching phases
+    handleResetChat();
+  };
+
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
@@ -248,11 +263,12 @@ const LaunchPath: React.FC = () => {
         <Navbar />
       </div>
       
-      {/* Simple Progress Bar */}
+      {/* Modern Progress Indicator */}
       <div className="w-full px-6 py-6">
-        <SimpleProgressBar 
+        <ModernProgressIndicator 
           currentPhase={currentPhase}
           completedPhases={completedPhases}
+          onPhaseClick={handlePhaseClick}
         />
       </div>
       
