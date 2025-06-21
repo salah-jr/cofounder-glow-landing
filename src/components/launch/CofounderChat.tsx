@@ -447,6 +447,39 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     );
   };
 
+  // Clean typing indicator component with animated dots
+  const TypingIndicator = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+      className="mb-6 px-2"
+    >
+      <div className="py-2">
+        <span className="text-sm font-medium text-purple-400">Co-founder</span>
+      </div>
+      <div className="flex items-center gap-1">
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="w-2 h-2 rounded-full bg-white/60"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.6, 1, 0.6]
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              delay: i * 0.2,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -525,39 +558,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
               </motion.div>
             ))}
             
-            {/* Typing indicator - only visible when isTyping is true */}
-            <AnimatePresence>
-              {isTyping && (
-                <motion.div
-                  key="typing-indicator"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="px-2 py-4"
-                >
-                  <div className="flex items-center gap-1">
-                    <div className="flex space-x-1 items-center">
-                      <motion.div 
-                        className="w-2 h-2 rounded-full bg-white/60" 
-                        animate={{ y: ["0px", "-5px", "0px"] }} 
-                        transition={{ duration: 1, repeat: Infinity, repeatType: "loop" }}
-                      />
-                      <motion.div 
-                        className="w-2 h-2 rounded-full bg-white/60" 
-                        animate={{ y: ["0px", "-5px", "0px"] }} 
-                        transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.2 }}
-                      />
-                      <motion.div 
-                        className="w-2 h-2 rounded-full bg-white/60" 
-                        animate={{ y: ["0px", "-5px", "0px"] }} 
-                        transition={{ duration: 1, repeat: Infinity, repeatType: "loop", delay: 0.4 }}
-                      />
-                    </div>
-                    <span className="ml-2 text-sm text-white/60">Co-founder is thinking...</span>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Clean typing indicator - only visible when isTyping is true */}
+            {isTyping && <TypingIndicator />}
             
             <div ref={messagesEndRef} />
           </AnimatePresence>
