@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,6 +30,8 @@ export default function ModernProgressIndicator({
   onPhaseClick,
   className 
 }: ModernProgressIndicatorProps) {
+  const [clickedPhases, setClickedPhases] = useState<Set<string>>(new Set());
+
   const getStepStatus = (phaseId: string): "completed" | "current" | "upcoming" => {
     if (completedPhases.includes(phaseId)) return "completed";
     if (phaseId === currentPhase) return "current";
@@ -37,10 +39,22 @@ export default function ModernProgressIndicator({
   };
 
   const handlePhaseClick = (phaseId: string) => {
+    // Add the clicked phase to the set of clicked phases
+    setClickedPhases(prev => new Set([...prev, phaseId]));
+    
     if (onPhaseClick) {
       onPhaseClick(phaseId);
     }
   };
+
+  // Reset clicked phases when currentPhase changes externally (not through clicks)
+  useEffect(() => {
+    // If the current phase changes and it's not in our clicked set,
+    // it means it was changed externally, so we should reset
+    if (!clickedPhases.has(currentPhase)) {
+      setClickedPhases(new Set());
+    }
+  }, [currentPhase, clickedPhases]);
 
   return (
     <div className={cn("w-full px-8 py-4", className)}>
@@ -51,6 +65,8 @@ export default function ModernProgressIndicator({
           const isCompleted = status === "completed";
           const isCurrent = status === "current";
           const isClickable = true; // All phases are clickable for navigation
+          const hasBeenClicked = clickedPhases.has(phase.id);
+          const shouldAnimate = isCurrent && !hasBeenClicked;
           
           return (
             <React.Fragment key={phase.id}>
@@ -90,8 +106,8 @@ export default function ModernProgressIndicator({
                     ]
                   )}
                 >
-                  {/* Animated background glow for current phase */}
-                  {isCurrent && (
+                  {/* Animated background glow for current phase - only if not clicked */}
+                  {isCurrent && shouldAnimate && (
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/10"
                       animate={{
@@ -150,8 +166,8 @@ export default function ModernProgressIndicator({
                     />
                   </div>
 
-                  {/* Internal animated progress bar for current phase */}
-                  {isCurrent && (
+                  {/* Internal animated progress bar for current phase - only if not clicked */}
+                  {isCurrent && shouldAnimate && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white/10">
                       <motion.div
                         className="h-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]"
@@ -164,6 +180,13 @@ export default function ModernProgressIndicator({
                           repeatType: "reverse"
                         }}
                       />
+                    </div>
+                  )}
+
+                  {/* Static progress bar for clicked current phase */}
+                  {isCurrent && hasBeenClicked && (
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white/10">
+                      <div className="h-full w-full bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]" />
                     </div>
                   )}
 
