@@ -150,22 +150,25 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
   // Function to fetch initial AI message for a step
   const fetchInitialAIMessage = async (phaseId: string, stepId: string, pNum: number, sNum: number, currentSession: any) => {
     try {
-      setIsTyping(true);
-      setCurrentMood("thinking");
+      // Clear any existing typing state first
+      setIsTyping(false);
+      setCurrentMood("neutral");
       setError(null);
 
       if (!currentSession) {
-        const fallbackMessage = "Welcome! Please log in to start your conversation with your AI co-founder.";
+        // Don't show login message, just set a simple welcome message
         setMessages([{
           id: Date.now().toString(),
-          text: fallbackMessage,
+          text: "I'm ready to help you with this step! What would you like to work on today?",
           sender: "cofounder",
           timestamp: new Date()
         }]);
-        setIsTyping(false);
-        setCurrentMood("neutral");
         return;
       }
+
+      // Start typing indicator
+      setIsTyping(true);
+      setCurrentMood("thinking");
 
       // Call LLM with initial step prompt
       const initialMessage = "Please provide an introductory message for this step and any relevant questions to help the user get started.";
@@ -197,7 +200,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       setMessages([fallbackMessageObj]);
       setCurrentMood("neutral");
     } finally {
-      // Always clear typing state
+      // ALWAYS clear typing state
       setIsTyping(false);
     }
   };
@@ -218,7 +221,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       typingTimeoutRef.current = null;
     }
     
-    // Reset input and files
+    // Reset all states immediately
     setInput("");
     setAttachedFiles([]);
     setError(null);
@@ -276,13 +279,15 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     setAttachedFiles([]);
-    setIsTyping(true);
-    setCurrentMood("thinking");
     
     // Clear any existing timeout to prevent race conditions
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
+    
+    // Start typing indicator
+    setIsTyping(true);
+    setCurrentMood("thinking");
     
     try {
       // Call the LLM Edge Function with current props
@@ -315,7 +320,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       setCurrentMood("neutral");
       setMessages(prev => [...prev, fallbackMessageObj]);
     } finally {
-      // Always clear typing state
+      // ALWAYS clear typing state
       setIsTyping(false);
     }
   };
