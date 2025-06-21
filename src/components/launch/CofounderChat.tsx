@@ -49,12 +49,12 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
   onReset 
 }, ref) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
   const [attachedFiles, setAttachedFiles] = useState<FileAttachment[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isInitializing, setIsInitializing] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -77,16 +77,25 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     };
   }, []);
 
+  // Clear typing state helper function
+  const clearTypingState = () => {
+    setIsTyping(false);
+    setCurrentMood("neutral");
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+  };
+
   // Function to call the LLM Edge Function
   const callLLMFunction = async (userMessage: string, conversationHistory: Message[], phaseId: string, stepId: string, pNum: number, sNum: number) => {
     try {
       if (!session) {
-        throw new Error("You must be logged in to use the AI assistant");
+        throw new Error("Authentication required");
       }
 
       console.log('Calling LLM function with message:', userMessage);
       console.log('Current phase:', phaseId, 'Current step:', stepId);
-      console.log('Session token present:', !!session.access_token);
 
       // Prepare conversation history for the LLM
       const llmHistory = conversationHistory
@@ -118,7 +127,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       });
 
       console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         let errorData;
@@ -127,17 +135,17 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
           console.log('Error response data:', errorData);
         } catch (parseError) {
           console.error('Failed to parse error response:', parseError);
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`Service temporarily unavailable`);
         }
         
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(errorData.error || `Service temporarily unavailable`);
       }
 
       const data = await response.json();
       console.log('Success response data:', data);
       
       if (!data.success) {
-        throw new Error(data.error || 'Failed to get AI response');
+        throw new Error(data.error || 'Service temporarily unavailable');
       }
 
       return data.response;
@@ -149,14 +157,14 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
 
   // Function to fetch initial AI message for a step
   const fetchInitialAIMessage = async (phaseId: string, stepId: string, pNum: number, sNum: number, currentSession: any) => {
-    try {
-      // Clear any existing typing state first
-      setIsTyping(false);
-      setCurrentMood("neutral");
-      setError(null);
+    // Clear any existing state first
+    clearTypingState();
+    setError(null);
+    setIsInitializing(true);
 
+    try {
       if (!currentSession) {
-        // Don't show login message, just set a simple welcome message
+        // Set a simple welcome message without authentication requirement
         setMessages([{
           id: Date.now().toString(),
           text: "I'm ready to help you with this step! What would you like to work on today?",
@@ -187,8 +195,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     } catch (error: any) {
       console.error('Error fetching initial AI message:', error);
       
-      // Generic user-friendly message - don't expose technical errors
-      const fallbackMessage = "I'm ready to help you with this step! What would you like to work on today?";
+      // Show user-friendly message when AI is unavailable
+      const fallbackMessage = "I'm currently experiencing high demand and might be a bit slow to respond. Please try asking your question, and I'll do my best to help you!";
       
       const fallbackMessageObj: Message = {
         id: Date.now().toString(),
@@ -200,8 +208,9 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       setMessages([fallbackMessageObj]);
       setCurrentMood("neutral");
     } finally {
-      // ALWAYS clear typing state
-      setIsTyping(false);
+      // Always clear typing and initialization state
+      clearTypingState();
+      setIsInitializing(false);
     }
   };
   
@@ -215,18 +224,12 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
   const resetChat = () => {
     console.log("resetChat function called in CofounderChat");
     
-    // Clear any existing typing timeouts
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
-    }
-    
-    // Reset all states immediately
+    // Clear all states immediately
+    clearTypingState();
     setInput("");
     setAttachedFiles([]);
     setError(null);
-    setIsTyping(false);
-    setCurrentMood("neutral");
+    setIsInitializing(false);
     
     // Fetch fresh initial message from LLM
     fetchInitialAIMessage(propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber, session);
@@ -245,28 +248,14 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     resetChat
   }));
   
-  // Make the resetChat function accessible via a ref
-  useEffect(() => {
-    // Expose resetChat method to parent component
-    if (window) {
-      (window as any).resetCofounderChat = resetChat;
-    }
-    
-    return () => {
-      // Clean up
-      if (window && (window as any).resetCofounderChat) {
-        delete (window as any).resetCofounderChat;
-      }
-    };
-  }, []);
-  
   const handleSendMessage = async () => {
     if (input.trim() === "" && attachedFiles.length === 0) return;
+    if (isTyping || isInitializing) return; // Prevent sending while AI is responding
     
     // Clear any previous errors
     setError(null);
     
-    // Add user message with send animation
+    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: input,
@@ -279,11 +268,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     setAttachedFiles([]);
-    
-    // Clear any existing timeout to prevent race conditions
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
     
     // Start typing indicator
     setIsTyping(true);
@@ -307,8 +291,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     } catch (error: any) {
       console.error('Error getting AI response:', error);
       
-      // Generic user-friendly message - don't expose technical errors
-      const fallbackMessage = "I'm having a brief moment of difficulty, but I'm here to help! Could you try rephrasing your question or let me know what specific aspect of this step you'd like to focus on?";
+      // Show user-friendly message when AI is busy
+      const fallbackMessage = "I'm experiencing high demand right now and might be a bit slow. Could you try rephrasing your question or let me know what specific aspect of this step you'd like to focus on?";
       
       const fallbackMessageObj: Message = {
         id: (Date.now() + 1).toString(),
@@ -320,8 +304,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       setCurrentMood("neutral");
       setMessages(prev => [...prev, fallbackMessageObj]);
     } finally {
-      // ALWAYS clear typing state
-      setIsTyping(false);
+      // Always clear typing state
+      clearTypingState();
     }
   };
 
@@ -490,6 +474,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
           size="sm" 
           onClick={resetChat}
           className="text-xs text-white/50 hover:text-white"
+          disabled={isTyping || isInitializing}
         >
           Reset Chat
         </Button>
@@ -592,7 +577,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask your co-founder anything..."
-            disabled={isTyping}
+            disabled={isTyping || isInitializing}
             className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60 scrollbar-hide disabled:opacity-50"
             style={{ 
               overflowY: "auto", 
@@ -625,7 +610,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
                 onClick={handleFileAttachment}
                 variant="ghost"
                 size="icon"
-                disabled={isTyping}
+                disabled={isTyping || isInitializing}
                 className="h-8 w-8 rounded-full hover:bg-white/10 disabled:opacity-50"
               >
                 <Paperclip size={18} className="text-white/70" />
@@ -640,10 +625,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
             </div>
             <Button 
               onClick={handleSendMessage}
-              disabled={(!input.trim() && attachedFiles.length === 0) || isTyping}
+              disabled={(!input.trim() && attachedFiles.length === 0) || isTyping || isInitializing}
               className={cn(
                 "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md transition-all duration-300",
-                ((!input.trim() && attachedFiles.length === 0) || isTyping) ? "opacity-50" : "hover:opacity-90"
+                ((!input.trim() && attachedFiles.length === 0) || isTyping || isInitializing) ? "opacity-50" : "hover:opacity-90"
               )}
             >
               <Send size={18} />
