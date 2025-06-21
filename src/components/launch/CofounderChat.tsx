@@ -155,7 +155,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       setError(null);
 
       if (!currentSession) {
-        const fallbackMessage = "Please log in to start your conversation with your AI co-founder.";
+        const fallbackMessage = "Welcome! Please log in to start your conversation with your AI co-founder.";
         setMessages([{
           id: Date.now().toString(),
           text: fallbackMessage,
@@ -180,22 +180,12 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       
       setMessages([cofounderMessage]);
       setCurrentMood("excited");
-      setIsTyping(false);
       
     } catch (error: any) {
       console.error('Error fetching initial AI message:', error);
       
-      let fallbackMessage = "I'm having trouble connecting right now. Let's focus on the current step we're working on. What would you like to discuss?";
-      
-      if (error.message?.toLowerCase().includes('rate limit') ||
-          error.message?.toLowerCase().includes('too many requests')) {
-        fallbackMessage = "I'm experiencing high demand right now. Let me try to help you anyway. What would you like to work on for this step?";
-      } else if (error.message?.toLowerCase().includes('authentication') ||
-                 error.message?.toLowerCase().includes('unauthorized')) {
-        fallbackMessage = "There seems to be an authentication issue. Please try refreshing the page and logging in again.";
-      }
-      
-      setError(fallbackMessage);
+      // Generic user-friendly message - don't expose technical errors
+      const fallbackMessage = "I'm ready to help you with this step! What would you like to work on today?";
       
       const fallbackMessageObj: Message = {
         id: Date.now().toString(),
@@ -206,6 +196,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       
       setMessages([fallbackMessageObj]);
       setCurrentMood("neutral");
+    } finally {
+      // Always clear typing state
       setIsTyping(false);
     }
   };
@@ -230,6 +222,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     setInput("");
     setAttachedFiles([]);
     setError(null);
+    setIsTyping(false);
+    setCurrentMood("neutral");
     
     // Fetch fresh initial message from LLM
     fetchInitialAIMessage(propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber, session);
@@ -304,28 +298,12 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       
       setCurrentMood("excited");
       setMessages(prev => [...prev, cofounderMessage]);
-      setIsTyping(false);
       
     } catch (error: any) {
       console.error('Error getting AI response:', error);
       
-      // Enhanced error handling
-      let fallbackMessage = "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, let's focus on the current step we're working on.";
-      
-      // Check for specific error types
-      if (error.message?.toLowerCase().includes('rate limit') ||
-          error.message?.toLowerCase().includes('too many requests')) {
-        fallbackMessage = "I'm experiencing high demand right now. Let me try to help you anyway. Could you tell me more about what you'd like to work on for this step?";
-      } else if (error.message?.toLowerCase().includes('authentication') ||
-                 error.message?.toLowerCase().includes('unauthorized')) {
-        fallbackMessage = "There seems to be an authentication issue. Please try refreshing the page and logging in again.";
-      } else if (error.message?.toLowerCase().includes('network') ||
-                 error.message?.toLowerCase().includes('connection')) {
-        fallbackMessage = "I'm experiencing connectivity issues. Please check your internet connection and try again.";
-      }
-      
-      // Set error state with the user-friendly message
-      setError(fallbackMessage);
+      // Generic user-friendly message - don't expose technical errors
+      const fallbackMessage = "I'm having a brief moment of difficulty, but I'm here to help! Could you try rephrasing your question or let me know what specific aspect of this step you'd like to focus on?";
       
       const fallbackMessageObj: Message = {
         id: (Date.now() + 1).toString(),
@@ -336,6 +314,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       
       setCurrentMood("neutral");
       setMessages(prev => [...prev, fallbackMessageObj]);
+    } finally {
+      // Always clear typing state
       setIsTyping(false);
     }
   };
