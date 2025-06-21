@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Paperclip, User, File, Image, X } from "lucide-react";
+import { Send, Paperclip, User, File, Image, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -25,6 +25,7 @@ interface Message {
   isInsight?: boolean;
   files?: FileAttachment[];
   timestamp: Date;
+  isError?: boolean;
 }
 
 interface CofounderChatProps {
@@ -55,6 +56,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
   const [attachedFiles, setAttachedFiles] = useState<FileAttachment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
+  const [isQuotaExceeded, setIsQuotaExceeded] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -85,6 +87,54 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = null;
     }
+  };
+
+  // Check if error is related to OpenAI quota
+  const isOpenAIQuotaError = (errorMessage: string): boolean => {
+    return errorMessage.toLowerCase().includes('quota') || 
+           errorMessage.toLowerCase().includes('billing') ||
+           errorMessage.toLowerCase().includes('exceeded your current quota');
+  };
+
+  // Get fallback responses based on phase and step
+  const getFallbackResponse = (phaseId: string, stepId: string, isInitial: boolean = false): string => {
+    const fallbackResponses = {
+      'shape': {
+        'shape-1': {
+          initial: "Welcome to the Shape phase! I'm here to help you define and refine your startup idea. Let's start by exploring what problem you're trying to solve and who your target customers might be. What's the core challenge or pain point that sparked your business idea?",
+          response: "I'd love to help you think through this step of shaping your idea. Could you tell me more about the specific aspect you're working on? For example, are you focusing on your target market, value proposition, or business model?"
+        },
+        'shape-2': {
+          initial: "Great! Now let's dive deeper into understanding your target market. Who are the people that would benefit most from your solution? Let's explore their demographics, behaviors, and specific needs.",
+          response: "Understanding your target market is crucial. Can you share more details about who you think would be most interested in your solution?"
+        }
+      },
+      'build': {
+        'build-1': {
+          initial: "Welcome to the Build phase! Now it's time to start creating your minimum viable product (MVP). Let's focus on the core features that will validate your concept with real users.",
+          response: "Building your MVP is an exciting step! What specific aspect of development would you like to discuss?"
+        }
+      },
+      'launch': {
+        'launch-1': {
+          initial: "Welcome to the Launch phase! You're ready to introduce your product to the world. Let's create a strategic launch plan that maximizes your chances of success.",
+          response: "Launching is both exciting and challenging! What part of your launch strategy would you like to focus on?"
+        }
+      }
+    };
+
+    const phaseResponses = fallbackResponses[phaseId as keyof typeof fallbackResponses];
+    if (phaseResponses) {
+      const stepResponses = phaseResponses[stepId as keyof typeof phaseResponses];
+      if (stepResponses) {
+        return isInitial ? stepResponses.initial : stepResponses.response;
+      }
+    }
+
+    // Generic fallback
+    return isInitial 
+      ? "I'm here to help guide you through this step of your startup journey. What would you like to work on today?"
+      : "I'm here to help! Could you tell me more about what you'd like to focus on in this step?";
   };
 
   // Function to call the LLM Edge Function
@@ -161,13 +211,14 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     clearTypingState();
     setError(null);
     setIsInitializing(true);
+    setIsQuotaExceeded(false);
 
     try {
       if (!currentSession) {
         // Set a simple welcome message without authentication requirement
         setMessages([{
           id: Date.now().toString(),
-          text: "I'm ready to help you with this step! What would you like to work on today?",
+          text: getFallbackResponse(phaseId, stepId, true),
           sender: "cofounder",
           timestamp: new Date()
         }]);
@@ -195,17 +246,34 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     } catch (error: any) {
       console.error('Error fetching initial AI message:', error);
       
-      // Show user-friendly message when AI is unavailable
-      const fallbackMessage = "I'm currently experiencing high demand and might be a bit slow to respond. Please try asking your question, and I'll do my best to help you!";
+      // Check if it's a quota error
+      if (isOpenAIQuotaError(error.message)) {
+        setIsQuotaExceeded(true);
+        const quotaMessage = `I'm currently experiencing high demand due to API limitations. Don't worry though - I can still help guide you through this step! ${getFallbackResponse(phaseId, stepId, true)}`;
+        
+        const fallbackMessageObj: Message = {
+          id: Date.now().toString(),
+          text: quotaMessage,
+          sender: "cofounder",
+          timestamp: new Date(),
+          isError: true
+        };
+        
+        setMessages([fallbackMessageObj]);
+      } else {
+        // Show user-friendly message for other errors
+        const fallbackMessage = `I'm currently experiencing some technical difficulties, but I'm still here to help! ${getFallbackResponse(phaseId, stepId, true)}`;
+        
+        const fallbackMessageObj: Message = {
+          id: Date.now().toString(),
+          text: fallbackMessage,
+          sender: "cofounder",
+          timestamp: new Date()
+        };
+        
+        setMessages([fallbackMessageObj]);
+      }
       
-      const fallbackMessageObj: Message = {
-        id: Date.now().toString(),
-        text: fallbackMessage,
-        sender: "cofounder",
-        timestamp: new Date()
-      };
-      
-      setMessages([fallbackMessageObj]);
       setCurrentMood("neutral");
     } finally {
       // Always clear typing and initialization state
@@ -230,6 +298,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     setAttachedFiles([]);
     setError(null);
     setIsInitializing(false);
+    setIsQuotaExceeded(false);
     
     // Fetch fresh initial message from LLM
     fetchInitialAIMessage(propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber, session);
@@ -288,17 +357,33 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       setCurrentMood("excited");
       setMessages(prev => [...prev, cofounderMessage]);
       
+      // Reset quota exceeded state on successful response
+      if (isQuotaExceeded) {
+        setIsQuotaExceeded(false);
+      }
+      
     } catch (error: any) {
       console.error('Error getting AI response:', error);
       
-      // Show user-friendly message when AI is busy
-      const fallbackMessage = "I'm experiencing high demand right now and might be a bit slow. Could you try rephrasing your question or let me know what specific aspect of this step you'd like to focus on?";
+      let fallbackMessage: string;
+      let isErrorMessage = false;
+      
+      // Check if it's a quota error
+      if (isOpenAIQuotaError(error.message)) {
+        setIsQuotaExceeded(true);
+        fallbackMessage = `I'm currently experiencing high demand due to API limitations, but I can still help guide you! ${getFallbackResponse(propCurrentPhaseId, propCurrentStepId, false)} Feel free to share your thoughts and I'll do my best to provide guidance based on this step's objectives.`;
+        isErrorMessage = true;
+      } else {
+        // Show user-friendly message for other errors
+        fallbackMessage = `I'm experiencing some technical difficulties right now, but I'm still here to help! ${getFallbackResponse(propCurrentPhaseId, propCurrentStepId, false)}`;
+      }
       
       const fallbackMessageObj: Message = {
         id: (Date.now() + 1).toString(),
         text: fallbackMessage,
         sender: "cofounder",
-        timestamp: new Date()
+        timestamp: new Date(),
+        isError: isErrorMessage
       };
       
       setCurrentMood("neutral");
@@ -513,6 +598,19 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
         </Button>
       </div>
 
+      {/* Quota exceeded warning */}
+      {isQuotaExceeded && (
+        <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-start gap-2">
+          <AlertCircle className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
+          <div className="text-amber-200 text-sm">
+            <p className="font-medium">AI Assistant Limited</p>
+            <p className="text-xs text-amber-300/80 mt-1">
+              I'm experiencing high demand right now, but I can still provide guidance based on this step's framework and best practices.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Error display */}
       {error && (
         <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
@@ -540,6 +638,9 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
                     message.sender === "user" ? "text-blue-400" : "text-purple-400"
                   )}>
                     {message.sender === "user" ? "You" : "Co-founder"}
+                    {message.isError && (
+                      <span className="ml-2 text-xs text-amber-400">(Limited Mode)</span>
+                    )}
                   </span>
                 </div>
                 
@@ -549,7 +650,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
                 )}>
                   <div className={cn(
                     "py-2 px-1",
-                    "text-white"
+                    "text-white",
+                    message.isError && "text-white/90"
                   )}>
                     {message.text && <p>{message.text}</p>}
                     {renderMessageFiles(message.files)}
@@ -578,7 +680,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask your co-founder anything..."
+            placeholder={isQuotaExceeded ? "I can still help guide you through this step..." : "Ask your co-founder anything..."}
             disabled={isTyping || isInitializing}
             className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60 scrollbar-hide disabled:opacity-50"
             style={{ 
