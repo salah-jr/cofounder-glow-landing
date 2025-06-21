@@ -42,20 +42,13 @@ export interface CofounderChatRef {
 
 const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ 
   className, 
-  currentPhaseId = "shape",
-  currentStepId = "shape-1",
-  phaseNumber = 1,
-  stepNumber = 1,
+  currentPhaseId: propCurrentPhaseId = "shape",
+  currentStepId: propCurrentStepId = "shape-1",
+  phaseNumber: propPhaseNumber = 1,
+  stepNumber: propStepNumber = 1,
   onReset 
 }, ref) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: `Hi there! I'm your Co-founder AI assistant. I'm here to help you through Phase ${phaseNumber}: Step ${stepNumber}. Let's start by defining the problem your startup solves and identifying your target users. What specific problem are you addressing?`,
-      sender: "cofounder",
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -75,18 +68,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   
-  // Update initial message when phase/step changes
-  useEffect(() => {
-    const initialMessage = `Hi there! I'm your Co-founder AI assistant. I'm here to help you through Phase ${phaseNumber}: Step ${stepNumber}. Let's work on this step together. What would you like to focus on?`;
-    
-    setMessages([{
-      id: Date.now().toString(),
-      text: initialMessage,
-      sender: "cofounder",
-      timestamp: new Date()
-    }]);
-  }, [currentPhaseId, currentStepId, phaseNumber, stepNumber]);
-  
   // Cleanup typing timeout on component unmount
   useEffect(() => {
     return () => {
@@ -95,70 +76,16 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       }
     };
   }, []);
-  
-  // Function to reset the chat
-  const resetChat = () => {
-    console.log("resetChat function called in CofounderChat");
-    
-    // Clear any existing typing timeouts
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
-    }
-    
-    // Reset to initial state with current phase/step context
-    const initialMessage = `Let's start fresh! I'm here to help you with Phase ${phaseNumber}: Step ${stepNumber}. What would you like to work on?`;
-    
-    setMessages([{
-      id: Date.now().toString(),
-      text: initialMessage,
-      sender: "cofounder",
-      timestamp: new Date()
-    }]);
-    setInput("");
-    setIsTyping(false);
-    setCurrentMood("neutral");
-    setAttachedFiles([]);
-    setError(null);
-    
-    // Call the onReset callback if provided
-    if (onReset) onReset();
-    
-    // Force scroll to bottom after reset
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-    }, 100);
-  };
-
-  // Expose methods via ref
-  useImperativeHandle(ref, () => ({
-    resetChat
-  }));
-  
-  // Make the resetChat function accessible via a ref
-  useEffect(() => {
-    // Expose resetChat method to parent component
-    if (window) {
-      (window as any).resetCofounderChat = resetChat;
-    }
-    
-    return () => {
-      // Clean up
-      if (window && (window as any).resetCofounderChat) {
-        delete (window as any).resetCofounderChat;
-      }
-    };
-  }, []);
 
   // Function to call the LLM Edge Function
-  const callLLMFunction = async (userMessage: string, conversationHistory: Message[]) => {
+  const callLLMFunction = async (userMessage: string, conversationHistory: Message[], phaseId: string, stepId: string, pNum: number, sNum: number) => {
     try {
       if (!session) {
         throw new Error("You must be logged in to use the AI assistant");
       }
 
       console.log('Calling LLM function with message:', userMessage);
-      console.log('Current phase:', currentPhaseId, 'Current step:', currentStepId);
+      console.log('Current phase:', phaseId, 'Current step:', stepId);
       console.log('Session token present:', !!session.access_token);
 
       // Prepare conversation history for the LLM
@@ -173,10 +100,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       const requestPayload = {
         message: userMessage,
         conversationHistory: llmHistory,
-        currentPhaseId: currentPhaseId,
-        currentStepId: currentStepId,
-        phaseNumber: phaseNumber,
-        stepNumber: stepNumber
+        currentPhaseId: phaseId,
+        currentStepId: stepId,
+        phaseNumber: pNum,
+        stepNumber: sNum
       };
 
       console.log('Request payload:', requestPayload);
@@ -219,6 +146,122 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       throw error;
     }
   };
+
+  // Function to fetch initial AI message for a step
+  const fetchInitialAIMessage = async (phaseId: string, stepId: string, pNum: number, sNum: number, currentSession: any) => {
+    try {
+      setIsTyping(true);
+      setCurrentMood("thinking");
+      setError(null);
+
+      if (!currentSession) {
+        const fallbackMessage = "Please log in to start your conversation with your AI co-founder.";
+        setMessages([{
+          id: Date.now().toString(),
+          text: fallbackMessage,
+          sender: "cofounder",
+          timestamp: new Date()
+        }]);
+        setIsTyping(false);
+        setCurrentMood("neutral");
+        return;
+      }
+
+      // Call LLM with initial step prompt
+      const initialMessage = "Please provide an introductory message for this step and any relevant questions to help the user get started.";
+      const aiResponse = await callLLMFunction(initialMessage, [], phaseId, stepId, pNum, sNum);
+      
+      const cofounderMessage: Message = {
+        id: Date.now().toString(),
+        text: aiResponse,
+        sender: "cofounder",
+        timestamp: new Date()
+      };
+      
+      setMessages([cofounderMessage]);
+      setCurrentMood("excited");
+      setIsTyping(false);
+      
+    } catch (error: any) {
+      console.error('Error fetching initial AI message:', error);
+      
+      let fallbackMessage = "I'm having trouble connecting right now. Let's focus on the current step we're working on. What would you like to discuss?";
+      
+      if (error.message?.toLowerCase().includes('rate limit') ||
+          error.message?.toLowerCase().includes('too many requests')) {
+        fallbackMessage = "I'm experiencing high demand right now. Let me try to help you anyway. What would you like to work on for this step?";
+      } else if (error.message?.toLowerCase().includes('authentication') ||
+                 error.message?.toLowerCase().includes('unauthorized')) {
+        fallbackMessage = "There seems to be an authentication issue. Please try refreshing the page and logging in again.";
+      }
+      
+      setError(fallbackMessage);
+      
+      const fallbackMessageObj: Message = {
+        id: Date.now().toString(),
+        text: fallbackMessage,
+        sender: "cofounder",
+        timestamp: new Date()
+      };
+      
+      setMessages([fallbackMessageObj]);
+      setCurrentMood("neutral");
+      setIsTyping(false);
+    }
+  };
+  
+  // Update initial message when phase/step changes and fetch initial AI message
+  useEffect(() => {
+    console.log('Phase/step changed, fetching initial AI message...');
+    fetchInitialAIMessage(propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber, session);
+  }, [propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber, session]);
+  
+  // Function to reset the chat
+  const resetChat = () => {
+    console.log("resetChat function called in CofounderChat");
+    
+    // Clear any existing typing timeouts
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    
+    // Reset input and files
+    setInput("");
+    setAttachedFiles([]);
+    setError(null);
+    
+    // Fetch fresh initial message from LLM
+    fetchInitialAIMessage(propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber, session);
+    
+    // Call the onReset callback if provided
+    if (onReset) onReset();
+    
+    // Force scroll to bottom after reset
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }, 100);
+  };
+
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    resetChat
+  }));
+  
+  // Make the resetChat function accessible via a ref
+  useEffect(() => {
+    // Expose resetChat method to parent component
+    if (window) {
+      (window as any).resetCofounderChat = resetChat;
+    }
+    
+    return () => {
+      // Clean up
+      if (window && (window as any).resetCofounderChat) {
+        delete (window as any).resetCofounderChat;
+      }
+    };
+  }, []);
   
   const handleSendMessage = async () => {
     if (input.trim() === "" && attachedFiles.length === 0) return;
@@ -248,8 +291,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     }
     
     try {
-      // Call the LLM Edge Function
-      const aiResponse = await callLLMFunction(currentInput, messages);
+      // Call the LLM Edge Function with current props
+      const aiResponse = await callLLMFunction(currentInput, messages, propCurrentPhaseId, propCurrentStepId, propPhaseNumber, propStepNumber);
       
       const cofounderMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -445,7 +488,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
           </Avatar>
           <div className="flex flex-col">
             <h3 className="text-lg font-semibold text-white">Co-founder</h3>
-            <span className="text-xs text-white/60">Phase {phaseNumber}, Step {stepNumber}</span>
+            <span className="text-xs text-white/60">Phase {propPhaseNumber}, Step {propStepNumber}</span>
           </div>
           <div className={cn(
             "ml-2 h-3 w-3 rounded-full",

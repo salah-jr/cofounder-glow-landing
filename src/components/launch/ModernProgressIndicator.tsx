@@ -115,7 +115,6 @@ export default function ModernProgressIndicator({
                       }}
                       transition={{
                         duration: 2,
-                        repeat: Infinity,
                         ease: "easeInOut",
                       }}
                     />
@@ -176,8 +175,6 @@ export default function ModernProgressIndicator({
                         transition={{ 
                           duration: 2,
                           ease: "easeInOut",
-                          repeat: Infinity,
-                          repeatType: "reverse"
                         }}
                       />
                     </div>
