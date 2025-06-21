@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Paperclip, User, File, Image, X, AlertCircle } from "lucide-react";
+import { Send, Paperclip, File, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -51,17 +51,14 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
 }, ref) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [currentMood, setCurrentMood] = useState<"neutral" | "thinking" | "excited">("neutral");
   const [attachedFiles, setAttachedFiles] = useState<FileAttachment[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isInitializing, setIsInitializing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isQuotaExceeded, setIsQuotaExceeded] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const typingTimeoutRef = useRef<number | null>(null);
   
   const { session } = useAuth();
   
@@ -69,25 +66,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  
-  // Cleanup typing timeout on component unmount
-  useEffect(() => {
-    return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Clear typing state helper function
-  const clearTypingState = () => {
-    setIsTyping(false);
-    setCurrentMood("neutral");
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
-    }
-  };
 
   // Check if error is related to OpenAI quota
   const isOpenAIQuotaError = (errorMessage: string): boolean => {
@@ -207,10 +185,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
 
   // Function to fetch initial AI message for a step
   const fetchInitialAIMessage = async (phaseId: string, stepId: string, pNum: number, sNum: number, currentSession: any) => {
-    // Clear any existing state first
-    clearTypingState();
     setError(null);
-    setIsInitializing(true);
     setIsQuotaExceeded(false);
 
     try {
@@ -225,10 +200,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
         return;
       }
 
-      // Start typing indicator
-      setIsTyping(true);
-      setCurrentMood("thinking");
-
       // Call LLM with initial step prompt
       const initialMessage = "Please provide an introductory message for this step and any relevant questions to help the user get started.";
       const aiResponse = await callLLMFunction(initialMessage, [], phaseId, stepId, pNum, sNum);
@@ -241,7 +212,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       };
       
       setMessages([cofounderMessage]);
-      setCurrentMood("excited");
       
     } catch (error: any) {
       console.error('Error fetching initial AI message:', error);
@@ -273,12 +243,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
         
         setMessages([fallbackMessageObj]);
       }
-      
-      setCurrentMood("neutral");
-    } finally {
-      // Always clear typing and initialization state
-      clearTypingState();
-      setIsInitializing(false);
     }
   };
   
@@ -293,11 +257,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     console.log("resetChat function called in CofounderChat");
     
     // Clear all states immediately
-    clearTypingState();
     setInput("");
     setAttachedFiles([]);
     setError(null);
-    setIsInitializing(false);
+    setIsProcessing(false);
     setIsQuotaExceeded(false);
     
     // Fetch fresh initial message from LLM
@@ -319,7 +282,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
   
   const handleSendMessage = async () => {
     if (input.trim() === "" && attachedFiles.length === 0) return;
-    if (isTyping || isInitializing) return; // Prevent sending while AI is responding
+    if (isProcessing) return; // Prevent sending while processing
     
     // Clear any previous errors
     setError(null);
@@ -338,9 +301,8 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     setInput("");
     setAttachedFiles([]);
     
-    // Start typing indicator
-    setIsTyping(true);
-    setCurrentMood("thinking");
+    // Set processing state
+    setIsProcessing(true);
     
     try {
       // Call the LLM Edge Function with current props
@@ -354,7 +316,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
         timestamp: new Date()
       };
       
-      setCurrentMood("excited");
       setMessages(prev => [...prev, cofounderMessage]);
       
       // Reset quota exceeded state on successful response
@@ -386,11 +347,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
         isError: isErrorMessage
       };
       
-      setCurrentMood("neutral");
       setMessages(prev => [...prev, fallbackMessageObj]);
     } finally {
-      // Always clear typing state
-      clearTypingState();
+      // Always clear processing state
+      setIsProcessing(false);
     }
   };
 
@@ -532,39 +492,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     );
   };
 
-  // Clean typing indicator component with animated dots
-  const TypingIndicator = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.2 }}
-      className="mb-6 px-2"
-    >
-      <div className="py-2">
-        <span className="text-sm font-medium text-purple-400">Co-founder</span>
-      </div>
-      <div className="flex items-center gap-1">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="w-2 h-2 rounded-full bg-white/60"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.6, 1, 0.6]
-            }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              delay: i * 0.2,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-      </div>
-    </motion.div>
-  );
-
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -577,14 +504,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
             <h3 className="text-lg font-semibold text-white">Co-founder</h3>
             <span className="text-xs text-white/60">Phase {propPhaseNumber}, Step {propStepNumber}</span>
           </div>
-          <div className={cn(
-            "ml-2 h-3 w-3 rounded-full",
-            currentMood === "thinking" 
-              ? "bg-[#FEF7CD]" 
-              : currentMood === "excited" 
-                ? "bg-[#F2FCE2]" 
-                : "bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]"
-          )} />
+          <div className="ml-2 h-3 w-3 rounded-full bg-gradient-to-br from-[#1EAEDB] to-[#9b87f5]" />
         </div>
         
         <Button 
@@ -592,7 +512,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
           size="sm" 
           onClick={resetChat}
           className="text-xs text-white/50 hover:text-white"
-          disabled={isTyping || isInitializing}
+          disabled={isProcessing}
         >
           Reset Chat
         </Button>
@@ -660,9 +580,6 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
               </motion.div>
             ))}
             
-            {/* Clean typing indicator - only visible when isTyping is true */}
-            {isTyping && <TypingIndicator />}
-            
             <div ref={messagesEndRef} />
           </AnimatePresence>
         </div>
@@ -681,7 +598,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={isQuotaExceeded ? "I can still help guide you through this step..." : "Ask your co-founder anything..."}
-            disabled={isTyping || isInitializing}
+            disabled={isProcessing}
             className="w-full px-4 py-3 min-h-[48px] max-h-24 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#9b87f5] resize-none transition-all duration-200 focus:border-[#9b87f5]/60 scrollbar-hide disabled:opacity-50"
             style={{ 
               overflowY: "auto", 
@@ -714,7 +631,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
                 onClick={handleFileAttachment}
                 variant="ghost"
                 size="icon"
-                disabled={isTyping || isInitializing}
+                disabled={isProcessing}
                 className="h-8 w-8 rounded-full hover:bg-white/10 disabled:opacity-50"
               >
                 <Paperclip size={18} className="text-white/70" />
@@ -729,10 +646,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
             </div>
             <Button 
               onClick={handleSendMessage}
-              disabled={(!input.trim() && attachedFiles.length === 0) || isTyping || isInitializing}
+              disabled={(!input.trim() && attachedFiles.length === 0) || isProcessing}
               className={cn(
                 "bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white p-2 rounded-md transition-all duration-300",
-                ((!input.trim() && attachedFiles.length === 0) || isTyping || isInitializing) ? "opacity-50" : "hover:opacity-90"
+                ((!input.trim() && attachedFiles.length === 0) || isProcessing) ? "opacity-50" : "hover:opacity-90"
               )}
             >
               <Send size={18} />
