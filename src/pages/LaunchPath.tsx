@@ -11,145 +11,202 @@ import { TaskStatus } from "@/components/launch/PhaseTask";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Enhanced tasks data with icons and tooltips - updated for new phases
+// Define the main phases
+const mainPhases = [
+  { id: "shape", label: "Shape Your Idea" },
+  { id: "validate", label: "Validate the Idea and the Market" },
+  { id: "build", label: "Build the Business" },
+  { id: "mvp", label: "Plan the MVP" },
+  { id: "pitch", label: "Pitch Your Idea" }
+];
+
+// Enhanced tasks data with the new structure
 const phaseTasks = {
   "shape": [
     {
-      id: "task1",
-      title: "Define value proposition",
+      id: "shape-1",
+      title: "Define the Problem & Target User",
       status: "in-progress" as TaskStatus,
-      icon: "bulb",
-      tooltip: "Clearly articulate the unique value your product offers to customers"
+      tooltip: "Clearly identify the problem you're solving and who experiences it"
     },
     {
-      id: "task2",
-      title: "Identify target audience",
+      id: "shape-2",
+      title: "Craft Your Idea One-Liner",
       status: "pending" as TaskStatus,
-      icon: "target",
-      tooltip: "Define your ideal customer segments and their key characteristics"
+      tooltip: "Create a concise, compelling description of your startup idea"
     },
     {
-      id: "task3",
-      title: "Research competitors",
+      id: "shape-3",
+      title: "Spot the Market Gap",
       status: "pending" as TaskStatus,
-      tooltip: "Analyze what existing solutions are in the market and their strengths/weaknesses"
+      tooltip: "Identify what's missing in the current market that your idea addresses"
     },
     {
-      id: "task4",
-      title: "Outline key features",
+      id: "shape-4",
+      title: "Capture Key Assumptions",
       status: "pending" as TaskStatus,
-      tooltip: "List the essential capabilities your product needs to deliver value"
-    },
-    {
-      id: "task5",
-      title: "Create product vision",
-      status: "pending" as TaskStatus,
-      tooltip: "Define where your product is headed in the long term"
+      tooltip: "Document the critical assumptions your business model depends on"
     }
   ],
   "validate": [
     {
-      id: "task6",
-      title: "Create validation hypothesis",
+      id: "validate-1",
+      title: "Research the Market",
       status: "pending" as TaskStatus,
-      tooltip: "Form testable assumptions about your business model"
+      tooltip: "Gather data about your target market size, trends, and dynamics"
     },
     {
-      id: "task7",
-      title: "Design customer interviews",
+      id: "validate-2",
+      title: "Design the Interview",
       status: "pending" as TaskStatus,
-      tooltip: "Prepare questions that validate your value proposition"
+      tooltip: "Create structured questions to validate your assumptions with real users"
     },
     {
-      id: "task8",
-      title: "Analyze market demand",
+      id: "validate-3",
+      title: "Practice the Interview",
       status: "pending" as TaskStatus,
-      tooltip: "Research and quantify the potential market size"
+      tooltip: "Rehearse your interview approach to ensure effective user conversations"
     },
     {
-      id: "task9",
-      title: "Gather initial feedback",
+      id: "validate-4",
+      title: "Talk to Real Users",
       status: "pending" as TaskStatus,
-      tooltip: "Collect and organize early user insights"
+      tooltip: "Conduct actual interviews with potential customers"
+    },
+    {
+      id: "validate-5",
+      title: "Learn and Compare",
+      status: "pending" as TaskStatus,
+      tooltip: "Analyze feedback and compare findings against your initial assumptions"
     }
   ],
   "build": [
     {
-      id: "task10",
-      title: "Define business model",
+      id: "build-1",
+      title: "Define Value & Market Positioning",
       status: "pending" as TaskStatus,
-      tooltip: "Establish how your business will create, deliver, and capture value"
+      tooltip: "Establish how your product creates value and positions in the market"
     },
     {
-      id: "task11",
-      title: "Create financial projections",
+      id: "build-2",
+      title: "Identify Risks and Mitigations",
       status: "pending" as TaskStatus,
-      tooltip: "Develop realistic revenue and cost forecasts"
+      tooltip: "Recognize potential business risks and develop strategies to address them"
     },
     {
-      id: "task12",
-      title: "Plan go-to-market strategy",
+      id: "build-3",
+      title: "Outline Revenue Model & Pricing",
       status: "pending" as TaskStatus,
-      tooltip: "Define how you'll reach and acquire customers"
+      tooltip: "Define how your business will generate revenue and price your offering"
+    },
+    {
+      id: "build-4",
+      title: "Estimate Costs & Required Resources",
+      status: "pending" as TaskStatus,
+      tooltip: "Calculate the resources and capital needed to build and operate your business"
+    },
+    {
+      id: "build-5",
+      title: "Assemble the Business Case",
+      status: "pending" as TaskStatus,
+      tooltip: "Compile all elements into a comprehensive business justification"
     }
   ],
   "mvp": [
     {
-      id: "task13",
-      title: "Define MVP features",
+      id: "mvp-1",
+      title: "Map the User Flow",
       status: "pending" as TaskStatus,
-      tooltip: "Identify the minimum set of features needed to test your hypothesis"
+      tooltip: "Design the step-by-step journey users will take through your product"
     },
     {
-      id: "task14",
-      title: "Create development timeline",
+      id: "mvp-2",
+      title: "Prioritize the Features",
       status: "pending" as TaskStatus,
-      tooltip: "Plan the development phases and milestones"
+      tooltip: "Identify which features are essential for your minimum viable product"
     },
     {
-      id: "task15",
-      title: "Design user experience",
+      id: "mvp-3",
+      title: "Design & Build Prompts",
       status: "pending" as TaskStatus,
-      tooltip: "Create wireframes and user flow for your MVP"
+      tooltip: "Create the user interface elements and interaction prompts"
+    },
+    {
+      id: "mvp-4",
+      title: "Plan a Usability Test",
+      status: "pending" as TaskStatus,
+      tooltip: "Design tests to evaluate how users interact with your MVP"
+    },
+    {
+      id: "mvp-5",
+      title: "Run User Validation",
+      status: "pending" as TaskStatus,
+      tooltip: "Execute testing with real users to validate your MVP approach"
     }
   ],
   "pitch": [
     {
-      id: "task16",
-      title: "Create pitch deck",
+      id: "pitch-1",
+      title: "Tell the Startup Story",
       status: "pending" as TaskStatus,
-      tooltip: "Develop a compelling presentation for investors or stakeholders"
+      tooltip: "Craft a compelling narrative about your startup's mission and vision"
     },
     {
-      id: "task17",
-      title: "Practice pitch delivery",
+      id: "pitch-2",
+      title: "Create Your Launch Signal",
       status: "pending" as TaskStatus,
-      tooltip: "Rehearse and refine your presentation skills"
+      tooltip: "Develop key messages and materials for your market launch"
     },
     {
-      id: "task18",
-      title: "Prepare for Q&A",
+      id: "pitch-3",
+      title: "Plan Your Next Moves",
       status: "pending" as TaskStatus,
-      tooltip: "Anticipate questions and prepare thoughtful responses"
+      tooltip: "Define immediate next steps and milestones after launch"
+    },
+    {
+      id: "pitch-4",
+      title: "Build Your Pitch Deck",
+      status: "pending" as TaskStatus,
+      tooltip: "Create a professional presentation for investors and stakeholders"
     }
   ]
 };
 
 const LaunchPath: React.FC = () => {
-  // State for managing the roadmap progress - updated to use new phases
+  // State for managing the roadmap progress
   const [currentPhase, setCurrentPhase] = useState("shape");
+  const [currentStepId, setCurrentStepId] = useState("shape-1");
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
 
   // State for the collapsible left panel
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
-  // Reference to the chat component for resetting - updated type
+  // Reference to the chat component for resetting
   const chatRef = useRef<CofounderChatRef>(null);
 
   // Handle task status change
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
     console.log(`Task ${taskId} status changed to ${newStatus}`);
-    // Implement actual status change logic here
+    // Set the current step when a task is clicked
+    setCurrentStepId(taskId);
+    
+    // Extract phase from taskId (e.g., "shape-1" -> "shape")
+    const phaseId = taskId.split('-')[0];
+    if (phaseId !== currentPhase) {
+      setCurrentPhase(phaseId);
+    }
+  };
+
+  // Handle step click
+  const handleStepClick = (stepId: string) => {
+    console.log(`Step ${stepId} clicked`);
+    setCurrentStepId(stepId);
+    
+    // Extract phase from stepId
+    const phaseId = stepId.split('-')[0];
+    if (phaseId !== currentPhase) {
+      setCurrentPhase(phaseId);
+    }
   };
 
   // Toggle left panel collapse
@@ -157,10 +214,9 @@ const LaunchPath: React.FC = () => {
     setIsLeftPanelCollapsed(!isLeftPanelCollapsed);
   };
 
-  // Reset chat function - enhanced with console log for debugging
+  // Reset chat function
   const handleResetChat = () => {
     console.log("handleResetChat called in LaunchPath");
-    // Use the chatRef directly
     if (chatRef.current) {
       console.log("Calling resetChat method via ref");
       chatRef.current.resetChat();
@@ -171,14 +227,19 @@ const LaunchPath: React.FC = () => {
 
   // Get phase display name
   const getPhaseDisplayName = (phaseId: string) => {
-    const phaseNames = {
-      "shape": "Shape Your Idea",
-      "validate": "Validate the Idea and the Market",
-      "build": "Build the Business",
-      "mvp": "Plan the MVP",
-      "pitch": "Pitch Your Idea"
-    };
-    return phaseNames[phaseId as keyof typeof phaseNames] || phaseId;
+    const phase = mainPhases.find(p => p.id === phaseId);
+    return phase ? phase.label : phaseId;
+  };
+
+  // Get current phase number (1-based)
+  const getCurrentPhaseNumber = () => {
+    return mainPhases.findIndex(p => p.id === currentPhase) + 1;
+  };
+
+  // Get current step number within the phase (1-based)
+  const getCurrentStepNumber = () => {
+    const stepNumber = currentStepId.split('-')[1];
+    return parseInt(stepNumber, 10);
   };
 
   return (
@@ -247,7 +308,9 @@ const LaunchPath: React.FC = () => {
                     <PhaseSidebar 
                       phase={getPhaseDisplayName(currentPhase)} 
                       tasks={phaseTasks[currentPhase as keyof typeof phaseTasks] || []} 
-                      onTaskStatusChange={handleTaskStatusChange} 
+                      currentStepId={currentStepId}
+                      onTaskStatusChange={handleTaskStatusChange}
+                      onStepClick={handleStepClick}
                       onResetChat={handleResetChat} 
                     />
                   </CardContent>
@@ -266,7 +329,13 @@ const LaunchPath: React.FC = () => {
                 <ResizablePanel defaultSize={50} minSize={30} maxSize={70} className="transition-all duration-500 ease-in-out">
                   <Card className="glass h-full rounded-xl overflow-hidden">
                     <CardContent className="p-4 h-full overflow-hidden">
-                      <CofounderChat ref={chatRef} />
+                      <CofounderChat 
+                        ref={chatRef} 
+                        currentPhaseId={currentPhase}
+                        currentStepId={currentStepId}
+                        phaseNumber={getCurrentPhaseNumber()}
+                        stepNumber={getCurrentStepNumber()}
+                      />
                     </CardContent>
                   </Card>
                 </ResizablePanel>

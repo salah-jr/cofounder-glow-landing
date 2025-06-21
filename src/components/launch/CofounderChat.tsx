@@ -29,6 +29,10 @@ interface Message {
 
 interface CofounderChatProps {
   className?: string;
+  currentPhaseId?: string;
+  currentStepId?: string;
+  phaseNumber?: number;
+  stepNumber?: number;
   onReset?: () => void;
 }
 
@@ -36,11 +40,18 @@ export interface CofounderChatRef {
   resetChat: () => void;
 }
 
-const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ className, onReset }, ref) => {
+const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ 
+  className, 
+  currentPhaseId = "shape",
+  currentStepId = "shape-1",
+  phaseNumber = 1,
+  stepNumber = 1,
+  onReset 
+}, ref) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hi there! I'm your Co-founder AI assistant. I'm here to help you refine your startup idea. What's the core problem your product solves?",
+      text: `Hi there! I'm your Co-founder AI assistant. I'm here to help you through Phase ${phaseNumber}: Step ${stepNumber}. Let's start by defining the problem your startup solves and identifying your target users. What specific problem are you addressing?`,
       sender: "cofounder",
       timestamp: new Date()
     }
@@ -64,6 +75,18 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   
+  // Update initial message when phase/step changes
+  useEffect(() => {
+    const initialMessage = `Hi there! I'm your Co-founder AI assistant. I'm here to help you through Phase ${phaseNumber}: Step ${stepNumber}. Let's work on this step together. What would you like to focus on?`;
+    
+    setMessages([{
+      id: Date.now().toString(),
+      text: initialMessage,
+      sender: "cofounder",
+      timestamp: new Date()
+    }]);
+  }, [currentPhaseId, currentStepId, phaseNumber, stepNumber]);
+  
   // Cleanup typing timeout on component unmount
   useEffect(() => {
     return () => {
@@ -83,10 +106,12 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       typingTimeoutRef.current = null;
     }
     
-    // Reset to initial state
+    // Reset to initial state with current phase/step context
+    const initialMessage = `Let's start fresh! I'm here to help you with Phase ${phaseNumber}: Step ${stepNumber}. What would you like to work on?`;
+    
     setMessages([{
       id: Date.now().toString(),
-      text: "Let's talk about your idea! What's the core problem your product aims to solve?",
+      text: initialMessage,
       sender: "cofounder",
       timestamp: new Date()
     }]);
@@ -133,6 +158,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       }
 
       console.log('Calling LLM function with message:', userMessage);
+      console.log('Current phase:', currentPhaseId, 'Current step:', currentStepId);
       console.log('Session token present:', !!session.access_token);
 
       // Prepare conversation history for the LLM
@@ -146,7 +172,11 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
 
       const requestPayload = {
         message: userMessage,
-        conversationHistory: llmHistory
+        conversationHistory: llmHistory,
+        currentPhaseId: currentPhaseId,
+        currentStepId: currentStepId,
+        phaseNumber: phaseNumber,
+        stepNumber: stepNumber
       };
 
       console.log('Request payload:', requestPayload);
@@ -237,12 +267,12 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
       console.error('Error getting AI response:', error);
       
       // Enhanced error handling
-      let fallbackMessage = "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, I'd suggest focusing on clearly defining your target audience and the specific problem you're solving.";
+      let fallbackMessage = "I'm having trouble connecting right now. Could you try rephrasing your question? In the meantime, let's focus on the current step we're working on.";
       
       // Check for specific error types
       if (error.message?.toLowerCase().includes('rate limit') ||
           error.message?.toLowerCase().includes('too many requests')) {
-        fallbackMessage = "I'm experiencing high demand right now. Let me try to help you anyway. Could you tell me more about your target market and how you plan to reach them?";
+        fallbackMessage = "I'm experiencing high demand right now. Let me try to help you anyway. Could you tell me more about what you'd like to work on for this step?";
       } else if (error.message?.toLowerCase().includes('authentication') ||
                  error.message?.toLowerCase().includes('unauthorized')) {
         fallbackMessage = "There seems to be an authentication issue. Please try refreshing the page and logging in again.";
@@ -413,7 +443,10 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ classN
             <AvatarImage src="/images/cofounder-avatar.svg" alt="Co-founder" />
             <AvatarFallback className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB]">CF</AvatarFallback>
           </Avatar>
-          <h3 className="text-lg font-semibold text-white">Co-founder</h3>
+          <div className="flex flex-col">
+            <h3 className="text-lg font-semibold text-white">Co-founder</h3>
+            <span className="text-xs text-white/60">Phase {phaseNumber}, Step {stepNumber}</span>
+          </div>
           <div className={cn(
             "ml-2 h-3 w-3 rounded-full",
             currentMood === "thinking" 

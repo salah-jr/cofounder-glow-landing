@@ -1,12 +1,6 @@
-
 import { motion } from "framer-motion";
 import PhaseTask, { TaskStatus } from "./PhaseTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover";
 
 interface Task {
   id: string;
@@ -19,12 +13,26 @@ interface Task {
 interface PhaseSidebarProps {
   phase: string;
   tasks: Task[];
+  currentStepId: string;
   onTaskStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
-  onResetChat?: () => void; // Add this prop
+  onStepClick?: (stepId: string) => void;
+  onResetChat?: () => void;
 }
 
-export default function PhaseSidebar({ phase, tasks, onTaskStatusChange, onResetChat }: PhaseSidebarProps) {
+export default function PhaseSidebar({ 
+  phase, 
+  tasks, 
+  currentStepId,
+  onTaskStatusChange, 
+  onStepClick,
+  onResetChat 
+}: PhaseSidebarProps) {
   const handleTaskClick = (taskId: string) => {
+    // Call the step click handler
+    if (onStepClick) {
+      onStepClick(taskId);
+    }
+    
     // You could add additional functionality here in the future
     if (onTaskStatusChange) {
       // Example: Toggle between pending and in-progress
@@ -50,12 +58,11 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange, onReset
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gradient flex items-center gap-2">
-            <span className="text-primary cosmic-gradient bg-clip-text text-transparent">🧠</span> {phase} Phase Tasks
+            <span className="text-primary cosmic-gradient bg-clip-text text-transparent">🧠</span> {phase}
           </h3>
-          {/* Badge removed as requested */}
         </div>
         
-        <p className="text-sm text-white/60">Complete these tasks to move forward</p>
+        <p className="text-sm text-white/60">Complete these steps to move forward</p>
       </motion.div>
       
       <ScrollArea className="flex-1">
@@ -77,7 +84,9 @@ export default function PhaseSidebar({ phase, tasks, onTaskStatusChange, onReset
                 title={task.title}
                 status={task.status}
                 tooltip={task.tooltip}
+                isActive={task.id === currentStepId}
                 onClick={() => handleTaskClick(task.id)}
+                onStepClick={onStepClick}
                 onResetChat={onResetChat}
               />
             </motion.div>

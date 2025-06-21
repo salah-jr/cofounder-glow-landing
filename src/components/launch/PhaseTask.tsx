@@ -1,4 +1,3 @@
-
 import { Circle, Check, Clock, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -17,8 +16,10 @@ interface PhaseTaskProps {
   title: string;
   status: TaskStatus;
   tooltip?: string;
+  isActive?: boolean;
   onClick?: () => void;
-  onResetChat?: () => void; // New prop for resetting chat
+  onStepClick?: (stepId: string) => void;
+  onResetChat?: () => void;
 }
 
 export default function PhaseTask({ 
@@ -26,7 +27,9 @@ export default function PhaseTask({
   title, 
   status, 
   tooltip, 
+  isActive = false,
   onClick,
+  onStepClick,
   onResetChat 
 }: PhaseTaskProps) {
   // Status icon based on task status
@@ -42,19 +45,16 @@ export default function PhaseTask({
   };
   
   const handleClick = () => {
-    // Check if this task is related to an idea
-    const isIdeaRelated = title.toLowerCase().includes("idea") || 
-                          id.toLowerCase().includes("idea") || 
-                          id === "task1" || // First task in the idea phase
-                          id === "task6"; // First task in the validation phase
-    
-    console.log(`Clicked on task: ${title}, isIdeaRelated: ${isIdeaRelated}`);
-    
     // Call the onClick handler first
     if (onClick) onClick();
     
-    // If this is an idea-related task, reset chat
-    if (isIdeaRelated && onResetChat) {
+    // Check if this task is related to an idea (first step of any phase)
+    const isFirstStep = id.endsWith('-1');
+    
+    console.log(`Clicked on task: ${title}, isFirstStep: ${isFirstStep}`);
+    
+    // If this is a first step of any phase, reset chat
+    if (isFirstStep && onResetChat) {
       console.log("Resetting chat from PhaseTask...");
       onResetChat();
     }
@@ -64,13 +64,16 @@ export default function PhaseTask({
     <motion.div
       whileHover={{ 
         scale: 1.01,
-        background: "linear-gradient(135deg, rgba(155, 135, 245, 0.05), rgba(30, 174, 219, 0.05))"
+        background: isActive 
+          ? "linear-gradient(135deg, rgba(155, 135, 245, 0.15), rgba(30, 174, 219, 0.15))"
+          : "linear-gradient(135deg, rgba(155, 135, 245, 0.05), rgba(30, 174, 219, 0.05))"
       }}
       whileTap={{ scale: 0.98 }}
       className={cn(
         "px-2 py-3 cursor-pointer transition-all border-b border-white/10",
         status === "complete" ? "border-l-green-400 border-l-2" : "",
-        status === "in-progress" ? "border-l-blue-400 border-l-2" : ""
+        status === "in-progress" ? "border-l-blue-400 border-l-2" : "",
+        isActive && "bg-gradient-to-r from-[#9b87f5]/10 to-[#1EAEDB]/10 border-l-[#9b87f5] border-l-2"
       )}
       onClick={handleClick}
     >
@@ -80,11 +83,17 @@ export default function PhaseTask({
             "w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300",
             status === "complete" ? "bg-green-400/20" : 
             status === "in-progress" ? "bg-blue-400/20" : 
+            isActive ? "bg-[#9b87f5]/20" :
             "bg-white/10"
           )}>
             <StatusIcon />
           </div>
-          <span className="text-sm text-white">{title}</span>
+          <span className={cn(
+            "text-sm transition-colors",
+            isActive ? "text-white font-medium" : "text-white"
+          )}>
+            {title}
+          </span>
         </div>
         
         <div className="flex items-center gap-2">
