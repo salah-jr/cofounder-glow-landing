@@ -1,6 +1,7 @@
 import { CircleIcon, DollarSignIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import GlassmorphismCard from "@/components/GlassmorphismCard";
 
 const plans = [
   {
@@ -31,17 +32,23 @@ const plans = [
 
 const PricingSection = () => {
   return (
-    <section className="min-h-screen py-16 px-4">
+    <section className="min-h-screen py-16 px-4 relative">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
           Pricing Plans
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan, index) => (
-            <Card key={index} className="glass border-none hover:scale-105 transition-transform duration-300">
+            <GlassmorphismCard 
+              key={index} 
+              intensity="medium"
+              hover={true}
+              glow={index === 1} // Highlight the Pro plan
+              className="group"
+            >
               <CardHeader>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] p-3 rounded-lg">
+                  <div className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <plan.icon className="w-6 h-6 text-white" />
                   </div>
                   <CardTitle className="text-white">{plan.name}</CardTitle>
@@ -58,11 +65,11 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full mt-6 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90">
+                <Button className="w-full mt-6 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-all duration-300 hover:scale-105">
                   Get Started
                 </Button>
               </CardContent>
-            </Card>
+            </GlassmorphismCard>
           ))}
         </div>
       </div>

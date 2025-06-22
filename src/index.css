@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -30,17 +29,60 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] min-h-screen text-white font-inter antialiased;
+    @apply bg-gradient-to-br from-[#0a0a0f] via-[#1a1a2e] to-[#16213e] min-h-screen text-white font-inter antialiased;
+    /* Improved text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Ensure high contrast for accessibility */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  p, span, div {
+    @apply text-white/90;
+  }
+
+  /* Improved focus states for accessibility */
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-none ring-2 ring-purple-400 ring-offset-2 ring-offset-transparent;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-strong {
+    @apply bg-white/15 backdrop-blur-lg border border-white/30;
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  .glass-light {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10;
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   
   .text-gradient {
     @apply bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-purple {
+    @apply bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent;
   }
   
   .cosmic-gradient {
@@ -61,6 +103,94 @@
     z-index: -1;
     opacity: 0.5;
     filter: blur(8px);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 25px rgba(30, 174, 219, 0.5);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 25px rgba(155, 135, 245, 0.5);
+  }
+
+  /* Neural network inspired animations */
+  .pulse-neural {
+    animation: pulse-neural 3s ease-in-out infinite;
+  }
+
+  .float-gentle {
+    animation: float-gentle 6s ease-in-out infinite;
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shimmer 3s infinite;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .glass {
+      @apply bg-black/80 border-white/60;
+    }
+    
+    .text-gradient {
+      @apply text-white bg-none;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-neural,
+    .float-gentle,
+    .shimmer::before {
+      animation: none;
+    }
+  }
+}
+
+/* Custom animations */
+@keyframes pulse-neural {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
   }
 }
 
@@ -85,4 +215,29 @@
   border: 3px solid #9b87f5 !important;
   transform: translateY(-50%) !important;
   cursor: default !important;
+}
+
+/* Scrollbar styling for better aesthetics */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(155, 135, 245, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 135, 245, 0.5);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 135, 245, 0.3) rgba(255, 255, 255, 0.05);
 }

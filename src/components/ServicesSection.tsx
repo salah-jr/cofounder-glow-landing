@@ -1,6 +1,6 @@
-
 import { LightbulbIcon, SearchCheck, Users, FileText, Presentation, BriefcaseIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import GlassmorphismCard from "@/components/GlassmorphismCard";
 
 const services = [
   {
@@ -37,16 +37,21 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="py-16 px-4 backdrop-blur-sm">
+    <section className="py-16 px-4 backdrop-blur-sm relative">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
           Our Services
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card key={index} className="glass border-none hover:scale-105 transition-transform duration-300">
+            <GlassmorphismCard 
+              key={index} 
+              intensity="medium"
+              hover={true}
+              className="group transition-all duration-300"
+            >
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] p-3 rounded-lg">
+                <div className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
                   <service.icon className="w-6 h-6 text-white" />
                 </div>
                 <CardTitle className="text-white">{service.title}</CardTitle>
@@ -54,7 +59,7 @@ const ServicesSection = () => {
               <CardContent>
                 <p className="text-white/80">{service.goal}</p>
               </CardContent>
-            </Card>
+            </GlassmorphismCard>
           ))}
         </div>
       </div>
