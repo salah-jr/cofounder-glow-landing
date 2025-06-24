@@ -44,7 +44,7 @@ function ElegantShape({
                     y: [0, 15, 0],
                 }}
                 transition={{
-                    duration: 8, // Faster breathing - reduced from 12 to 8
+                    duration: 8,
                     repeat: Number.POSITIVE_INFINITY,
                     ease: "easeInOut",
                 }}
@@ -59,10 +59,10 @@ function ElegantShape({
                         "absolute inset-0 rounded-full",
                         "bg-gradient-to-r to-transparent",
                         gradient,
-                        "backdrop-blur-[1px] border border-white/[0.08]",
-                        "shadow-[0_4px_16px_0_rgba(255,255,255,0.05)]",
+                        "backdrop-blur-[2px] border-2 border-white/[0.15]",
+                        "shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]",
                         "after:absolute after:inset-0 after:rounded-full",
-                        "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_70%)]"
+                        "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]"
                     )}
                 />
             </motion.div>
@@ -103,135 +103,45 @@ function HeroGeometric({
     return (
         <div className={cn(
             "relative w-full overflow-hidden",
-            "bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]",
+            "bg-[#030303]",
             fullPage ? "min-h-screen" : "min-h-screen",
             backgroundOnly ? "pointer-events-none" : ""
         )}>
-            {/* Enhanced background with more blues and faster breathing */}
+            {/* Enhanced background with blue theme */}
             <div className="absolute inset-0">
-                {/* Primary gradient overlay with more blues */}
-                <motion.div 
-                    className="absolute inset-0 bg-gradient-to-br from-[#1e40af]/[0.08] via-[#3b82f6]/[0.06] to-[#1EAEDB]/[0.08]"
-                    animate={{
-                        opacity: [0.8, 1, 0.8],
-                    }}
-                    transition={{
-                        duration: 6, // Faster breathing - reduced from 8 to 6
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                />
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-rose-500/[0.05] blur-3xl" />
                 
-                {/* Multiple blue gradient layers with faster breathing */}
+                {/* Multiple gradient layers with breathing animation */}
                 <motion.div 
-                    className="absolute inset-0 bg-gradient-to-tr from-[#1d4ed8]/[0.05] via-transparent to-[#06b6d4]/[0.06]"
+                    className="absolute inset-0 bg-gradient-to-tr from-indigo-500/[0.08] via-transparent to-cyan-500/[0.06]"
                     animate={{
                         opacity: [0.6, 0.9, 0.6],
                     }}
                     transition={{
-                        duration: 7, // Faster breathing
+                        duration: 8,
                         repeat: Infinity,
                         ease: "easeInOut",
-                        delay: 1,
                     }}
                 />
                 <motion.div 
-                    className="absolute inset-0 bg-gradient-to-bl from-[#2563eb]/[0.04] via-transparent to-[#0ea5e9]/[0.05]"
+                    className="absolute inset-0 bg-gradient-to-bl from-violet-500/[0.04] via-transparent to-blue-500/[0.05]"
                     animate={{
                         opacity: [0.5, 0.8, 0.5],
                     }}
                     transition={{
-                        duration: 8, // Faster breathing
+                        duration: 10,
                         repeat: Infinity,
                         ease: "easeInOut",
                         delay: 2,
                     }}
                 />
                 <motion.div 
-                    className="absolute inset-0 bg-gradient-to-tl from-[#3b82f6]/[0.03] via-transparent to-[#0284c7]/[0.04]"
+                    className="absolute inset-0 bg-gradient-to-tl from-rose-500/[0.03] via-transparent to-amber-500/[0.04]"
                     animate={{
                         opacity: [0.4, 0.7, 0.4],
                     }}
                     transition={{
-                        duration: 9, // Faster breathing
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 3,
-                    }}
-                />
-                
-                {/* Radial gradients for depth with more blues and faster breathing */}
-                <motion.div 
-                    className="absolute top-0 left-1/4 w-96 h-96 bg-[#1e40af]/[0.06] rounded-full blur-3xl"
-                    animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.6, 0.8, 0.6],
-                    }}
-                    transition={{
-                        duration: 10, // Faster breathing
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                />
-                <motion.div 
-                    className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1EAEDB]/[0.06] rounded-full blur-3xl"
-                    animate={{
-                        scale: [1.1, 1, 1.1],
-                        opacity: [0.8, 0.6, 0.8],
-                    }}
-                    transition={{
-                        duration: 12, // Faster breathing
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                />
-                <motion.div 
-                    className="absolute top-1/2 left-0 w-64 h-64 bg-[#3b82f6]/[0.05] rounded-full blur-2xl"
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.5, 0.7, 0.5],
-                    }}
-                    transition={{
-                        duration: 8, // Faster breathing
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 1,
-                    }}
-                />
-                <motion.div 
-                    className="absolute bottom-1/4 right-0 w-80 h-80 bg-[#0ea5e9]/[0.05] rounded-full blur-3xl"
-                    animate={{
-                        scale: [1.2, 1, 1.2],
-                        opacity: [0.7, 0.5, 0.7],
-                    }}
-                    transition={{
-                        duration: 11, // Faster breathing
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 2,
-                    }}
-                />
-                <motion.div 
-                    className="absolute top-1/4 right-1/3 w-72 h-72 bg-[#2563eb]/[0.04] rounded-full blur-2xl"
-                    animate={{
-                        scale: [1, 1.15, 1],
-                        opacity: [0.4, 0.6, 0.4],
-                    }}
-                    transition={{
-                        duration: 9, // Faster breathing
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 3,
-                    }}
-                />
-                <motion.div 
-                    className="absolute bottom-1/3 left-1/3 w-88 h-88 bg-[#06b6d4]/[0.05] rounded-full blur-3xl"
-                    animate={{
-                        scale: [1.1, 1, 1.1],
-                        opacity: [0.6, 0.4, 0.6],
-                    }}
-                    transition={{
-                        duration: 13, // Faster breathing
+                        duration: 12,
                         repeat: Infinity,
                         ease: "easeInOut",
                         delay: 4,
@@ -240,13 +150,13 @@ function HeroGeometric({
             </div>
 
             <div className="absolute inset-0 overflow-hidden">
-                {/* Enhanced shapes with more blue variations and faster breathing */}
+                {/* Enhanced shapes with theme colors */}
                 <ElegantShape
                     delay={0.3}
                     width={600}
                     height={140}
                     rotate={12}
-                    gradient="from-[#1e40af]/[0.08]"
+                    gradient="from-indigo-500/[0.15]"
                     className="left-[-10%] md:left-[-5%] top-[15%] md:top-[20%]"
                 />
 
@@ -255,7 +165,7 @@ function HeroGeometric({
                     width={500}
                     height={120}
                     rotate={-15}
-                    gradient="from-[#1EAEDB]/[0.08]"
+                    gradient="from-rose-500/[0.15]"
                     className="right-[-5%] md:right-[0%] top-[70%] md:top-[75%]"
                 />
 
@@ -264,7 +174,7 @@ function HeroGeometric({
                     width={300}
                     height={80}
                     rotate={-8}
-                    gradient="from-[#3b82f6]/[0.07]"
+                    gradient="from-violet-500/[0.15]"
                     className="left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]"
                 />
 
@@ -273,7 +183,7 @@ function HeroGeometric({
                     width={200}
                     height={60}
                     rotate={20}
-                    gradient="from-[#06b6d4]/[0.07]"
+                    gradient="from-amber-500/[0.15]"
                     className="right-[15%] md:right-[20%] top-[10%] md:top-[15%]"
                 />
 
@@ -282,36 +192,8 @@ function HeroGeometric({
                     width={150}
                     height={40}
                     rotate={-25}
-                    gradient="from-[#0ea5e9]/[0.07]"
+                    gradient="from-cyan-500/[0.15]"
                     className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
-                />
-
-                {/* Additional blue shapes for more depth with faster breathing */}
-                <ElegantShape
-                    delay={0.8}
-                    width={250}
-                    height={70}
-                    rotate={35}
-                    gradient="from-[#1d4ed8]/[0.06]"
-                    className="right-[5%] md:right-[10%] bottom-[20%] md:bottom-[25%]"
-                />
-
-                <ElegantShape
-                    delay={0.9}
-                    width={180}
-                    height={50}
-                    rotate={-30}
-                    gradient="from-[#2563eb]/[0.06]"
-                    className="left-[30%] md:left-[35%] top-[60%] md:top-[65%]"
-                />
-
-                <ElegantShape
-                    delay={1.0}
-                    width={120}
-                    height={35}
-                    rotate={45}
-                    gradient="from-[#0284c7]/[0.06]"
-                    className="right-[30%] md:right-[35%] top-[40%] md:top-[45%]"
                 />
             </div>
 
@@ -326,7 +208,7 @@ function HeroGeometric({
                             animate="visible"
                             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] mb-8 md:mb-12"
                         >
-                            <Circle className="h-2 w-2 fill-[#9b87f5]/80" />
+                            <Circle className="h-2 w-2 fill-rose-500/80" />
                             <span className="text-sm text-white/60 tracking-wide">
                                 {badge}
                             </span>
@@ -343,11 +225,7 @@ function HeroGeometric({
                                     {title1}
                                 </span>
                                 <br />
-                                <span
-                                    className={cn(
-                                        "bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] via-[#3b82f6] to-[#1EAEDB]"
-                                    )}
-                                >
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300">
                                     {title2}
                                 </span>
                             </h1>
@@ -378,45 +256,7 @@ function HeroGeometric({
                 </div>
             )}
 
-            {/* Enhanced gradient overlay with blue tints */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/60 via-transparent to-[#0f172a]/30 pointer-events-none" />
-            
-            {/* Additional atmospheric effects with more blues and faster breathing */}
-            <motion.div 
-                className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(30,64,175,0.03),transparent_50%)] pointer-events-none"
-                animate={{
-                    opacity: [0.5, 0.8, 0.5],
-                }}
-                transition={{
-                    duration: 7, // Faster breathing
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                }}
-            />
-            <motion.div 
-                className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(30,174,219,0.03),transparent_50%)] pointer-events-none"
-                animate={{
-                    opacity: [0.8, 0.5, 0.8],
-                }}
-                transition={{
-                    duration: 9, // Faster breathing
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 2,
-                }}
-            />
-            <motion.div 
-                className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.02),transparent_60%)] pointer-events-none"
-                animate={{
-                    opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                    duration: 11, // Faster breathing
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 4,
-                }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-[#030303]/80 pointer-events-none" />
         </div>
     );
 }

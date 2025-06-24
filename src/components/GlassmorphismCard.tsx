@@ -29,20 +29,20 @@ const GlassmorphismCard: React.FC<GlassmorphismCardProps> = ({
         'relative rounded-xl border transition-all duration-300',
         intensityStyles[intensity],
         hover && 'hover:bg-white/15 hover:border-white/30 hover:shadow-lg hover:shadow-white/10',
-        glow && 'shadow-lg shadow-purple-500/20',
+        glow && 'shadow-lg shadow-indigo-500/20',
         className
       )}
       whileHover={hover ? { 
         scale: 1.02,
         boxShadow: glow 
-          ? '0 20px 40px rgba(155, 135, 245, 0.3)' 
+          ? '0 20px 40px rgba(99, 102, 241, 0.3)' 
           : '0 20px 40px rgba(255, 255, 255, 0.1)'
       } : undefined}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {/* Inner glow effect */}
+      {/* Inner glow effect with theme colors */}
       {glow && (
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-50" />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/10 to-rose-500/10 opacity-50" />
       )}
       
       {/* Content */}
@@ -50,8 +50,8 @@ const GlassmorphismCard: React.FC<GlassmorphismCardProps> = ({
         {children}
       </div>
       
-      {/* Subtle border highlight */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 via-transparent to-blue-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+      {/* Subtle border highlight with theme colors */}
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/20 via-transparent to-rose-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
     </motion.div>
   );
 };

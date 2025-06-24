@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDiscovery } from "@/context/DiscoveryContext";
@@ -39,12 +38,12 @@ const Discovery = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col pt-16 px-4 relative overflow-hidden bg-[#1A1F2C]">
+    <div className="min-h-screen flex flex-col pt-16 px-4 relative overflow-hidden bg-[#030303]">
       <Navbar />
       
-      {/* Background shapes */}
+      {/* Background shapes with theme colors */}
       <motion.div
-        className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-gradient-to-br from-[#9b87f5]/5 to-transparent rounded-full blur-3xl"
+        className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
           x: [0, 50, 0],
@@ -57,7 +56,7 @@ const Discovery = () => {
         }}
       />
       <motion.div
-        className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-gradient-to-tr from-[#1EAEDB]/5 to-transparent rounded-full blur-3xl"
+        className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-gradient-to-tr from-rose-500/5 to-transparent rounded-full blur-3xl"
         animate={{
           scale: [1.2, 1, 1.2],
           x: [0, -30, 0],
@@ -79,7 +78,7 @@ const Discovery = () => {
           transition={{ duration: 0.5 }}
         >
           <motion.h3
-            className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] bg-clip-text text-transparent"
+            className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300 bg-clip-text text-transparent"
           >
             Business Building Blocks
           </motion.h3>

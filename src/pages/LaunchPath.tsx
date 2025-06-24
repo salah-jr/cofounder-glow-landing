@@ -305,7 +305,7 @@ const LaunchPath: React.FC = () => {
       </SheetTrigger>
       <SheetContent 
         side="left" 
-        className="w-[300px] sm:w-[350px] bg-[#1A1F2C]/95 backdrop-blur-xl border-white/10 p-0"
+        className="w-[300px] sm:w-[350px] bg-[#030303]/95 backdrop-blur-xl border-white/10 p-0"
       >
         <div className="h-full flex flex-col">
           <div className="p-4 border-b border-white/10">
@@ -481,7 +481,7 @@ const LaunchPath: React.FC = () => {
   );
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6] text-white">
+    <div className="h-screen flex flex-col overflow-hidden bg-[#030303] text-white">
       {/* Navbar - responsive padding */}
       <div className="w-full px-3 sm:px-4 lg:px-6">
         <Navbar />
@@ -509,10 +509,10 @@ const LaunchPath: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Background gradient circles - responsive positioning */}
+      {/* Background gradient circles with theme colors */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-[#9b87f5]/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-[#1EAEDB]/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-indigo-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-rose-500/20 rounded-full blur-3xl" />
       </div>
     </div>
   );

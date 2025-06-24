@@ -3,7 +3,7 @@ import Logo from "./Logo";
 
 const Footer = () => {
   return (
-    <footer className="relative z-10 bg-gradient-to-t from-black/60 via-black/30 to-transparent backdrop-blur-sm pt-16 pb-8 px-4 mt-auto">
+    <footer className="relative z-10 bg-gradient-to-t from-[#030303]/80 via-[#030303]/40 to-transparent backdrop-blur-sm pt-16 pb-8 px-4 mt-auto">
       <div className="container mx-auto">
         <div className="flex flex-col items-center text-center space-y-8">
           {/* Logo and Description */}
@@ -15,16 +15,16 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Connect Section */}
+          {/* Connect Section with theme colors */}
           <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
-              <Mail className="w-5 h-5 text-[#9b87f5]" />
+            <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors group">
+              <Mail className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
               <a href="mailto:support@cofounder.ai" className="hover:text-white transition-colors">
                 support@cofounder.ai
               </a>
             </div>
-            <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
-              <MessageSquare className="w-5 h-5 text-[#9b87f5]" />
+            <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors group">
+              <MessageSquare className="w-5 h-5 text-rose-400 group-hover:text-rose-300 transition-colors" />
               <a href="#" className="hover:text-white transition-colors">
                 Live Chat
               </a>

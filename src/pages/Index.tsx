@@ -8,7 +8,7 @@ import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 const Index: React.FC = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Full-page hero background */}
+      {/* Full-page hero background with new theme */}
       <div className="fixed inset-0 -z-10">
         <HeroGeometric
           badge="AI Co-Founder"
@@ -27,7 +27,7 @@ const Index: React.FC = () => {
       <section className="h-screen flex flex-col items-center justify-center px-4 relative z-10">
         <div className="text-center mb-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] mb-4">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#9b87f5]/80" />
+            <div className="h-1.5 w-1.5 rounded-full bg-rose-500/80" />
             <span className="text-xs text-white/60 tracking-wide">
               AI Co-Founder
             </span>
@@ -38,7 +38,7 @@ const Index: React.FC = () => {
               Your startup, from idea to launch,
             </span>
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] via-[#3b82f6] to-[#1EAEDB]">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300">
               in hours.
             </span>
           </h1>
