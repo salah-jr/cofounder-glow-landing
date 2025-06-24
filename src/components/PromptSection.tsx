@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,13 +5,6 @@ import { useAnimatedPlaceholder } from "@/hooks/useAnimatedPlaceholder";
 import { useNavigate } from "react-router-dom";
 import FileAttachment, { FileItem } from "./FileAttachment";
 import { v4 as uuidv4 } from "uuid";
-
-const examples = [
-  { text: "Create a SaaS business plan", icon: "↑" },
-  { text: "Validate my startup idea", icon: "↑" },
-  { text: "Research market opportunities", icon: "↑" },
-  { text: "Build an investor pitch deck", icon: "→" },
-];
 
 const PromptSection = () => {
   const placeholder = useAnimatedPlaceholder();
@@ -71,7 +63,7 @@ const PromptSection = () => {
       <div className="w-full glass p-3 rounded-xl animate-fade-in">
         <div className="flex flex-col bg-black/20 rounded-lg">
           <textarea
-            className="flex-1 bg-transparent h-14 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none"
+            className="flex-1 bg-transparent h-14 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none transition-all duration-500 ease-in-out focus:bg-white/5 focus:shadow-lg focus:shadow-white/10"
             placeholder={placeholder || "Describe your startup idea or business challenge..."}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -98,23 +90,10 @@ const PromptSection = () => {
               onClick={handleSubmit}
             >
               <Send className="h-5 w-5 mr-2" />
-              Start Building
+              Shape My Idea
             </Button>
           </div>
         </div>
-      </div>
-
-      <div className="flex flex-wrap justify-center gap-2">
-        {examples.map((example, index) => (
-          <button
-            key={index}
-            className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/80 text-sm flex items-center gap-2"
-            onClick={() => setPrompt(example.text)}
-          >
-            {example.text}
-            <span className="text-xs opacity-60">{example.icon}</span>
-          </button>
-        ))}
       </div>
     </div>
   );

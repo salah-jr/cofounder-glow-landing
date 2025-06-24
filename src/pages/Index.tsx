@@ -4,7 +4,6 @@ import PromptSection from "@/components/PromptSection";
 import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import PricingSection from "@/components/PricingSection";
-import Logo from "@/components/Logo";
 import Footer from "@/components/Footer";
 import ModernAIBackground from "@/components/ModernAIBackground";
 import GlassmorphismCard from "@/components/GlassmorphismCard";
@@ -31,12 +30,11 @@ const Index: React.FC = () => {
         {/* Hero Section with Enhanced Glassmorphism */}
         <div className="flex flex-col items-center justify-center px-4 pt-24 pb-32">
           <div className="text-center mb-8">
-            <Logo size="large" />
             <h1 className="text-4xl font-bold mt-8 mb-4 md:text-5xl text-white drop-shadow-lg">
-              Idea to startup in seconds.
+              Your startup, from idea to launch, in hours.
             </h1>
             <p className="text-xl md:text-2xl text-white/90 drop-shadow-md">
-              Your AI Co-Founder for Strategic Business Growth
+              Co-founder is your AI business partner. From idea → to pitch deck → to MVP. All in one tool.
             </p>
           </div>
           

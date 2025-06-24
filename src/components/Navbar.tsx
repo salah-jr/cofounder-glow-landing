@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Facebook, Twitter, Linkedin, User, LogOut } from "lucide-react";
+import { User, LogOut, Settings, FolderOpen } from "lucide-react";
 import Logo from "./Logo";
 import AuthDialogs from "./auth/AuthDialogs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,14 +11,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user, profile, logout, isLoading } = useAuth();
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,15 +28,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const scrollToSection = (id: string) => {
-    if (!isHomePage) return;
-    
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   // Generate user initials for avatar
   const getUserInitials = () => {
@@ -48,6 +39,30 @@ const Navbar = () => {
       return nameParts[0][0];
     }
     return user?.email?.[0]?.toUpperCase() || "U";
+  };
+
+  // Generate random avatar colors based on user ID
+  const getAvatarGradient = () => {
+    if (!user?.id) return "from-[#9b87f5] to-[#1EAEDB]";
+    
+    const gradients = [
+      "from-[#9b87f5] to-[#1EAEDB]",
+      "from-[#f093fb] to-[#f5576c]",
+      "from-[#4facfe] to-[#00f2fe]",
+      "from-[#43e97b] to-[#38f9d7]",
+      "from-[#fa709a] to-[#fee140]",
+      "from-[#a8edea] to-[#fed6e3]",
+      "from-[#ff9a9e] to-[#fecfef]",
+      "from-[#667eea] to-[#764ba2]",
+    ];
+    
+    // Use user ID to consistently pick the same gradient
+    const hash = user.id.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    
+    return gradients[Math.abs(hash) % gradients.length];
   };
 
   const handleLogout = async () => {
@@ -69,50 +84,14 @@ const Navbar = () => {
           <Logo size="small" />
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {isHomePage && (
-              // Only show these navigation items on the home page
-              <>
-                <button 
-                  onClick={() => scrollToSection('services')} 
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  Services
-                </button>
-                <button 
-                  onClick={() => scrollToSection('about')} 
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  About Us
-                </button>
-                <button 
-                  onClick={() => scrollToSection('pricing')} 
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  Pricing
-                </button>
-              </>
-            )}
-            
-            <div className="flex items-center gap-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-            </div>
-
+          <div className="hidden md:flex items-center gap-4">
             {isLoading ? (
               <div className="w-9 h-9 bg-white/10 rounded-full animate-pulse" />
             ) : isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none">
-                  <Avatar className="h-9 w-9 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white">
-                    <AvatarFallback className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white">
+                  <Avatar className={`h-9 w-9 bg-gradient-to-r ${getAvatarGradient()} text-white`}>
+                    <AvatarFallback className={`bg-gradient-to-r ${getAvatarGradient()} text-white`}>
                       {getUserInitials()}
                     </AvatarFallback>
                   </Avatar>
@@ -122,6 +101,16 @@ const Navbar = () => {
                     <div className="font-medium">{profile?.full_name || user?.email}</div>
                     <div className="text-xs text-white/60">{user?.email}</div>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem className="cursor-pointer text-white">
+                    <FolderOpen className="mr-2 h-4 w-4" />
+                    <span>My Projects</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer text-white">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem className="cursor-pointer text-white" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
@@ -158,51 +147,34 @@ const Navbar = () => {
             </SheetTrigger>
             <SheetContent side="right" className="glass border-white/10">
               <div className="flex flex-col gap-6 mt-8">
-                {isHomePage && (
-                  // Home page mobile navigation
-                  <>
-                    <button
-                      onClick={() => scrollToSection("services")}
-                      className="text-white/80 hover:text-white transition-colors text-lg"
-                    >
-                      Services
-                    </button>
-                    <button
-                      onClick={() => scrollToSection("about")}
-                      className="text-white/80 hover:text-white transition-colors text-lg"
-                    >
-                      About Us
-                    </button>
-                    <button
-                      onClick={() => scrollToSection("pricing")}
-                      className="text-white/80 hover:text-white transition-colors text-lg"
-                    >
-                      Pricing
-                    </button>
-                  </>
-                )}
-                <div className="flex items-center gap-4">
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                    <Facebook className="w-5 h-5" />
-                  </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                    <Twitter className="w-5 h-5" />
-                  </a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                </div>
                 {isLoading ? (
                   <div className="w-full h-10 bg-white/10 rounded-lg animate-pulse" />
                 ) : isAuthenticated ? (
                   <div className="flex flex-col gap-4">
-                    <div className="text-white/80 text-sm">
-                      {profile?.full_name || user?.email}
+                    <div className="flex items-center gap-3 text-white/80 text-sm">
+                      <Avatar className={`h-8 w-8 bg-gradient-to-r ${getAvatarGradient()} text-white`}>
+                        <AvatarFallback className={`bg-gradient-to-r ${getAvatarGradient()} text-white text-xs`}>
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">{profile?.full_name || user?.email}</div>
+                        <div className="text-xs text-white/60">{user?.email}</div>
+                      </div>
                     </div>
+                    <button className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-lg text-left">
+                      <FolderOpen className="w-5 h-5" />
+                      My Projects
+                    </button>
+                    <button className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-lg text-left">
+                      <Settings className="w-5 h-5" />
+                      Settings
+                    </button>
                     <button 
                       onClick={handleLogout}
-                      className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
+                      className="flex items-center gap-2 bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
                     >
+                      <LogOut className="w-5 h-5" />
                       Log out
                     </button>
                   </div>
