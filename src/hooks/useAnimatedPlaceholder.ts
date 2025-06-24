@@ -20,9 +20,9 @@ export const useAnimatedPlaceholder = () => {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
-    const typeSpeed = 60;
-    const deleteSpeed = 30;
-    const pauseDuration = 2000;
+    const typeSpeed = 35; // Faster typing - like someone actually typing
+    const deleteSpeed = 20; // Faster deleting
+    const pauseDuration = 1000; // 1 second pause as requested
     const baseText = "My idea is to ";
 
     const animatePlaceholder = () => {
@@ -47,7 +47,7 @@ export const useAnimatedPlaceholder = () => {
           // Move to next prompt
           setIsDeleting(false);
           setCurrentIndex((prevIndex) => (prevIndex + 1) % prompts.length);
-          timeout = setTimeout(animatePlaceholder, 300);
+          timeout = setTimeout(animatePlaceholder, 200);
         }
       }
     };
