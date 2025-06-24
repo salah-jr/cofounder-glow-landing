@@ -110,9 +110,12 @@ const Navbar = () => {
             ) : isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none">
-                  <div className={`h-10 w-10 rounded-full bg-gradient-to-r ${getAvatarGradient()} flex items-center justify-center text-white text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105`}>
-                    {getAvatarIcon()}
-                  </div>
+                  <Avatar className="h-10 w-10 ring-2 ring-white/20 hover:ring-white/40 transition-all duration-200 hover:scale-105">
+                    <AvatarImage src={profile?.avatar_url} alt={profile?.full_name || user?.email} />
+                    <AvatarFallback className={`bg-gradient-to-r ${getAvatarGradient()} text-white text-lg font-medium shadow-lg`}>
+                      {getAvatarIcon()}
+                    </AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 glass border-white/10 bg-[#1A1F2C]/90">
                   <DropdownMenuItem className="cursor-pointer text-white flex-col items-start">
@@ -170,9 +173,12 @@ const Navbar = () => {
                 ) : isAuthenticated ? (
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-3 text-white/80 text-sm">
-                      <div className={`h-8 w-8 rounded-full bg-gradient-to-r ${getAvatarGradient()} flex items-center justify-center text-white text-sm font-medium`}>
-                        {getAvatarIcon()}
-                      </div>
+                      <Avatar className="h-8 w-8 ring-2 ring-white/20">
+                        <AvatarImage src={profile?.avatar_url} alt={profile?.full_name || user?.email} />
+                        <AvatarFallback className={`bg-gradient-to-r ${getAvatarGradient()} text-white text-sm font-medium`}>
+                          {getAvatarIcon()}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
                         <div className="font-medium">{profile?.full_name || user?.email}</div>
                         <div className="text-xs text-white/60">{user?.email}</div>

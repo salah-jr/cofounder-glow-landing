@@ -23,17 +23,17 @@ const Index: React.FC = () => {
       {/* Navbar */}
       <Navbar />
       
-      {/* Hero Content Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-32 relative z-10">
-        <div className="text-center mb-8 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] mb-8 md:mb-12">
+      {/* Hero Content Section - Optimized for viewport */}
+      <section className="h-screen flex flex-col items-center justify-center px-4 relative z-10">
+        <div className="text-center mb-6 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] mb-6">
             <div className="h-2 w-2 rounded-full bg-[#9b87f5]/80" />
             <span className="text-sm text-white/60 tracking-wide">
               AI Co-Founder
             </span>
           </div>
           
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 md:mb-8 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
               Your startup, from idea to launch,
             </span>
@@ -43,7 +43,7 @@ const Index: React.FC = () => {
             </span>
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4">
+          <p className="text-sm sm:text-base md:text-lg text-white/70 mb-6 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4">
             Co-founder is your AI business partner. From idea → to pitch deck → to MVP. All in one tool.
           </p>
         </div>
@@ -52,7 +52,7 @@ const Index: React.FC = () => {
           <GlassmorphismCard 
             intensity="medium" 
             glow={true}
-            className="p-6"
+            className="p-4 sm:p-6"
           >
             <PromptSection />
           </GlassmorphismCard>

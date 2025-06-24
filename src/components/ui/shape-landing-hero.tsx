@@ -107,30 +107,33 @@ function HeroGeometric({
             fullPage ? "min-h-screen" : "min-h-screen",
             backgroundOnly ? "pointer-events-none" : ""
         )}>
-            {/* Enhanced background with more transparent blues */}
+            {/* Enhanced background with more blues */}
             <div className="absolute inset-0">
-                {/* Primary gradient overlay - more transparent */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#9b87f5]/[0.04] via-[#1e40af]/[0.03] to-[#1EAEDB]/[0.04]" />
+                {/* Primary gradient overlay with more blues */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1e40af]/[0.08] via-[#3b82f6]/[0.06] to-[#1EAEDB]/[0.08]" />
                 
-                {/* Secondary blue gradient layers - more transparent */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#3b82f6]/[0.02] via-transparent to-[#06b6d4]/[0.03]" />
-                <div className="absolute inset-0 bg-gradient-to-bl from-[#1d4ed8]/[0.02] via-transparent to-[#0ea5e9]/[0.025]" />
+                {/* Multiple blue gradient layers */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#1d4ed8]/[0.05] via-transparent to-[#06b6d4]/[0.06]" />
+                <div className="absolute inset-0 bg-gradient-to-bl from-[#2563eb]/[0.04] via-transparent to-[#0ea5e9]/[0.05]" />
+                <div className="absolute inset-0 bg-gradient-to-tl from-[#3b82f6]/[0.03] via-transparent to-[#0284c7]/[0.04]" />
                 
-                {/* Radial gradients for depth - more transparent */}
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#3b82f6]/[0.04] rounded-full blur-3xl" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1EAEDB]/[0.04] rounded-full blur-3xl" />
-                <div className="absolute top-1/2 left-0 w-64 h-64 bg-[#06b6d4]/[0.03] rounded-full blur-2xl" />
-                <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-[#0ea5e9]/[0.035] rounded-full blur-3xl" />
+                {/* Radial gradients for depth with more blues */}
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#1e40af]/[0.06] rounded-full blur-3xl" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1EAEDB]/[0.06] rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-0 w-64 h-64 bg-[#3b82f6]/[0.05] rounded-full blur-2xl" />
+                <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-[#0ea5e9]/[0.05] rounded-full blur-3xl" />
+                <div className="absolute top-1/4 right-1/3 w-72 h-72 bg-[#2563eb]/[0.04] rounded-full blur-2xl" />
+                <div className="absolute bottom-1/3 left-1/3 w-88 h-88 bg-[#06b6d4]/[0.05] rounded-full blur-3xl" />
             </div>
 
             <div className="absolute inset-0 overflow-hidden">
-                {/* Enhanced shapes with more transparent blues */}
+                {/* Enhanced shapes with more blue variations */}
                 <ElegantShape
                     delay={0.3}
                     width={600}
                     height={140}
                     rotate={12}
-                    gradient="from-[#9b87f5]/[0.08]"
+                    gradient="from-[#1e40af]/[0.08]"
                     className="left-[-10%] md:left-[-5%] top-[15%] md:top-[20%]"
                 />
 
@@ -170,7 +173,7 @@ function HeroGeometric({
                     className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
                 />
 
-                {/* Additional blue shapes for more depth - more transparent */}
+                {/* Additional blue shapes for more depth */}
                 <ElegantShape
                     delay={0.8}
                     width={250}
@@ -262,12 +265,13 @@ function HeroGeometric({
                 </div>
             )}
 
-            {/* Enhanced gradient overlay with blue tints - more transparent */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-[#0f172a]/40 pointer-events-none" />
+            {/* Enhanced gradient overlay with blue tints */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/60 via-transparent to-[#0f172a]/30 pointer-events-none" />
             
-            {/* Additional atmospheric effects - more transparent */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.02),transparent_50%)] pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(30,174,219,0.02),transparent_50%)] pointer-events-none" />
+            {/* Additional atmospheric effects with more blues */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(30,64,175,0.03),transparent_50%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(30,174,219,0.03),transparent_50%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.02),transparent_60%)] pointer-events-none" />
         </div>
     );
 }
