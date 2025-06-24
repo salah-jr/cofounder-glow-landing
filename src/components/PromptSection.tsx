@@ -60,36 +60,39 @@ const PromptSection = () => {
 
   return (
     <div className="w-full flex flex-col items-center space-y-6">
-      <div className="w-full glass p-3 rounded-xl animate-fade-in">
-        <div className="flex flex-col bg-black/20 rounded-lg">
+      <div className="w-full glass p-4 rounded-xl animate-fade-in">
+        <div className="flex flex-col bg-black/20 rounded-lg overflow-hidden">
           <textarea
-            className="flex-1 bg-transparent h-14 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none transition-all duration-500 ease-in-out focus:bg-white/5 focus:shadow-lg focus:shadow-white/10"
-            placeholder={placeholder || "Describe your startup idea or business challenge..."}
+            className="flex-1 bg-transparent h-16 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none transition-all duration-500 ease-in-out hover:shadow-lg hover:shadow-white/5 focus:bg-white/5 focus:shadow-xl focus:shadow-white/10 border-0"
+            placeholder={placeholder || "My idea is to..."}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           
-          <div className="px-4 pb-2">
-            <FileAttachment 
-              files={files}
-              onAddFiles={handleAddFiles}
-              onRemoveFile={handleRemoveFile}
-            />
-          </div>
-          
-          <div className="flex items-center justify-between gap-2 border-t border-white/10 p-2 mt-1">
+          <div className="flex items-center justify-between gap-2 border-t border-white/10 p-3">
+            {/* Hidden file attachment - keeping code but hiding visually */}
+            <div className="hidden">
+              <FileAttachment 
+                files={files}
+                onAddFiles={handleAddFiles}
+                onRemoveFile={handleRemoveFile}
+              />
+            </div>
+            
+            {/* Left side - file count if any */}
             <div className="flex items-center gap-2 text-xs text-white/60">
               {files.length > 0 && (
                 <span>{files.length} attachment{files.length !== 1 ? 's' : ''}</span>
               )}
             </div>
             
+            {/* Right side - CTA button */}
             <Button 
-              className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity"
+              className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity ml-auto"
               onClick={handleSubmit}
             >
-              <Send className="h-5 w-5 mr-2" />
+              <Send className="h-4 w-4 mr-2" />
               Shape My Idea
             </Button>
           </div>

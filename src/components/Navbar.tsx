@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+// Avatar icon options
+const avatarIcons = [
+  "🚀", "⭐", "💡", "🎯", "🔥", "⚡", "🌟", "💎", 
+  "🎨", "🎪", "🎭", "🎨", "🌈", "🦄", "🎲", "🎯",
+  "🔮", "💫", "🌙", "☀️", "🌊", "🍀", "🌸", "🦋"
+];
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user, profile, logout, isLoading } = useAuth();
@@ -39,6 +46,19 @@ const Navbar = () => {
       return nameParts[0][0];
     }
     return user?.email?.[0]?.toUpperCase() || "U";
+  };
+
+  // Generate random avatar icon based on user ID
+  const getAvatarIcon = () => {
+    if (!user?.id) return "👤";
+    
+    // Use user ID to consistently pick the same icon
+    const hash = user.id.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    
+    return avatarIcons[Math.abs(hash) % avatarIcons.length];
   };
 
   // Generate random avatar colors based on user ID
@@ -86,15 +106,13 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
             {isLoading ? (
-              <div className="w-9 h-9 bg-white/10 rounded-full animate-pulse" />
+              <div className="w-10 h-10 bg-white/10 rounded-full animate-pulse" />
             ) : isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none">
-                  <Avatar className={`h-9 w-9 bg-gradient-to-r ${getAvatarGradient()} text-white`}>
-                    <AvatarFallback className={`bg-gradient-to-r ${getAvatarGradient()} text-white`}>
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className={`h-10 w-10 rounded-full bg-gradient-to-r ${getAvatarGradient()} flex items-center justify-center text-white text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105`}>
+                    {getAvatarIcon()}
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 glass border-white/10 bg-[#1A1F2C]/90">
                   <DropdownMenuItem className="cursor-pointer text-white flex-col items-start">
@@ -152,11 +170,9 @@ const Navbar = () => {
                 ) : isAuthenticated ? (
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-3 text-white/80 text-sm">
-                      <Avatar className={`h-8 w-8 bg-gradient-to-r ${getAvatarGradient()} text-white`}>
-                        <AvatarFallback className={`bg-gradient-to-r ${getAvatarGradient()} text-white text-xs`}>
-                          {getUserInitials()}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className={`h-8 w-8 rounded-full bg-gradient-to-r ${getAvatarGradient()} flex items-center justify-center text-white text-sm font-medium`}>
+                        {getAvatarIcon()}
+                      </div>
                       <div>
                         <div className="font-medium">{profile?.full_name || user?.email}</div>
                         <div className="text-xs text-white/60">{user?.email}</div>

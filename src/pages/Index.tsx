@@ -1,9 +1,6 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
-import ServicesSection from "@/components/ServicesSection";
-import AboutSection from "@/components/AboutSection";
-import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
 import ModernAIBackground from "@/components/ModernAIBackground";
 import GlassmorphismCard from "@/components/GlassmorphismCard";
@@ -28,7 +25,7 @@ const Index: React.FC = () => {
       
       <div className="relative z-10">
         {/* Hero Section with Enhanced Glassmorphism */}
-        <div className="flex flex-col items-center justify-center px-4 pt-24 pb-32">
+        <div className="flex flex-col items-center justify-center px-4 pt-24 pb-32 min-h-screen">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mt-8 mb-4 md:text-5xl text-white drop-shadow-lg">
               Your startup, from idea to launch, in hours.
@@ -48,27 +45,6 @@ const Index: React.FC = () => {
             </GlassmorphismCard>
           </div>
         </div>
-
-        {/* Enhanced Services Section */}
-        <div className="relative" id="services">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-transparent" />
-          <FloatingParticles 
-            count={8} 
-            speed={1.2} 
-            size={2} 
-            color="rgba(155, 135, 245, 0.3)"
-            className="z-0"
-          />
-          <ServicesSection />
-        </div>
-      </div>
-      
-      <div id="about" className="relative z-10">
-        <AboutSection />
-      </div>
-      
-      <div id="pricing" className="relative z-10">
-        <PricingSection />
       </div>
       
       <Footer />
