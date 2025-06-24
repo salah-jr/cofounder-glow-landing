@@ -8,21 +8,47 @@ import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 const Index: React.FC = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Full-page hero background that extends to cover entire page */}
-      <HeroGeometric
-        badge="AI Co-Founder"
-        title1="Your startup, from idea to launch,"
-        title2="in hours."
-        subtitle="Co-founder is your AI business partner. From idea → to pitch deck → to MVP. All in one tool."
-        fullPage={true}
-      >
-        {/* Navbar positioned over the hero */}
-        <div className="absolute top-0 left-0 right-0 z-50">
-          <Navbar />
+      {/* Full-page hero background */}
+      <div className="fixed inset-0 -z-10">
+        <HeroGeometric
+          badge="AI Co-Founder"
+          title1=""
+          title2=""
+          subtitle=""
+          fullPage={true}
+          backgroundOnly={true}
+        />
+      </div>
+      
+      {/* Navbar */}
+      <Navbar />
+      
+      {/* Hero Content Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-32 relative z-10">
+        <div className="text-center mb-8 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] mb-8 md:mb-12">
+            <div className="h-2 w-2 rounded-full bg-[#9b87f5]/80" />
+            <span className="text-sm text-white/60 tracking-wide">
+              AI Co-Founder
+            </span>
+          </div>
+          
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 md:mb-8 tracking-tight">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+              Your startup, from idea to launch,
+            </span>
+            <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] via-[#3b82f6] to-[#1EAEDB]">
+              in hours.
+            </span>
+          </h1>
+          
+          <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4">
+            Co-founder is your AI business partner. From idea → to pitch deck → to MVP. All in one tool.
+          </p>
         </div>
         
-        {/* Main content area */}
-        <div className="relative z-10 pt-24">
+        <div className="w-full max-w-3xl">
           <GlassmorphismCard 
             intensity="medium" 
             glow={true}
@@ -31,12 +57,10 @@ const Index: React.FC = () => {
             <PromptSection />
           </GlassmorphismCard>
         </div>
-        
-        {/* Footer positioned at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 z-10">
-          <Footer />
-        </div>
-      </HeroGeometric>
+      </section>
+      
+      {/* Footer Section */}
+      <Footer />
     </div>
   );
 };
