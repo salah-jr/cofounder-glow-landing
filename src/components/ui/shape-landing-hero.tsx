@@ -77,12 +77,14 @@ function HeroGeometric({
     title2 = "in hours.",
     subtitle = "Co-founder is your AI business partner. From idea → to pitch deck → to MVP. All in one tool.",
     children,
+    fullPage = false,
 }: {
     badge?: string;
     title1?: string;
     title2?: string;
     subtitle?: string;
     children?: React.ReactNode;
+    fullPage?: boolean;
 }) {
     const fadeUpVariants = {
         hidden: { opacity: 0, y: 30 },
@@ -98,18 +100,35 @@ function HeroGeometric({
     };
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#1A1F2C] to-[#000000e6]">
-            {/* Background gradient overlay matching your theme */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#9b87f5]/[0.05] via-transparent to-[#1EAEDB]/[0.05] blur-3xl" />
+        <div className={cn(
+            "relative w-full flex items-center justify-center overflow-hidden",
+            "bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]",
+            fullPage ? "min-h-screen" : "min-h-screen"
+        )}>
+            {/* Enhanced background with more blues */}
+            <div className="absolute inset-0">
+                {/* Primary gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#9b87f5]/[0.08] via-[#1e40af]/[0.06] to-[#1EAEDB]/[0.08]" />
+                
+                {/* Secondary blue gradient layers */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#3b82f6]/[0.04] via-transparent to-[#06b6d4]/[0.06]" />
+                <div className="absolute inset-0 bg-gradient-to-bl from-[#1d4ed8]/[0.03] via-transparent to-[#0ea5e9]/[0.05]" />
+                
+                {/* Radial gradients for depth */}
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#3b82f6]/[0.08] rounded-full blur-3xl" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1EAEDB]/[0.08] rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-0 w-64 h-64 bg-[#06b6d4]/[0.06] rounded-full blur-2xl" />
+                <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-[#0ea5e9]/[0.07] rounded-full blur-3xl" />
+            </div>
 
             <div className="absolute inset-0 overflow-hidden">
-                {/* Adapted shapes with your brand colors */}
+                {/* Enhanced shapes with more blue variations */}
                 <ElegantShape
                     delay={0.3}
                     width={600}
                     height={140}
                     rotate={12}
-                    gradient="from-[#9b87f5]/[0.15]"
+                    gradient="from-[#9b87f5]/[0.18]"
                     className="left-[-10%] md:left-[-5%] top-[15%] md:top-[20%]"
                 />
 
@@ -118,7 +137,7 @@ function HeroGeometric({
                     width={500}
                     height={120}
                     rotate={-15}
-                    gradient="from-[#1EAEDB]/[0.15]"
+                    gradient="from-[#1EAEDB]/[0.18]"
                     className="right-[-5%] md:right-[0%] top-[70%] md:top-[75%]"
                 />
 
@@ -127,7 +146,7 @@ function HeroGeometric({
                     width={300}
                     height={80}
                     rotate={-8}
-                    gradient="from-[#7c3aed]/[0.15]"
+                    gradient="from-[#3b82f6]/[0.16]"
                     className="left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]"
                 />
 
@@ -136,7 +155,7 @@ function HeroGeometric({
                     width={200}
                     height={60}
                     rotate={20}
-                    gradient="from-[#06b6d4]/[0.15]"
+                    gradient="from-[#06b6d4]/[0.16]"
                     className="right-[15%] md:right-[20%] top-[10%] md:top-[15%]"
                 />
 
@@ -145,8 +164,36 @@ function HeroGeometric({
                     width={150}
                     height={40}
                     rotate={-25}
-                    gradient="from-[#8b5cf6]/[0.15]"
+                    gradient="from-[#0ea5e9]/[0.16]"
                     className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
+                />
+
+                {/* Additional blue shapes for more depth */}
+                <ElegantShape
+                    delay={0.8}
+                    width={250}
+                    height={70}
+                    rotate={35}
+                    gradient="from-[#1d4ed8]/[0.14]"
+                    className="right-[5%] md:right-[10%] bottom-[20%] md:bottom-[25%]"
+                />
+
+                <ElegantShape
+                    delay={0.9}
+                    width={180}
+                    height={50}
+                    rotate={-30}
+                    gradient="from-[#2563eb]/[0.14]"
+                    className="left-[30%] md:left-[35%] top-[60%] md:top-[65%]"
+                />
+
+                <ElegantShape
+                    delay={1.0}
+                    width={120}
+                    height={35}
+                    rotate={45}
+                    gradient="from-[#0284c7]/[0.14]"
+                    className="right-[30%] md:right-[35%] top-[40%] md:top-[45%]"
                 />
             </div>
 
@@ -178,7 +225,7 @@ function HeroGeometric({
                             <br />
                             <span
                                 className={cn(
-                                    "bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] via-white/90 to-[#1EAEDB]"
+                                    "bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] via-[#3b82f6] to-[#1EAEDB]"
                                 )}
                             >
                                 {title2}
@@ -210,8 +257,12 @@ function HeroGeometric({
                 </div>
             </div>
 
-            {/* Gradient overlay matching your theme */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1F2C] via-transparent to-[#1A1F2C]/80 pointer-events-none" />
+            {/* Enhanced gradient overlay with blue tints */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-[#0f172a]/60 pointer-events-none" />
+            
+            {/* Additional atmospheric effects */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.05),transparent_50%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(30,174,219,0.05),transparent_50%)] pointer-events-none" />
         </div>
     );
 }
