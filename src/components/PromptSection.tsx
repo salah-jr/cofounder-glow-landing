@@ -63,14 +63,14 @@ const PromptSection = () => {
       <div className="w-full glass p-4 rounded-xl animate-fade-in">
         <div className="flex flex-col bg-black/20 rounded-lg overflow-hidden">
           <textarea
-            className="flex-1 bg-transparent h-16 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none transition-all duration-500 ease-in-out hover:shadow-lg hover:shadow-white/5 focus:bg-white/5 focus:shadow-xl focus:shadow-white/10 border-0"
+            className="flex-1 bg-transparent h-16 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none transition-all duration-300 ease-in-out hover:shadow-sm hover:shadow-white/10 focus:bg-white/5 border-0"
             placeholder={placeholder || "My idea is to..."}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           
-          <div className="flex items-center justify-between gap-2 border-t border-white/10 p-3">
+          <div className="flex items-center justify-between gap-2 p-3">
             {/* Hidden file attachment - keeping code but hiding visually */}
             <div className="hidden">
               <FileAttachment 
