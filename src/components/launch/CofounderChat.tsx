@@ -67,11 +67,15 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Check if error is related to OpenAI quota
+  // Check if error is related to OpenAI quota - improved detection
   const isOpenAIQuotaError = (errorMessage: string): boolean => {
-    return errorMessage.toLowerCase().includes('quota') || 
-           errorMessage.toLowerCase().includes('billing') ||
-           errorMessage.toLowerCase().includes('exceeded your current quota');
+    const lowerMessage = errorMessage.toLowerCase();
+    return lowerMessage.includes('quota') || 
+           lowerMessage.includes('billing') ||
+           lowerMessage.includes('exceeded your current quota') ||
+           lowerMessage.includes('insufficient_quota') ||
+           lowerMessage.includes('rate_limit_exceeded') ||
+           lowerMessage.includes('quota_exceeded');
   };
 
   // Get fallback responses based on phase and step
@@ -163,22 +167,38 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
           console.log('Error response data:', errorData);
         } catch (parseError) {
           console.error('Failed to parse error response:', parseError);
-          throw new Error(`Service temporarily unavailable`);
+          throw new Error(`Service temporarily unavailable (${response.status})`);
         }
         
-        throw new Error(errorData.error || `Service temporarily unavailable`);
+        // Check for quota error in the response
+        const errorMessage = errorData.error || `Service temporarily unavailable (${response.status})`;
+        if (isOpenAIQuotaError(errorMessage)) {
+          throw new Error("QUOTA_EXCEEDED: " + errorMessage);
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       console.log('Success response data:', data);
       
       if (!data.success) {
-        throw new Error(data.error || 'Service temporarily unavailable');
+        const errorMessage = data.error || 'Service temporarily unavailable';
+        if (isOpenAIQuotaError(errorMessage)) {
+          throw new Error("QUOTA_EXCEEDED: " + errorMessage);
+        }
+        throw new Error(errorMessage);
       }
 
       return data.response;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error calling LLM function:', error);
+      
+      // Re-throw with proper quota detection
+      if (error.message.startsWith("QUOTA_EXCEEDED:") || isOpenAIQuotaError(error.message)) {
+        throw new Error("QUOTA_EXCEEDED: " + error.message.replace("QUOTA_EXCEEDED: ", ""));
+      }
+      
       throw error;
     }
   };
@@ -217,7 +237,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       console.error('Error fetching initial AI message:', error);
       
       // Check if it's a quota error
-      if (isOpenAIQuotaError(error.message)) {
+      if (error.message.startsWith("QUOTA_EXCEEDED:") || isOpenAIQuotaError(error.message)) {
         setIsQuotaExceeded(true);
         const quotaMessage = `I'm currently experiencing high demand due to API limitations. Don't worry though - I can still help guide you through this step! ${getFallbackResponse(phaseId, stepId, true)}`;
         
@@ -330,7 +350,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       let isErrorMessage = false;
       
       // Check if it's a quota error
-      if (isOpenAIQuotaError(error.message)) {
+      if (error.message.startsWith("QUOTA_EXCEEDED:") || isOpenAIQuotaError(error.message)) {
         setIsQuotaExceeded(true);
         fallbackMessage = `I'm currently experiencing high demand due to API limitations, but I can still help guide you! ${getFallbackResponse(propCurrentPhaseId, propCurrentStepId, false)} Feel free to share your thoughts and I'll do my best to provide guidance based on this step's objectives.`;
         isErrorMessage = true;
