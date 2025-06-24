@@ -10,6 +10,7 @@ const PromptSection = () => {
   const placeholder = useAnimatedPlaceholder();
   const [prompt, setPrompt] = useState("");
   const [files, setFiles] = useState<FileItem[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
   
   const handleSubmit = () => {
@@ -60,17 +61,52 @@ const PromptSection = () => {
 
   return (
     <div className="w-full flex flex-col items-center space-y-6">
-      <div className="w-full glass p-4 rounded-xl animate-fade-in">
-        <div className="flex flex-col bg-black/20 rounded-lg overflow-hidden">
+      <div className="w-full relative group">
+        {/* Modern textarea container with enhanced styling */}
+        <div className={`
+          relative overflow-hidden rounded-2xl transition-all duration-500 ease-out
+          ${isFocused 
+            ? 'bg-white/[0.08] border-[#9b87f5]/40 shadow-[0_0_0_1px_rgba(155,135,245,0.3),0_8px_32px_rgba(155,135,245,0.15)]' 
+            : 'bg-white/[0.04] border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.1)]'
+          }
+          border backdrop-blur-xl
+          hover:bg-white/[0.06] hover:border-white/20 hover:shadow-[0_8px_32px_rgba(155,135,245,0.08)]
+        `}>
+          {/* Subtle inner glow effect */}
+          <div className={`
+            absolute inset-0 rounded-2xl transition-opacity duration-500
+            ${isFocused 
+              ? 'bg-gradient-to-r from-[#9b87f5]/[0.03] via-transparent to-[#1EAEDB]/[0.03] opacity-100' 
+              : 'opacity-0'
+            }
+          `} />
+          
+          {/* Enhanced textarea */}
           <textarea
-            className="flex-1 bg-transparent h-16 py-4 px-4 text-white placeholder-white/50 focus:outline-none resize-none transition-shadow duration-200 ease-in-out hover:shadow-sm hover:shadow-white/5 border-0"
+            className={`
+              relative z-10 w-full h-20 px-6 py-5 bg-transparent text-white/95 
+              placeholder:text-white/40 resize-none outline-none
+              transition-all duration-300 ease-out
+              text-base leading-relaxed
+              ${isFocused ? 'placeholder:text-white/50' : ''}
+            `}
             placeholder={placeholder || "My idea is to..."}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
           
-          <div className="flex items-center justify-between gap-2 p-3">
+          {/* Bottom action bar */}
+          <div className={`
+            relative z-10 flex items-center justify-between px-6 pb-4 pt-2
+            border-t transition-all duration-300
+            ${isFocused 
+              ? 'border-white/10' 
+              : 'border-white/5'
+            }
+          `}>
             {/* Hidden file attachment - keeping code but hiding visually */}
             <div className="hidden">
               <FileAttachment 
@@ -81,19 +117,38 @@ const PromptSection = () => {
             </div>
             
             {/* Left side - file count if any */}
-            <div className="flex items-center gap-2 text-xs text-white/60">
+            <div className="flex items-center gap-2 text-xs text-white/50">
               {files.length > 0 && (
-                <span>{files.length} attachment{files.length !== 1 ? 's' : ''}</span>
+                <span className="px-2 py-1 bg-white/5 rounded-full border border-white/10">
+                  {files.length} attachment{files.length !== 1 ? 's' : ''}
+                </span>
               )}
             </div>
             
-            {/* Right side - CTA button */}
+            {/* Right side - Enhanced CTA button */}
             <Button 
-              className="bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] hover:opacity-90 transition-opacity ml-auto"
+              className={`
+                relative overflow-hidden group/btn
+                bg-gradient-to-r from-[#9b87f5] to-[#1EAEDB] 
+                hover:from-[#8b77e5] hover:to-[#0e9ecc]
+                text-white font-medium px-6 py-2.5 rounded-xl
+                shadow-[0_4px_16px_rgba(155,135,245,0.3)]
+                hover:shadow-[0_6px_24px_rgba(155,135,245,0.4)]
+                transition-all duration-300 ease-out
+                hover:scale-[1.02] active:scale-[0.98]
+                disabled:opacity-50 disabled:cursor-not-allowed
+                ${prompt.trim() ? 'animate-pulse-subtle' : ''}
+              `}
               onClick={handleSubmit}
+              disabled={!prompt.trim()}
             >
-              <Send className="h-4 w-4 mr-2" />
-              Shape My Idea
+              {/* Button shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
+              
+              <div className="relative flex items-center gap-2">
+                <Send className="h-4 w-4" />
+                <span>Shape My Idea</span>
+              </div>
             </Button>
           </div>
         </div>
