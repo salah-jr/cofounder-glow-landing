@@ -46,7 +46,7 @@
     @apply text-white/90;
   }
 
-  /* Improved focus states for accessibility with theme colors */
+  /* Improved focus states for accessibility with unified gradient */
   button:focus-visible,
   input:focus-visible,
   textarea:focus-visible,
@@ -82,7 +82,7 @@
   }
   
   .text-gradient-theme {
-    @apply bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-indigo-500 to-rose-500 bg-clip-text text-transparent;
   }
   
   .cosmic-gradient {
@@ -143,7 +143,7 @@
     animation: shimmer 3s infinite;
   }
 
-  /* Enhanced pulse animation for buttons */
+  /* Enhanced pulse animation for buttons with unified gradient */
   .animate-pulse-subtle {
     animation: pulse-subtle 2s infinite ease-in-out;
   }
@@ -200,7 +200,7 @@
   }
 }
 
-/* Enhanced pulse animation for buttons with theme colors */
+/* Enhanced pulse animation for buttons with unified gradient */
 @keyframes pulse-subtle {
   0%, 100% {
     box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
@@ -233,7 +233,7 @@
   cursor: default !important;
 }
 
-/* Scrollbar styling for better aesthetics with theme colors */
+/* Scrollbar styling for better aesthetics with unified gradient */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -244,12 +244,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: linear-gradient(to bottom, #6366f1, #f43f5e);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: linear-gradient(to bottom, #4f46e5, #ec4899);
 }
 
 /* Firefox scrollbar */

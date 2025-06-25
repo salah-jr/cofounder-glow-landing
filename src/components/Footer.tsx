@@ -15,16 +15,16 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Connect Section with theme colors */}
+          {/* Connect Section with unified gradient theme */}
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors group">
-              <Mail className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+              <Mail className="w-5 h-5 text-indigo-500 group-hover:text-indigo-400 transition-colors" />
               <a href="mailto:support@cofounder.ai" className="hover:text-white transition-colors">
                 support@cofounder.ai
               </a>
             </div>
             <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors group">
-              <MessageSquare className="w-5 h-5 text-rose-400 group-hover:text-rose-300 transition-colors" />
+              <MessageSquare className="w-5 h-5 text-rose-500 group-hover:text-rose-400 transition-colors" />
               <a href="#" className="hover:text-white transition-colors">
                 Live Chat
               </a>

@@ -62,7 +62,7 @@ const PromptSection = () => {
   return (
     <div className="w-full flex flex-col items-center space-y-6">
       <div className="w-full relative group">
-        {/* Modern textarea container with theme colors */}
+        {/* Modern textarea container with unified gradient theme */}
         <div className={`
           relative overflow-hidden rounded-2xl transition-all duration-500 ease-out
           ${isFocused 
@@ -72,7 +72,7 @@ const PromptSection = () => {
           border backdrop-blur-xl
           hover:bg-white/[0.06] hover:border-white/20 hover:shadow-[0_8px_32px_rgba(99,102,241,0.08)]
         `}>
-          {/* Subtle inner glow effect with theme colors */}
+          {/* Subtle inner glow effect with unified gradient */}
           <div className={`
             absolute inset-0 rounded-2xl transition-opacity duration-500
             ${isFocused 
@@ -81,11 +81,11 @@ const PromptSection = () => {
             }
           `} />
           
-          {/* Enhanced textarea */}
+          {/* Enhanced textarea - removed focus border effects */}
           <textarea
             className={`
               relative z-10 w-full h-20 px-6 py-5 bg-transparent text-white/95 
-              placeholder:text-white/40 resize-none outline-none
+              placeholder:text-white/40 resize-none outline-none border-none
               transition-all duration-300 ease-out
               text-base leading-relaxed
               ${isFocused ? 'placeholder:text-white/50' : ''}
@@ -98,14 +98,10 @@ const PromptSection = () => {
             onBlur={() => setIsFocused(false)}
           />
           
-          {/* Bottom action bar */}
+          {/* Bottom action bar - removed border */}
           <div className={`
             relative z-10 flex items-center justify-between px-6 pb-4 pt-2
-            border-t transition-all duration-300
-            ${isFocused 
-              ? 'border-white/10' 
-              : 'border-white/5'
-            }
+            transition-all duration-300
           `}>
             {/* Hidden file attachment - keeping code but hiding visually */}
             <div className="hidden">
@@ -125,7 +121,7 @@ const PromptSection = () => {
               )}
             </div>
             
-            {/* Right side - Enhanced CTA button with theme colors */}
+            {/* Right side - Enhanced CTA button with unified gradient */}
             <Button 
               className={`
                 relative overflow-hidden group/btn

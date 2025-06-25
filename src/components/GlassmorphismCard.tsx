@@ -40,7 +40,7 @@ const GlassmorphismCard: React.FC<GlassmorphismCardProps> = ({
       } : undefined}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {/* Inner glow effect with theme colors */}
+      {/* Inner glow effect with unified gradient */}
       {glow && (
         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/10 to-rose-500/10 opacity-50" />
       )}
@@ -50,7 +50,7 @@ const GlassmorphismCard: React.FC<GlassmorphismCardProps> = ({
         {children}
       </div>
       
-      {/* Subtle border highlight with theme colors */}
+      {/* Subtle border highlight with unified gradient */}
       <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/20 via-transparent to-rose-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
     </motion.div>
   );

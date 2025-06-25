@@ -13,19 +13,19 @@ const Logo = ({ size = "small", iconOnly = false }: LogoProps) => {
     <div className="flex items-center justify-center gap-3 animate-fade-in">
       {!iconOnly && (
         <div className="flex items-center relative">
-          <span className={`${textSize} font-bold bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300 bg-clip-text text-transparent tracking-tight`}>
+          <span className={`${textSize} font-bold bg-gradient-to-r from-indigo-500 to-rose-500 bg-clip-text text-transparent tracking-tight`}>
             Cofounder
           </span>
           <div className="relative ml-1">
-            <Sparkles className={`${iconSize} text-indigo-400 drop-shadow-lg`} />
-            <div className="absolute inset-0 bg-indigo-400 rounded-full blur-sm opacity-30 animate-pulse" />
+            <Sparkles className={`${iconSize} text-indigo-500 drop-shadow-lg`} />
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-rose-500 rounded-full blur-sm opacity-30 animate-pulse" />
           </div>
         </div>
       )}
       {iconOnly && (
         <div className="relative">
-          <Sparkles className={`${iconSize} text-indigo-400 drop-shadow-lg`} />
-          <div className="absolute inset-0 bg-indigo-400 rounded-full blur-sm opacity-30 animate-pulse" />
+          <Sparkles className={`${iconSize} text-indigo-500 drop-shadow-lg`} />
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-rose-500 rounded-full blur-sm opacity-30 animate-pulse" />
         </div>
       )}
     </div>

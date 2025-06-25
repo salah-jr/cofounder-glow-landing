@@ -60,9 +60,9 @@ function ElegantShape({
                         "bg-gradient-to-r to-transparent",
                         gradient,
                         "backdrop-blur-[2px] border-2 border-white/[0.15]",
-                        "shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]",
+                        "shadow-[0_8px_32px_0_rgba(99,102,241,0.2)]",
                         "after:absolute after:inset-0 after:rounded-full",
-                        "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]"
+                        "after:bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.2),transparent_70%)]"
                     )}
                 />
             </motion.div>
@@ -107,50 +107,50 @@ function HeroGeometric({
             fullPage ? "min-h-screen" : "min-h-screen",
             backgroundOnly ? "pointer-events-none" : ""
         )}>
-            {/* Enhanced background with blue theme */}
+            {/* Enhanced background with unified gradient theme */}
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-rose-500/[0.05] blur-3xl" />
                 
-                {/* Multiple gradient layers with breathing animation */}
+                {/* Multiple gradient layers with faster breathing animation */}
                 <motion.div 
-                    className="absolute inset-0 bg-gradient-to-tr from-indigo-500/[0.08] via-transparent to-cyan-500/[0.06]"
+                    className="absolute inset-0 bg-gradient-to-tr from-indigo-500/[0.08] via-transparent to-rose-500/[0.06]"
                     animate={{
                         opacity: [0.6, 0.9, 0.6],
                     }}
                     transition={{
-                        duration: 8,
+                        duration: 4,
                         repeat: Infinity,
                         ease: "easeInOut",
                     }}
                 />
                 <motion.div 
-                    className="absolute inset-0 bg-gradient-to-bl from-violet-500/[0.04] via-transparent to-blue-500/[0.05]"
+                    className="absolute inset-0 bg-gradient-to-bl from-indigo-600/[0.04] via-transparent to-rose-600/[0.05]"
                     animate={{
                         opacity: [0.5, 0.8, 0.5],
                     }}
                     transition={{
-                        duration: 10,
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 1,
+                    }}
+                />
+                <motion.div 
+                    className="absolute inset-0 bg-gradient-to-tl from-rose-500/[0.03] via-transparent to-indigo-500/[0.04]"
+                    animate={{
+                        opacity: [0.4, 0.7, 0.4],
+                    }}
+                    transition={{
+                        duration: 6,
                         repeat: Infinity,
                         ease: "easeInOut",
                         delay: 2,
                     }}
                 />
-                <motion.div 
-                    className="absolute inset-0 bg-gradient-to-tl from-rose-500/[0.03] via-transparent to-amber-500/[0.04]"
-                    animate={{
-                        opacity: [0.4, 0.7, 0.4],
-                    }}
-                    transition={{
-                        duration: 12,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 4,
-                    }}
-                />
             </div>
 
             <div className="absolute inset-0 overflow-hidden">
-                {/* Enhanced shapes with theme colors */}
+                {/* Enhanced shapes with unified gradient theme */}
                 <ElegantShape
                     delay={0.3}
                     width={600}
@@ -174,7 +174,7 @@ function HeroGeometric({
                     width={300}
                     height={80}
                     rotate={-8}
-                    gradient="from-violet-500/[0.15]"
+                    gradient="from-indigo-600/[0.15]"
                     className="left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]"
                 />
 
@@ -183,7 +183,7 @@ function HeroGeometric({
                     width={200}
                     height={60}
                     rotate={20}
-                    gradient="from-amber-500/[0.15]"
+                    gradient="from-rose-600/[0.15]"
                     className="right-[15%] md:right-[20%] top-[10%] md:top-[15%]"
                 />
 
@@ -192,7 +192,7 @@ function HeroGeometric({
                     width={150}
                     height={40}
                     rotate={-25}
-                    gradient="from-cyan-500/[0.15]"
+                    gradient="from-indigo-500/[0.15]"
                     className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
                 />
             </div>
@@ -225,7 +225,7 @@ function HeroGeometric({
                                     {title1}
                                 </span>
                                 <br />
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-rose-500">
                                     {title2}
                                 </span>
                             </h1>
