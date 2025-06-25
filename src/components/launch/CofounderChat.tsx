@@ -41,6 +41,20 @@ export interface CofounderChatRef {
   resetChat: () => void;
 }
 
+// Type definitions for fallback responses
+interface StepResponse {
+  initial: string;
+  response: string;
+}
+
+interface PhaseResponses {
+  [stepId: string]: StepResponse;
+}
+
+interface FallbackResponses {
+  [phaseId: string]: PhaseResponses;
+}
+
 const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({ 
   className, 
   currentPhaseId: propCurrentPhaseId = "shape",
@@ -80,7 +94,7 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
 
   // Get fallback responses based on phase and step
   const getFallbackResponse = (phaseId: string, stepId: string, isInitial: boolean = false): string => {
-    const fallbackResponses = {
+    const fallbackResponses: FallbackResponses = {
       'shape': {
         'shape-1': {
           initial: "Welcome to the Shape phase! I'm here to help you define and refine your startup idea. Let's start by exploring what problem you're trying to solve and who your target customers might be. What's the core challenge or pain point that sparked your business idea?",
@@ -105,9 +119,9 @@ const CofounderChat = forwardRef<CofounderChatRef, CofounderChatProps>(({
       }
     };
 
-    const phaseResponses = fallbackResponses[phaseId as keyof typeof fallbackResponses];
+    const phaseResponses = fallbackResponses[phaseId];
     if (phaseResponses) {
-      const stepResponses = phaseResponses[stepId as keyof typeof phaseResponses];
+      const stepResponses = phaseResponses[stepId];
       if (stepResponses) {
         return isInitial ? stepResponses.initial : stepResponses.response;
       }
