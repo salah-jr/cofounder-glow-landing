@@ -1,23 +1,22 @@
+
 import React from "react";
 import Navbar from "@/components/Navbar";
 import PromptSection from "@/components/PromptSection";
 import Footer from "@/components/Footer";
 import GlassmorphismCard from "@/components/GlassmorphismCard";
-import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 
 const Index: React.FC = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Full-page hero background with new theme */}
-      <div className="fixed inset-0 -z-10">
-        <HeroGeometric
-          badge="AI Co-Founder"
-          title1=""
-          title2=""
-          subtitle=""
-          fullPage={true}
-          backgroundOnly={true}
-        />
+      {/* Full-page hero background with gradient */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-[#030303] via-[#1A1F2C] to-[#030303]">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-transparent to-rose-500/10 animate-pulse" />
+        
+        {/* Geometric shapes for visual interest */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-indigo-500/5 rounded-full blur-xl" />
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-rose-500/5 rounded-full blur-xl" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/[0.02] rounded-full blur-3xl" />
       </div>
       
       {/* Navbar */}
