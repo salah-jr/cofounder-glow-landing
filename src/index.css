@@ -1,0 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    
+    /* Theme-aware shadow opacity */
+    --shadow-opacity: 0.1;
+  }
+
+  .dark {
+    --shadow-opacity: 0.2;
+  }
+
+  body {
+    @apply bg-[#030303] min-h-screen text-white font-inter antialiased;
+    /* Improved text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Ensure high contrast for accessibility */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  p, span, div {
+    @apply text-white/90;
+  }
+
+  /* Improved focus states for accessibility with unified gradient */
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-none ring-2 ring-indigo-400 ring-offset-2 ring-offset-transparent;
+  }
+
+  /* Hide toast notifications */
+  .toaster {
+    display: none !important;
+  }
+  
+  .sonner-toaster {
+    display: none !important;
+  }
+  
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-strong {
+    @apply bg-white/15 backdrop-blur-lg border border-white/30;
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  .glass-light {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10;
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-theme {
+    @apply bg-gradient-to-r from-indigo-500 to-rose-500 bg-clip-text text-transparent;
+  }
+  
+  .cosmic-gradient {
+    @apply bg-gradient-to-r from-indigo-500 to-rose-500;
+  }
+  
+  .glow {
+    @apply relative;
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+  }
+  
+  .glow::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: linear-gradient(to right, #6366f1, #f43f5e);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.5;
+    filter: blur(8px);
+  }
+
+  .glow-indigo {
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+  }
+
+  .glow-rose {
+    box-shadow: 0 0 25px rgba(244, 63, 94, 0.5);
+  }
+
+  /* Neural network inspired animations */
+  .pulse-neural {
+    animation: pulse-neural 3s ease-in-out infinite;
+  }
+
+  .float-gentle {
+    animation: float-gentle 6s ease-in-out infinite;
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shimmer 3s infinite;
+  }
+
+  /* Enhanced pulse animation for buttons with unified gradient */
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite ease-in-out;
+  }
+
+  /* Custom blinking cursor animation */
+  .blink-cursor {
+    animation: blink 1s infinite;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .glass {
+      @apply bg-black/80 border-white/60;
+    }
+    
+    .text-gradient {
+      @apply text-white bg-none;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-neural,
+    .float-gentle,
+    .shimmer::before,
+    .animate-pulse-subtle,
+    .blink-cursor {
+      animation: none;
+    }
+  }
+}
+
+/* Custom animations */
+@keyframes pulse-neural {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Enhanced pulse animation for buttons with unified gradient */
+@keyframes pulse-subtle {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+  }
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 50% { 
+    opacity: 1; 
+  }
+  51%, 100% { 
+    opacity: 0; 
+  }
+}
+
+/* Custom slider styles for roadmap progress */
+.radix-custom-slider .radix-slider-track {
+  background: rgba(255, 255, 255, 0.1) !important;
+  height: 6px !important;
+  border-radius: 99px;
+}
+
+.radix-custom-slider .radix-slider-range {
+  background: linear-gradient(to right, #6366f1, #f43f5e) !important;
+  border-radius: 99px;
+  height: 6px !important;
+}
+
+.radix-custom-slider .radix-slider-thumb {
+  background: white !important;
+  width: 14px !important;
+  height: 14px !important;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  border: 3px solid #6366f1 !important;
+  transform: translateY(-50%) !important;
+  cursor: default !important;
+}
+
+/* Scrollbar styling for better aesthetics with unified gradient */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #6366f1, #f43f5e);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #4f46e5, #ec4899);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) rgba(255, 255, 255, 0.05);
+}
